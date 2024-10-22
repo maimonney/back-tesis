@@ -7,6 +7,7 @@ const obtenerVuelos = async (req, res) => {
         //Implementacion de API
         const response = await axios.get('https://api.travelpayouts.com/aviasales/v3/prices_for_dates', {
             params: {
+                //!Esto son solo vuelos que salen de Buenos Aires
                 origin: 'BUE', 
                 currency: 'ARS',
                 token: travelpayouts 

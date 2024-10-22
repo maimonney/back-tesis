@@ -1,21 +1,28 @@
 const express = require('express');
-const routerAPI = require('./routes/index.js');
+const axios = require('axios');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
-const port = process.env.PORT;
+const routerAPI = require('./routes/index.js');
+
 const api = express();
+const port = process.env.PORT;
+const travelpayouts = process.env.API_KEY;
 
-//Middleware
-api.use( express.json());
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Llama a las rutas
-api.get('/', (req, res) => {
-    res.status(200).send('<h1> HOLAAA </h1>');
-})
+const db = mongoose.connection;
+
+db.on('error', () => console.error('Error al conectar con MongoDB'));
+db.once('open', () => {
+    console.log('Conexión a MongoDB correcta');
+});
+
+api.use(express.json());
+api.use(express.static('public'));
 
 routerAPI(api);
 
-// Inicia el servidor
-api.listen( port, () => { 
-    console.log(`Servidor en el puerto ${port}`)
+api.listen(port, () => {
+    console.log(`Servidor corriendo en el puerto ${port}`);
 });

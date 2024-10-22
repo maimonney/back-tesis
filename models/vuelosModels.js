@@ -4,51 +4,52 @@ const Schema = mongoose.Schema;
 const vuelosSchema = new Schema({
     numeroVuelo: {
         type: String,
-        required: true, 
-        unique: true 
+        required: true,
+        unique: true
     },
     origen: {
         type: String,
-        required: true 
+        required: true
     },
     destino: {
         type: String,
-        required: true 
+        required: true
     },
     fechaSalida: {
         type: Date,
-        required: true 
+        required: true
     },
     fechaLlegada: {
         type: Date,
-        required: true 
+        required: true
     },
     duracion: {
-        type: Number, 
-        required: true 
+        type: Number,
+        required: true
     },
     aerolinea: {
         type: String,
-        required: true 
+        required: true
     },
     numeroAsientosDisponibles: {
         type: Number,
-        required: true 
+        required: true
     },
     precio: {
-        type: Number, 
-        required: true 
+        type: Number,
+        required: true
     },
     escala: {
-        type: Boolean, 
-        default: false 
+        type: Boolean,
+        default: false
     },
     lugarEscala: {
-        type: [String], 
-        default: [] 
-    },
+        type: [String],
+        default: undefined
+    }
 });
 
-
 const Vuelos = mongoose.model('Vuelos', vuelosSchema);
-module.exports = Vuelos; 
+
+module.exports = Vuelos;
+ 

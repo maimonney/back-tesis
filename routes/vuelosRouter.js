@@ -4,17 +4,13 @@ const router = express.Router();
 const {
     obtenerVuelos,
     obtenerVuelosId,
-    crearVuelos,
-    borraVueloId,
-    actualizarVueloId,
-    numeroBuscar,
+    filtrarDestino,
 } = require('../controllers/vuelosControllers');
 
 router.get('/', obtenerVuelos);
 router.get('/:id', obtenerVuelosId);
-router.post('/', crearVuelos);
-router.delete('/:id', borraVueloId);
-router.put('/:id', actualizarVueloId);
-router.get('/buscar', numeroBuscar);
+
+//filtros 
+router.get('/filtrar/destino/:destino', filtrarDestino); 
 
 module.exports = router;

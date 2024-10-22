@@ -4,11 +4,6 @@
 - Daiana Ayala
 - Mailen Monney 
 
-## Nombre de la materia: 
-- Aplicaciones Hibridas
+## Proyecto de tesisi
 
-## Nombre del docente:
-- Jonathan Cruz
-## Comisión: 
-- DWM4AP
 --------------------------------------------------- 

@@ -4,10 +4,9 @@ const travelpayouts = process.env.API_KEY;
 
 const obtenerVuelos = async (req, res) => {
     try {
-        //Implementacion de API
+        // Implementación de API
         const response = await axios.get('https://api.travelpayouts.com/aviasales/v3/prices_for_dates', {
             params: {
-                //!Esto son solo vuelos que salen de Buenos Aires
                 origin: 'BUE', 
                 currency: 'ARS',
                 token: travelpayouts 
@@ -33,13 +32,8 @@ const obtenerVuelos = async (req, res) => {
             logo: `http://pics.avs.io/200/200/${vuelo.airline}.png`
         }));
 
-        //Para que se muestren los de mongo y APis
-        const vuelosCombinados = {
-            vuelosMongoDB,
-            vuelosAPI
-        };
-
-        res.json(vuelosCombinados);
+        // Responder solo con los vuelos de la API
+        res.json({ vuelosAPI });
     } catch (error) {
         console.error('Error al obtener los vuelos:', error);
         res.status(500).json({ message: 'Error al obtener los datos de vuelos', error: error.message });
@@ -70,10 +64,6 @@ const filtrarDestino = async (req, res) => {
     }
 
     try {
-        // Obtener vuelos de MongoDB
-        const vuelosMongoDB = await Vuelos.find({ destino });
-
-        // Obtener vuelos de la API
         const response = await axios.get('https://api.travelpayouts.com/v2/prices/latest', {
             params: {
                 origin: 'BUE',
@@ -83,21 +73,41 @@ const filtrarDestino = async (req, res) => {
         });
         const vuelosAPI = response.data.data.filter(vuelo => vuelo.destination === destino);
 
-        // Combinar resultados
-        const vuelosCombinados = [...vuelosMongoDB, ...vuelosAPI];
-
-        if (vuelosCombinados.length === 0) {
+        if (vuelosAPI.length === 0) {
             return res.status(404).json({ msg: 'No se encontraron vuelos en ese destino' });
         }
 
-        res.status(200).json({ msg: 'Vuelos encontrados', vuelos: vuelosCombinados });
+        res.status(200).json({ msg: 'Vuelos encontrados', vuelos: vuelosAPI });
     } catch (error) {
         res.status(500).json({ msg: 'Error en obtener los datos', error: error.message });
     }
 };
 
+const filtrarFechaSalida= async (req, res) => {
+    const { fechaSalida } = req.params;
 
-//Aerolineas
+    try {
+        const response = await axios.get('https://api.travelpayouts.com/v2/prices/latest', {
+            params: {
+                origin: 'BUE',
+                departure_at: fechaSalida, 
+                currency: 'ARS',
+                token: travelpayouts
+            }
+        });
+        const vuelosAPI = response.data.data;
+
+        if (vuelosAPI.length === 0) {
+            return res.status(404).json({ msg: 'No se encontraron vuelos en esa fecha' });
+        }
+
+        res.status(200).json({ msg: 'Vuelos encontrados', vuelos: vuelosAPI });
+    } catch (error) {
+        res.status(500).json({ msg: 'Error al obtener los datos', error: error.message });
+    }
+};
+
+// Aerolíneas
 const airlinesMap = {
     FO: 'Flybondi',
     IB: 'Iberia',
@@ -111,32 +121,10 @@ const airlinesMap = {
 // Solo destinos en ARG
 function esArgentino(lugar) {
     const lugaresArgentinos = [
-    'BUE', // Buenos Aires
-    'AEP', // Aeroparque
-    'EZE', // Aeropuerto 
-    'USH', // Ushuaia
-    'COR', // Córdoba
-    'MDQ', // Mar del Plata
-    'FTE', // El Calafate
-    'BRC', // San Carlos de Bariloche
-    'SLA', // Salta
-    'ROS', // Rosario
-    'TUC', // Tucumán
-    'IGR', // Iguazú
-    'NQN', // Neuquén
-    'MIR', // Misiones
-    'PSS', // Posadas
-    'SDE', // Santiago del Estero
-    'CRD', // Comodoro Rivadavia
-    'SJZ', // San Juan
-    'RGL', // Río Gallegos
-    'RGA', // Río Grande
-    'AFA', // Malargüe
-    'HOS', // Hoshino
-    'RUA', // San Luis
-    'RES', // Resistencia
-    'TMD', // Trelew
-    'EHL', // El Chaltén
+        'BUE', 'AEP', 'EZE', 'USH', 'COR', 'MDQ', 'FTE', 'BRC', 
+        'SLA', 'ROS', 'TUC', 'IGR', 'NQN', 'MIR', 'PSS', 'SDE', 
+        'CRD', 'SJZ', 'RGL', 'RGA', 'AFA', 'HOS', 'RUA', 'RES', 
+        'TMD', 'EHL', 
     ]; 
 
     return lugaresArgentinos.includes(lugar.toUpperCase());
@@ -146,5 +134,5 @@ module.exports = {
     obtenerVuelos,
     obtenerVuelosId,
     filtrarDestino,
+    filtrarFechaSalida
 };
-

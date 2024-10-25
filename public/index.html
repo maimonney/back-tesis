@@ -15,144 +15,7 @@
         <span class="text-white text-lg font-semibold">Api Arcana</span>
       </nav>
      <!--Introduccion-->
-      <div class="flex-grow p-4">
-        <h1 class="text-4xl font-bold mb-2 text-[#365314]">Arcana</h1> 
-        <p class="text-gray-700 mb-6 max-w-2xl">
-        Bienvenido a la API de Arcana! Acá podes encontrar todos los EndPoints necesarios para gestionar y consultar la información de usuarios, reservas y vuelos. </p>
-        
-
-        <h2 class="text-3xl font-bold mb-6 text-center text-[#365314]">EndPoints</h2> 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4"> 
-          <div class="bg-white shadow rounded-lg p-4 divide-y divide-gray-200">
-
-            <!--Columna de user-->
-            <h2 class="text-2xl font-bold mb-4 text-[#365314]">User</h2>
-            <ul>
-              <li class="flex items-center justify-between p-4">
-                <span class="bg-blue-500 text-white text-sm font-semibold px-3 py-1 rounded-full">GET</span>
-                <div class="ml-4 flex-grow">
-                  <a href="http://localhost:3000/arcana/users" class="text-[#365314] underline">http://localhost:3000/arcana/users</a>
-                </div>
-              </li>
-
-              <li class="flex items-center justify-between p-4">
-                <span class="bg-blue-500 text-white text-sm font-semibold px-3 py-1 rounded-full">GET</span>
-                <div class="ml-4 flex-grow">
-                  <a href="http://localhost:3000/arcana/users/:id" class="text-[#365314] underline">http://localhost:3000/arcana/users/:id</a>
-                </div>
-              </li>
-
-              <li class="flex items-center justify-between p-4">
-                <span class="bg-red-500 text-white text-sm font-semibold px-3 py-1 rounded-full">DELETE</span>
-                <div class="ml-4 flex-grow">
-                  <a href="http://localhost:3000/arcana/users/:id" class="text-[#365314] underline">http://localhost:3000/arcana/users/:id</a>
-                </div>
-              </li>
-
-              <li class="flex items-center justify-between p-4">
-                <span class="bg-green-500 text-white text-sm font-semibold px-3 py-1 rounded-full">POST</span>
-                <div class="ml-4 flex-grow">
-                  <a href="http://localhost:3000/arcana/users" class="text-[#365314] underline">http://localhost:3000/arcana/users</a>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-        
-         <!--Columna de Reservas-->
-          <div class="bg-white shadow rounded-lg p-4 divide-y divide-gray-200">
-            <h2 class="text-2xl font-bold mb-4 text-[#365314]">Reservas</h2>
-            <ul>
-              <li class="flex items-center justify-between p-4">
-                <span class="bg-blue-500 text-white text-sm font-semibold px-3 py-1 rounded-full">GET</span>
-                <div class="ml-4 flex-grow">
-                  <a href="http://localhost:3000/arcana/reservas" class="text-[#365314] underline">http://localhost:3000/arcana/reservas</a>
-                </div>
-              </li>
-
-              <li class="flex items-center justify-between p-4">
-                <span class="bg-blue-500 text-white text-sm font-semibold px-3 py-1 rounded-full">GET</span>
-                <div class="ml-4 flex-grow">
-                  <a href="http://localhost:3000/arcana/reservas/:id" class="text-[#365314] underline">http://localhost:3000/arcana/reservas/:id</a>
-                </div>
-              </li>
-
-              <li class="flex items-center justify-between p-4">
-                <span class="bg-red-500 text-white text-sm font-semibold px-3 py-1 rounded-full">DELETE</span>
-                <div class="ml-4 flex-grow">
-                  <a href="http://localhost:3000/arcana/reservas/:id" class="text-[#365314] underline">http://localhost:3000/arcana/reservas/:id</a>
-                </div>
-              </li>
-
-              <li class="flex items-center justify-between p-4">
-                <span class="bg-green-500 text-white text-sm font-semibold px-3 py-1 rounded-full">POST</span>
-                <div class="ml-4 flex-grow">
-                  <a href="http://localhost:3000/arcana/reservas" class="text-[#365314] underline">http://localhost:3000/arcana/reservas</a>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-           <!--Columna de Vuelos-->
-          <div class="bg-white shadow rounded-lg p-4 divide-y divide-gray-200">
-            <h2 class="text-2xl font-bold mb-4 text-[#365314]">Vuelos</h2>
-            <ul>
-              <li class="flex items-center justify-between p-4">
-                <span class="bg-blue-500 text-white text-sm font-semibold px-3 py-1 rounded-full">GET</span>
-                <div class="ml-4 flex-grow">
-                  <a href="http://localhost:3000/arcana/vuelos" class="text-[#365314] underline">http://localhost:3000/arcana/vuelos</a>
-                </div>
-              </li>
-
-              <li class="flex items-center justify-between p-4">
-                <span class="bg-blue-500 text-white text-sm font-semibold px-3 py-1 rounded-full">GET</span>
-                <div class="ml-4 flex-grow">
-                  <a href="http://localhost:3000/arcana/vuelos/:id" class="text-[#365314] underline">http://localhost:3000/arcana/vuelos/:id</a>
-                </div>
-              </li>
-
-              <li class="flex items-center justify-between p-4">
-                <span class="bg-red-500 text-white text-sm font-semibold px-3 py-1 rounded-full">DELETE</span>
-                <div class="ml-4 flex-grow">
-                  <a href="http://localhost:3000/arcana/vuelos/:id" class="text-[#365314] underline">http://localhost:3000/arcana/vuelos/:id</a>
-                </div>
-              </li>
-
-              <li class="flex items-center justify-between p-4">
-                <span class="bg-green-500 text-white text-sm font-semibold px-3 py-1 rounded-full">POST</span>
-                <div class="ml-4 flex-grow">
-                  <a href="http://localhost:3000/arcana/vuelos" class="text-[#365314] underline">http://localhost:3000/arcana/vuelos</a>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-
-          <!--Columna de Filtros-->
-          <div class="bg-white shadow rounded-lg p-4 divide-y divide-gray-200">
-            <h2 class="text-2xl font-bold mb-4 text-[#365314]">Filtros</h2>
-            <h3 class="text-xl font-semibold mb-2 text-[#365314]">Destino</h3>
-            <ul>
-              <li class="flex items-center justify-between p-4">
-                <span class="bg-blue-500 text-white text-sm font-semibold px-3 py-1 rounded-full">GET</span>
-                <div class="ml-4 flex-grow">
-                  <a href="http://localhost:3000/arcana/vuelos/filtrar/destino/:destino" class="text-[#365314] underline">http://localhost:3000/arcana/filtro/destino</a>
-                </div>
-              </li>
-            
-            </ul>
-            <h3 class="text-xl font-semibold mb-2 text-[#365314]">Aerolinea</h3>
-            <ul>
-              <li class="flex items-center justify-between p-4">
-                <span class="bg-blue-500 text-white text-sm font-semibold px-3 py-1 rounded-full">GET</span>
-                <div class="ml-4 flex-grow">
-                  <a href="http://localhost:3000/arcana/vuelos/filtrar/aerolinea/:aerolinea" class="text-[#365314] underline">http://localhost:3000/arcana/filtro/aerolineas</a>
-                </div>
-              </li>
-            </ul>
-          </div>
+<h1>API de viajes</h1>
 
           <!-- Pruebas de vista de la api -->
           <div id="vuelosContainer"></div>
@@ -160,7 +23,7 @@
         
 
        <!--Footer-->
-      <footer class="bg-[#365314] text-white p-4 mt-4">
+      <footer class="bg-[#365314] text-white p-4 mt-4 fixed bottom-0 w-full">
         <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
           <div class="mb-4 md:mb-0">
             <p class="font-semibold">Aplicaciones Híbridas</p>

@@ -1,11 +1,15 @@
 const express = require('express');
 const axios = require('axios');
+const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
 const routerAPI = require('./routes/index.js');
 
 const api = express();
+api.use(cors({
+    origin: 'http://localhost:5173', 
+}));
 const port = process.env.PORT;
 const travelpayouts = process.env.API_KEY;
 

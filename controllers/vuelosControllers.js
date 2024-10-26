@@ -40,6 +40,24 @@ const obtenerVuelos = async (req, res) => {
     }
 };
 
+const buscarVuelosIda = async (req, res) => {
+    try {
+        const response = await axios.get('https://api.travelpayouts.com/aviasales/v3/prices_for_dates', { 
+            params: {
+                origin: req.query.origen, 
+                destination: req.query.destino, 
+                date: req.query.fechaSalida,
+            }
+        });
+        res.json({ vuelosAPI: response.data.vuelosAPI });
+    } catch (error) {
+        console.error('Error al obtener vuelos:', error);
+        res.status(500).json({ error: 'Error al obtener vuelos.' }); // Mensaje de error más informativo
+    }
+};
+
+
+
 const obtenerVuelosId = async (req, res) => {
     const { id } = req.params;
 
@@ -132,6 +150,7 @@ function esArgentino(lugar) {
 
 module.exports = {
     obtenerVuelos,
+    buscarVuelosIda,
     obtenerVuelosId,
     filtrarDestino,
     filtrarFechaSalida

@@ -47,12 +47,22 @@ const buscarVuelosIda = async (req, res) => {
                 origin: req.query.origen, 
                 destination: req.query.destino, 
                 date: req.query.fechaSalida,
+                token: travelpayouts 
             }
         });
-        res.json({ vuelosAPI: response.data.vuelosAPI });
+        res.json({ vuelosAPI: response.data.data });
     } catch (error) {
-        console.error('Error al obtener vuelos:', error);
-        res.status(500).json({ error: 'Error al obtener vuelos.' }); // Mensaje de error más informativo
+        if (error.response) {
+            // El servidor respondió con un código de error fuera del rango 2xx
+            console.error('Error al obtener vuelos:', error.response.data, error.response.status);
+        } else if (error.request) {
+            // La solicitud se realizó, pero no hubo respuesta
+            console.error('No hay respuesta de la API:', error.request);
+        } else {
+            // Error al configurar la solicitud
+            console.error('Error en la configuración de la solicitud:', error.message);
+        }
+        res.status(500).json({ error: 'Error al obtener vuelos.' });
     }
 };
 

@@ -4,7 +4,6 @@ const travelpayouts = process.env.API_KEY;
 
 const obtenerVuelos = async (req, res) => {
     try {
-        // Implementación de API
         const response = await axios.get('https://api.travelpayouts.com/aviasales/v3/prices_for_dates', {
             params: {
                 origin: 'BUE', 
@@ -13,32 +12,55 @@ const obtenerVuelos = async (req, res) => {
             }
         });
 
-        const vuelosAPI = response.data.data.map(vuelo => ({
-            origin: vuelo.origin,
-            destination: vuelo.destination,
-            origin_airport: vuelo.origin_airport,
-            destination_airport: vuelo.destination_airport,
-            price: vuelo.price, 
-            airline: airlinesMap[vuelo.airline] || vuelo.airline,
-            flight_number: vuelo.flight_number, 
-            departure_at: vuelo.departure_at, 
-            return_at: vuelo.return_at, 
-            transfers: vuelo.transfers || 0, 
-            return_transfers: vuelo.return_transfers || 0, 
-            duration: vuelo.duration, 
-            duration_to: vuelo.duration_to,
-            duration_back: vuelo.duration_back, 
-            link: vuelo.link,
-            logo: `http://pics.avs.io/200/200/${vuelo.airline}.png`
-        }));
+        if (response.data.data.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron vuelos.' });
+        }
 
-        // Responder solo con los vuelos de la API
-        res.json({ vuelosAPI });
+        res.json({ vuelosAPI: response.data.data });
     } catch (error) {
         console.error('Error al obtener los vuelos:', error);
-        res.status(500).json({ message: 'Error al obtener los datos de vuelos', error: error.message });
+        res.status(500).json({ message: 'Error interno del servidor', error: error.message });
     }
 };
+
+
+// const obtenerVuelos = async (req, res) => {
+//     try {
+//         // Implementación de API
+//         const response = await axios.get('https://api.travelpayouts.com/aviasales/v3/prices_for_dates', {
+//             params: {
+//                 origin: 'BUE', 
+//                 currency: 'ARS',
+//                 token: travelpayouts 
+//             }
+//         });
+
+//         const vuelosAPI = response.data.data.map(vuelo => ({
+//             origin: vuelo.origin,
+//             destination: vuelo.destination,
+//             origin_airport: vuelo.origin_airport,
+//             destination_airport: vuelo.destination_airport,
+//             price: vuelo.price, 
+//             airline: airlinesMap[vuelo.airline] || vuelo.airline,
+//             flight_number: vuelo.flight_number, 
+//             departure_at: vuelo.departure_at, 
+//             return_at: vuelo.return_at, 
+//             transfers: vuelo.transfers || 0, 
+//             return_transfers: vuelo.return_transfers || 0, 
+//             duration: vuelo.duration, 
+//             duration_to: vuelo.duration_to,
+//             duration_back: vuelo.duration_back, 
+//             link: vuelo.link,
+//             logo: `http://pics.avs.io/200/200/${vuelo.airline}.png`
+//         }));
+
+//         // Responder solo con los vuelos de la API
+//         res.json({ vuelosAPI });
+//     } catch (error) {
+//         console.error('Error al obtener los vuelos:', error);
+//         res.status(500).json({ message: 'Error al obtener los datos de vuelos', error: error.message });
+//     }
+// };
 
 // const buscarVuelosIda = async (req, res) => {
 //     try {

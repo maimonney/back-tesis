@@ -1,14 +1,11 @@
-const express = require('express');
-const vuelosController = require('../controllers/vuelosControllers'); 
+const userRouter = require('./userRouter');
+const vuelosRouter = require('./vuelosRouter');
+const reservasRouter = require('./reservasRouter');
 
-const router = express.Router();
+function routerAPI( app){
+    app.use('/arcana/users', userRouter);
+    app.use('/arcana/vuelos', vuelosRouter);
+    app.use('/arcana/reservas',reservasRouter);
+}
 
-router.get('/vuelos', vuelosController.obtenerVuelos);
-// router.get('/vuelos/buscar', vuelosController.buscarVuelosIda);
-// router.get('/vuelos/:id', vuelosController.obtenerVuelosId);
-// router.get('/vuelos/destino/:destino', vuelosController.filtrarDestino);
-// router.get('/vuelos/fecha/:fechaSalida', vuelosController.filtrarFechaSalida);
-
-module.exports = (app) => {
-    app.use('/arcana', router); // Asegúrate de que esto coincida con tus rutas
-};
+module.exports = routerAPI;

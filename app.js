@@ -7,6 +7,7 @@ require('dotenv').config();
 const routerAPI = require('./routes/index.js');
 
 const api = express();
+
 const corsOptions = {
     origin: ['http://localhost:5173', 'https://back-tesis-two.vercel.app'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -14,6 +15,7 @@ const corsOptions = {
 };
 
 api.use(cors(corsOptions));
+
 const port = process.env.PORT || 3000; // Valor por defecto
 const travelpayouts = process.env.API_KEY;
 

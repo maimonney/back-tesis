@@ -1,7 +1,7 @@
 const mostrarVuelos = async () => {
   try {
     const response = await fetch('https://back-tesis-two.vercel.app/arcana/vuelos');
-    
+
     const contentType = response.headers.get("content-type");
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -21,26 +21,10 @@ const mostrarVuelos = async () => {
         return;
       }
 
-      // Mostrar vuelos de la API
-      vuelosAPI.forEach((vuelo) => {
-        const vueloElemento = document.createElement("div");
-        vueloElemento.classList.add("vuelo-card"); 
-        vueloElemento.innerHTML = `
-            <h3>Vuelo desde API</h3>
-            <p>Aerolínea: ${vuelo.airline || "No especificada"}</p>
-            <img src="${vuelo.logo}" alt="${vuelo.airline}" style="width: 70px; height: auto;">
-            <p>Origen: ${vuelo.origin || "No especificado"}</p>
-            <p>Destino: ${vuelo.destination || "No especificado"}</p>
-            <p>Duración del Vuelo: ${vuelo.duration ? vuelo.duration + " minutos" : "No especificado"}</p>
-            <p>Precio: ARS ${vuelo.price || "No especificado"}</p>
-            <p>Número de Vuelo: ${vuelo.flight_number || "No especificado"}</p>
-            <p>Fecha de Salida: ${vuelo.departure_at ? new Date(vuelo.departure_at).toLocaleString('es-AR', {
-                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
-            }) : "No especificado"}</p>
-            <hr>
-          `;
-        contenedorVuelos.appendChild(vueloElemento);
-      });
+      // Mostrar vuelos en formato JSON
+      const jsonString = JSON.stringify(vuelosAPI, null, 2); // Convierte a JSON con indentación
+      contenedorVuelos.innerHTML = `<pre>${jsonString}</pre>`; // Usar <pre> para formato de texto preformateado
+
     } else {
       console.error("La respuesta no es JSON. Tipo de contenido:", contentType);
       throw new Error("La respuesta no es JSON");

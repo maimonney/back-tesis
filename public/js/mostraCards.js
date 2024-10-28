@@ -1,6 +1,6 @@
 const mostrarVuelos = async () => {
   try {
-    const response = await fetch('http://localhost:3000/arcana/vuelos/ida?origen=COR&destino=EZE&fechaSalida=2024-12-15');
+    const response = await fetch('https://back-tesis-two.vercel.app/arcana/vuelos/');
 
     const contentType = response.headers.get("content-type");
     if (!response.ok) {

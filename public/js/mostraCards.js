@@ -1,7 +1,7 @@
 // Función para obtener y mostrar los vuelos
 const mostrarVuelos = async () => {
   try {
-    const response = await fetch("https://back-tesis-two.vercel.app/arcana/vuelos");
+    const response = await fetch('https://back-tesis-two.vercel.app/arcana/vuelos');
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

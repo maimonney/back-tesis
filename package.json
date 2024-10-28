@@ -1,13 +1,10 @@
 {
-  "name": "t1_hibridas_ayala_monney",
+  "name": "back_tesis",
   "private": true,
   "version": "0.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "start": "node app.js"
   },
   "dependencies": {
     "autoprefixer": "^10.4.20",

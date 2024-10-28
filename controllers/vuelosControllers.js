@@ -13,6 +13,10 @@ const obtenerVuelos = async (req, res) => {
             }
         });
 
+        if (response.status !== 200) {
+            return res.status(response.status).json({ message: 'Error al obtener datos de la API' });
+        }
+
         const vuelosAPI = response.data.data.map(vuelo => ({
             origin: vuelo.origin,
             destination: vuelo.destination,
@@ -32,7 +36,6 @@ const obtenerVuelos = async (req, res) => {
             logo: `http://pics.avs.io/200/200/${vuelo.airline}.png`
         }));
 
-        // Responder solo con los vuelos de la API
         res.json({ vuelosAPI });
     } catch (error) {
         console.error('Error al obtener los vuelos:', error);

@@ -1,44 +1,45 @@
 <!doctype html>
 <html lang="es">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/img/logoArcana.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Arcana</title>
-  </head>
-  
-  <body class="bg-gray-100 h-screen">
+    <title>Arcana - API de Viajes</title>
+</head>
+
+<body class="bg-gray-100 h-screen">
     <div id="app" class="flex flex-col h-full">
-      <nav class="bg-[#365314] p-4 flex items-center justify-start">
-        <img src="/img/logoArcana.png" alt="Logo" class="h-12 w-12 mr-4"> 
-        <span class="text-white text-lg font-semibold">Api Arcana</span>
-      </nav>
-     <!--Introduccion-->
-<h1>API de viajes</h1>
+        <nav class="bg-[#365314] p-4 flex items-center justify-start">
+            <img src="/img/logoArcana.png" alt="Logo de Arcana" class="h-12 w-12 mr-4"> 
+            <span class="text-white text-lg font-semibold">Api Arcana</span>
+        </nav>
 
-          <!-- Pruebas de vista de la api -->
-          <div id="vuelosContainer"></div>
-          <script src="./js/mostraCards.js"></script>
+        <!-- Introducción -->
+        <h1 class="text-center text-2xl font-bold my-4">Explora Vuelos Disponibles</h1>
         
+        <!-- Pruebas de vista de la API -->
+        <div id="vuelosContainer" class="flex flex-col items-center justify-center flex-grow p-4"></div>
+        
+        <script src="./js/mostraCards.js"></script>
 
-       <!--Footer-->
-      <footer class="bg-[#365314] text-white p-4 mt-4 fixed bottom-0 w-full">
-        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
-          <div class="mb-4 md:mb-0">
-            <p class="font-semibold">Aplicaciones Híbridas</p>
-            <p class="font-semibold">Docente: Jonathan Cruz</p>
-            <p class="font-semibold">Comisión: DWM4AP</p>
-          </div>
+        <!-- Footer -->
+        <footer class="bg-[#365314] text-white p-4 mt-4 fixed bottom-0 w-full">
+            <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p class="font-semibold">Aplicaciones Híbridas</p>
+                    <p class="font-semibold">Docente: Jonathan Cruz</p>
+                    <p class="font-semibold">Comisión: DWM4AP</p>
+                </div>
 
-          <div class="flex items-center">
-            <p class="font-semibold mr-2">Daiana Ayala, Mailen Monney</p>
-            <a href="https://github.com/dayayalaa/t1_hibridas_ayala_monney.git" target="_blank">
-              <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" class="h-6 w-6">
-            </a>
-          </div>
-        </div>
-      </footer>
+                <div class="flex items-center">
+                    <p class="font-semibold mr-2">Daiana Ayala, Mailen Monney</p>
+                    <a href="https://github.com/dayayalaa/t1_hibridas_ayala_monney.git" target="_blank">
+                        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" class="h-6 w-6">
+                    </a>
+                </div>
+            </div>
+        </footer>
     </div>
-  </body>
+</body>
 </html>

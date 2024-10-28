@@ -1,6 +1,6 @@
 const mostrarVuelos = async () => {
   try {
-    const response = await fetch('https://back-tesis-two.vercel.app/arcana/vuelos');
+    const response = await fetch('https://back-tesis-two.vercel.app/arcana/vuelos/');
 
     const contentType = response.headers.get("content-type");
     if (!response.ok) {

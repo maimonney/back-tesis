@@ -2,43 +2,33 @@ const axios = require('axios');
 const Vuelos = require('../models/vuelosModels');
 const travelpayouts = process.env.API_KEY; 
 
+// vuelosControllers.js
 const obtenerVuelos = async (req, res) => {
     try {
-        // Implementación de API
-        const response = await axios.get('https://api.travelpayouts.com/aviasales/v3/prices_for_dates', {
-            params: {
-                origin: 'BUE', 
-                currency: 'ARS',
-                token: travelpayouts 
-            }
-        });
+        // Simulación de datos de vuelo (aquí podrías obtenerlos de una base de datos)
+        const vuelosAPI = [
+            {
+                airline: "Aerolínea A",
+                logo: "url_del_logo_a",
+                origin: "Origen A",
+                destination: "Destino A",
+                duration: 120,
+                price: 5000,
+                flight_number: "AA123",
+                departure_at: new Date().toISOString()
+            },
+            // Agrega más vuelos según sea necesario
+        ];
 
-        const vuelosAPI = response.data.data.map(vuelo => ({
-            origin: vuelo.origin,
-            destination: vuelo.destination,
-            origin_airport: vuelo.origin_airport,
-            destination_airport: vuelo.destination_airport,
-            price: vuelo.price, 
-            airline: airlinesMap[vuelo.airline] || vuelo.airline,
-            flight_number: vuelo.flight_number, 
-            departure_at: vuelo.departure_at, 
-            return_at: vuelo.return_at, 
-            transfers: vuelo.transfers || 0, 
-            return_transfers: vuelo.return_transfers || 0, 
-            duration: vuelo.duration, 
-            duration_to: vuelo.duration_to,
-            duration_back: vuelo.duration_back, 
-            link: vuelo.link,
-            logo: `http://pics.avs.io/200/200/${vuelo.airline}.png`
-        }));
-
-        // Responder solo con los vuelos de la API
         res.json({ vuelosAPI });
     } catch (error) {
-        console.error('Error al obtener los vuelos:', error);
-        res.status(500).json({ message: 'Error al obtener los datos de vuelos', error: error.message });
+        console.error("Error al obtener vuelos:", error);
+        res.status(500).json({ message: "Error al obtener los vuelos" });
     }
 };
+
+module.exports = { obtenerVuelos };
+
 
 // const buscarVuelosIda = async (req, res) => {
 //     try {

@@ -1,16 +1,14 @@
 const mostrarVuelos = async () => {
   try {
-    const response = await fetch('https://back-tesis-two.vercel.app');
+    const response = await fetch('https://back-tesis-two.vercel.app/arcana/vuelos');
 
-    // Chequear el tipo de contenido de la respuesta
     const contentType = response.headers.get("content-type");
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    console.log("Tipo de contenido:", contentType); // Muestra el tipo de contenido en la consola
+    console.log("Tipo de contenido:", contentType); 
 
-    // Verificar si el tipo de contenido es JSON
     if (contentType && contentType.includes("application/json")) {
       const data = await response.json();
       const { vuelosAPI } = data;

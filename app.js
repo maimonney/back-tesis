@@ -13,8 +13,8 @@ const corsOptions = {
     credentials: true 
 };
 
-app.use(cors(corsOptions));
-const port = process.env.PORT;
+api.use(cors(corsOptions));
+const port = process.env.PORT || 3000; // Valor por defecto
 const travelpayouts = process.env.API_KEY;
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -30,6 +30,12 @@ api.use(express.json());
 api.use(express.static('public'));
 
 routerAPI(api);
+
+// Middleware de manejo de errores global
+api.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Error interno del servidor' });
+});
 
 api.listen(port, () => {
     console.log(`Servidor corriendo en el puerto ${port}`);

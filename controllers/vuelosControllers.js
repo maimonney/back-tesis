@@ -66,13 +66,12 @@ const buscarVuelosIda = async (req, res) => {
             flight_number: vuelo.flight_number, 
             departure_at: vuelo.departure_at, 
             return_at: vuelo.return_at, 
-            transfers: vuelo.transfers || 0, 
             return_transfers: vuelo.return_transfers || 0, 
             duration: vuelo.duration, 
             duration_to: vuelo.duration_to,
             duration_back: vuelo.duration_back, 
             link: vuelo.link,
-            logo: vuelo.airline ? `http://pics.avs.io/200/200/${vuelo.airline}.png` : null
+            logo: vuelo.airline ? `http://pics.avs.io/200/200/${vuelo.airline}.png` : null,
         }));
 
         res.json({ vuelosAPI });

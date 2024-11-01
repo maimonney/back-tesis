@@ -15,7 +15,7 @@ function mostrarUsuarios(usuarios) {
 // Función para obtener los usuarios desde el servidor
 async function obtenerUsuarios() {
     try {
-        const response = await fetch('http://localhost:3000/arcana/users'); // URL de tu API
+        const response = await fetch('https://back-tesis-two.vercel.app/arcana/users'); // URL de tu API
         if (!response.ok) {
             throw new Error('Error al obtener usuarios'); // Manejo de errores
         }

@@ -118,13 +118,7 @@ const obtenervuelos = async (req, res) => {
             logo: `http://pics.avs.io/200/200/${vuelo.airline}.png`
         }));
 
-        //Para que se muestren los de mongo y APis
-        const vuelosCombinados = {
-            vuelosMongoDB,
-            vuelosAPI
-        };
-
-        res.json(vuelosCombinados);
+        res.json({ vuelosAPI });
     } catch (error) {
         console.error('Error al obtener los vuelos:', error);
         res.status(500).json({ message: 'Error al obtener los datos de vuelos', error: error.message });

@@ -1,6 +1,6 @@
 const mostrarVuelos = async () => {
   try {
-    const response = await fetch('http://localhost:3000/arcana/vuelos/');
+    const response = await fetch('https://back-tesis-two.vercel.app/arcana/vuelos/');
 
     const contentType = response.headers.get("content-type");
     if (!response.ok) {
@@ -22,8 +22,8 @@ const mostrarVuelos = async () => {
       }
 
       // Mostrar vuelos en formato JSON
-      const jsonString = JSON.stringify(vuelosAPI, null, 2); // Convierte a JSON con indentación
-      contenedorVuelos.innerHTML = `<pre>${jsonString}</pre>`; // Usar <pre> para formato de texto preformateado
+      const jsonString = JSON.stringify(vuelosAPI, null, 2);
+      contenedorVuelos.innerHTML = `<pre>${jsonString}</pre>`;
 
     } else {
       console.error("La respuesta no es JSON. Tipo de contenido:", contentType);

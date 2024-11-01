@@ -16,24 +16,31 @@ const corsOptions = {
 
 api.use(cors(corsOptions));
 
-const port = process.env.PORT || 3000; // Valor por defecto
+const port = process.env.PORT || 3000; 
 const travelpayouts = process.env.API_KEY;
 
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+// .then(() => {
+//     console.log('Conexión a MongoDB correcta');
+// })
+// .catch(err => {
+//     console.error('Error al conectar con MongoDB:', err);
+// });
 
-const db = mongoose.connection;
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+      console.log('Conexión a MongoDB Atlas correcta');
+  })
+  .catch(err => {
+      console.error('Error al conectar a MongoDB Atlas:', err);
+  });
 
-db.on('error', () => console.error('Error al conectar con MongoDB'));
-db.once('open', () => {
-    console.log('Conexión a MongoDB correcta');
-});
 
 api.use(express.json());
 api.use(express.static('public'));
 
 routerAPI(api);
 
-// Middleware de manejo de errores global
 api.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ message: 'Error interno del servidor' });

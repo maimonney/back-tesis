@@ -31,6 +31,8 @@ function obtenerCodigoIATA(nombre) {
     return lugaresArgentinos[nombre] || nombre; // Retorna el nombre original si no está en el mapeo
 }
 
+
+
 const buscarVuelosIda = async (req, res) => {
     let { origen, destino, fechaSalida } = req.query;
 
@@ -84,6 +86,48 @@ const buscarVuelosIda = async (req, res) => {
             console.error('Error en la configuración de la solicitud:', error.message);
         }
         res.status(500).json({ error: 'Error al obtener vuelos.' });
+    }
+};
+
+const obtenervuelos = async (req, res) => {
+    try {
+        const response = await axios.get('https://api.travelpayouts.com/aviasales/v3/prices_for_dates', {
+            params: {
+                origin: 'BUE', 
+                currency: 'ARS',
+                token: travelpayouts 
+            }
+        });
+
+        const vuelosAPI = response.data.data.map(vuelo => ({
+            origin: vuelo.origin,
+            destination: vuelo.destination,
+            origin_airport: vuelo.origin_airport,
+            destination_airport: vuelo.destination_airport,
+            price: vuelo.price, 
+            airline: airlinesMap[vuelo.airline] || vuelo.airline,
+            flight_number: vuelo.flight_number, 
+            departure_at: vuelo.departure_at, 
+            return_at: vuelo.return_at, 
+            transfers: vuelo.transfers || 0, 
+            return_transfers: vuelo.return_transfers || 0, 
+            duration: vuelo.duration, 
+            duration_to: vuelo.duration_to,
+            duration_back: vuelo.duration_back, 
+            link: vuelo.link,
+            logo: `http://pics.avs.io/200/200/${vuelo.airline}.png`
+        }));
+
+        //Para que se muestren los de mongo y APis
+        const vuelosCombinados = {
+            vuelosMongoDB,
+            vuelosAPI
+        };
+
+        res.json(vuelosCombinados);
+    } catch (error) {
+        console.error('Error al obtener los vuelos:', error);
+        res.status(500).json({ message: 'Error al obtener los datos de vuelos', error: error.message });
     }
 };
 
@@ -155,7 +199,7 @@ const airlinesMap = {
     WJ: 'WebJet Linhas Aéreas',
 };
 
-module.exports = {
+module.exports = {obtenervuelos,
     buscarVuelosIda,
     buscarVuelosVuelta
 };

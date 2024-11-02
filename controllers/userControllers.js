@@ -51,10 +51,16 @@ const login = async (req, res) => {
 // Obtiene todos los usuarios
 const getUsers = async (req, res) => {
     try {
-        const users = await User.find();
-        res.status(200).json({ data: users });
+        // const response = await fetch('http://localhost:3000/arcana/users'); 
+        const response = await fetch('https://back-tesis-two.vercel.app/arcana/users');
+
+        if (!response.ok) {
+            throw new Error('Error al obtener usuarios');
+        }
+        const data = await response.json();
+        mostrarUsuarios(data.data);
     } catch (error) {
-        res.status(500).json({ msg: 'Error al obtener usuarios' });
+        console.error('Error:', error); 
     }
 };
 

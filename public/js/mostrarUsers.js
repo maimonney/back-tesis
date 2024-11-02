@@ -2,9 +2,8 @@
 
 function mostrarUsuarios(usuarios) {
     const listaUsuarios = document.getElementById('lista-usuarios');
-    listaUsuarios.innerHTML = ''; // Limpiar la lista antes de mostrar los usuarios
+    listaUsuarios.innerHTML = ''; 
 
-    // Iterar sobre la lista de usuarios y crear elementos de lista
     usuarios.forEach(usuario => {
         const li = document.createElement('li');
         li.innerText = `Email: ${usuario.email}, Nombre: ${usuario.nombre}`; 
@@ -12,19 +11,19 @@ function mostrarUsuarios(usuarios) {
     });
 }
 
-// Función para obtener los usuarios desde el servidor
 async function obtenerUsuarios() {
     try {
-        const response = await fetch('https://back-tesis-two.vercel.app/arcana/users'); // URL de tu API
+        // const response = await fetch('http://localhost:3000/arcana/users'); 
+        const response = await fetch('https://back-tesis-two.vercel.app/arcana/users');
+
         if (!response.ok) {
-            throw new Error('Error al obtener usuarios'); // Manejo de errores
+            throw new Error('Error al obtener usuarios');
         }
         const data = await response.json();
-        mostrarUsuarios(data.data); // Mostrar usuarios en la lista
+        mostrarUsuarios(data.data);
     } catch (error) {
-        console.error('Error:', error); // Mostrar el error en la consola
+        console.error('Error:', error); 
     }
 }
 
-// Llamar a la función al cargar la página
 window.onload = obtenerUsuarios;

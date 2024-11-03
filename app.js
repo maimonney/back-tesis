@@ -8,16 +8,13 @@ const routerAPI = require('./routes/index.js');
 
 const api = express();
 
-const corsOptions = (req, callback) => {
-    const allowedOrigins = ['http://localhost:5173', /.*\.vercel\.app$/]; // permite cualquier subdominio de vercel.app
-    const origin = req.headers.origin;
-    if (allowedOrigins.some(pattern => typeof pattern === 'string' ? pattern === origin : pattern.test(origin))) {
-        callback(null, true); 
-    } else {
-        callback(new Error('No permitido por CORS'));
-    }
+const corsOptions = {
+    origin: '*', // Permite todos los orígenes (ideal para desarrollo)
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true
 };
 
+// Usa CORS con las opciones definidas
 api.use(cors(corsOptions));
 
 const port = process.env.PORT || 3000; 

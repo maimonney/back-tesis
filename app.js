@@ -8,13 +8,17 @@ const routerAPI = require('./routes/index.js');
 
 const api = express();
 
-// const corsOptions = {
-//     origin: ['http://localhost:5173', 'https://back-tesis-two.vercel.app'],
-//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//     credentials: true 
-// };
+const corsOptions = (req, callback) => {
+    const allowedOrigins = ['http://localhost:5173', /.*\.vercel\.app$/]; // permite cualquier subdominio de vercel.app
+    const origin = req.headers.origin;
+    if (allowedOrigins.some(pattern => typeof pattern === 'string' ? pattern === origin : pattern.test(origin))) {
+        callback(null, true); 
+    } else {
+        callback(new Error('No permitido por CORS'));
+    }
+};
 
-// api.use(cors(corsOptions));
+api.use(cors(corsOptions));
 
 const port = process.env.PORT || 3000; 
 const travelpayouts = process.env.API_KEY;

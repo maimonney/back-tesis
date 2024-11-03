@@ -9,7 +9,7 @@ const routerAPI = require('./routes/index.js');
 const api = express();
 
 const corsOptions = {
-    origin: ['http://localhost:5173', 'back-tesis-two.vercel.app'],
+    origin: ['http://localhost:5173', 'https://back-tesis-two.vercel.app'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true 
 };

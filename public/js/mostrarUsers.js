@@ -1,4 +1,17 @@
-// mostrarUsers.js
+async function obtenerUsuarios() {
+    try {
+        const response = await fetch('https://back-tesis-two.vercel.app/arcana/users'); 
+
+        if (!response.ok) {
+            throw new Error('Error al obtener usuarios');
+        }
+
+        const data = await response.json();
+        mostrarUsuarios(data.data);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
 
 function mostrarUsuarios(usuarios) {
     const listaUsuarios = document.getElementById('lista-usuarios');
@@ -11,19 +24,4 @@ function mostrarUsuarios(usuarios) {
     });
 }
 
-async function obtenerUsuarios() {
-    try {
-        // const response = await fetch('http://localhost:3000/arcana/users'); 
-        const response = await fetch('https://back-tesis-two.vercel.app/arcana/users');
-
-        if (!response.ok) {
-            throw new Error('Error al obtener usuarios');
-        }
-        const data = await response.json();
-        mostrarUsuarios(data.data);
-    } catch (error) {
-        console.error('Error:', error); 
-    }
-}
-
-window.onload = obtenerUsuarios;
+window.onload = obtenerUsuarios; 

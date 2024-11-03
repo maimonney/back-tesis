@@ -9,7 +9,7 @@ const routerAPI = require('./routes/index.js');
 const api = express();
 
 const corsOptions = {
-    origin: '*', // Permite todos los orígenes (ideal para desarrollo)
+    origin: '*', // Permite todos los orígenes
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
 };

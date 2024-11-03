@@ -1,6 +1,6 @@
 async function obtenerUsuarios() {
     try {
-        const response = await fetch('https://back-tesis-two.vercel.app/arcana/users'); 
+        const response = await fetch('https://.*\.vercel\.app$/arcana/users');
 
         if (!response.ok) {
             throw new Error('Error al obtener usuarios');

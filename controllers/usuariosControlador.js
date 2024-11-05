@@ -1,4 +1,4 @@
-const User = require('../models/userModels');
+const User = require('../models/usuarioModelo');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
@@ -7,12 +7,11 @@ dotenv.config();
 const claveSecreta = process.env.SECRETKEY;
 const saltRounds = 10; 
 
-// Crea un nuevo usuario
-const crearUser = async (req, res) => {
-    const { nombre, email, contraseña,rols } = req.body;
+const crearUsuario = async (req, res) => {
+    const { nombre, email, contraseña, rols, ubicacion } = req.body;
 
-    if (!nombre || !email || !contraseña) {
-        return res.status(400).json({ msg: 'Faltan parámetros obligatorios', error: error.message });
+    if (!nombre || !email || !contraseña || !ubicacion) {
+        return res.status(400).json({ msg: 'Faltan parámetros obligatorios' });
     }
 
     try {
@@ -21,7 +20,8 @@ const crearUser = async (req, res) => {
             nombre,
             email,
             contraseña: contraseñaHash,
-            rols: rols || 'user' 
+            rols: rols || 'user',
+            ubicacion 
         });
 
         await newUser.save();
@@ -31,8 +31,7 @@ const crearUser = async (req, res) => {
     }
 };
 
-// Inicio de sesión de usuario
-const login = async (req, res) => {
+const inicio = async (req, res) => {
     const { email, contraseña } = req.body;
 
     try {
@@ -48,8 +47,7 @@ const login = async (req, res) => {
     }
 };
 
-// Obtiene todos los usuarios
-const getUsers = async (req, res) => {
+const obtenerUsuario = async (req, res) => {
     try {
         const users = await User.find(); 
         res.status(200).json({ data: users });
@@ -59,8 +57,7 @@ const getUsers = async (req, res) => {
     }
 };
 
-// Obtiene usuario por ID
-const getUsersById = async (req, res) => {
+const obtenerUsuarioId = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (!user) {
@@ -72,8 +69,7 @@ const getUsersById = async (req, res) => {
     }
 };
 
-// Elimina usuario por ID
-const deleteUserById = async (req, res) => {
+const borrarUsuarioId = async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
         if (!user) {
@@ -85,8 +81,7 @@ const deleteUserById = async (req, res) => {
     }
 };
 
-// Actualizar usuario por ID
-const updateUserById = async (req, res) => {
+const actualizarUsuarioId = async (req, res) => {
     const { nombre, email, contraseña, rols } = req.body;
 
     try {
@@ -106,10 +101,10 @@ const updateUserById = async (req, res) => {
 };
 
 module.exports = {
-    crearUser,
-    login,
-    getUsers,
-    getUsersById,
-    deleteUserById,
-    updateUserById
+    crearUsuario,
+    inicio,
+    obtenerUsuario,
+    obtenerUsuarioId,
+    borrarUsuarioId,
+    actualizarUsuarioId
 };

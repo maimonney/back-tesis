@@ -7,7 +7,7 @@ const {
     obtenerReservaId,
     borrarReserva,
     actualizarReserva,
-} = require('../controllers/reservasController');
+} = require('../controllers/reservasControlador');
 
 router.get('/', obtenerReservas);
 router.get('/:id', obtenerReservaId);

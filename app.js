@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-// const cors = require('cors');
+const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
@@ -8,25 +8,16 @@ const routerAPI = require('./routes/index.js');
 
 const api = express();
 
-const corsOptions = {
-    origin: '*', // Permite todos los orígenes
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true
-};
-
-// Usa CORS con las opciones definidas
-api.use(cors(corsOptions));
-
 const port = process.env.PORT || 3000; 
 const travelpayouts = process.env.API_KEY;
 
-// mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-// .then(() => {
-//     console.log('Conexión a MongoDB correcta');
-// })
-// .catch(err => {
-//     console.error('Error al conectar con MongoDB:', err);
-// });
+const corsOptions = {
+    origin: ['http://localhost:5173'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true 
+};;
+
+api.use(cors(corsOptions));
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {

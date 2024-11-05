@@ -1,6 +1,5 @@
-const Reservas = require('../models/reservasModels');
+const Reservas = require('../models/reservasModelo');
 
-// Crear reserva
 const crearReserva = async (req, res) => {
     const { vuelos, user } = req.body;
 
@@ -21,7 +20,6 @@ const crearReserva = async (req, res) => {
     }
 };
 
-// Obtener reserva
 const obtenerReservas = async (req, res) => {
     try {
         const reservas = await Reservas.find()
@@ -34,8 +32,6 @@ const obtenerReservas = async (req, res) => {
     }
 };
 
-
-// Obtener una reserva por ID
 const obtenerReservaId = async (req, res) => {
     const { id } = req.params;
 
@@ -54,7 +50,6 @@ const obtenerReservaId = async (req, res) => {
     }
 };
 
-// Borrar reserva
 const borrarReserva = async (req, res) => {
     const { id } = req.params;
 
@@ -69,7 +64,6 @@ const borrarReserva = async (req, res) => {
     }
 };
 
-// Actualizar reserva
 const actualizarReserva = async (req, res) => {
     const { id } = req.params;
     const { vuelos, user } = req.body;

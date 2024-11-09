@@ -22,7 +22,7 @@ const lugarSchema = new Schema({
         }
     },
     imagen: {
-        type: String, 
+        type: [String],
         required: false
     },
     video: {

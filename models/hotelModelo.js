@@ -13,6 +13,10 @@ const habitacionSchema = new Schema({
         type: Number,
         required: true
     },
+    imgHabitacion:{
+        type: String,  
+        required: true
+    },
     precioPorNoche: {
         type: Number,
         required: true
@@ -31,9 +35,7 @@ const hotelSchema = new Schema({
     ubicacion: {
         direccion: { type: String },
         ciudad: { type: String },
-        pais: { type: String },
-        latitud: { type: Number },
-        longitud: { type: Number }
+        pais: { type: String }
     },
     descripcion: {
         type: String,

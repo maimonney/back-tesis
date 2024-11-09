@@ -50,10 +50,37 @@ const eliminarHotel = async (req, res) => {
     }
 };
 
+const hotelEconomico = async (req, res) => {
+    try {
+        const hoteles = await Hotel.find();
+        
+        let hotelMasEconomico = null;
+        let precioMinimo = Infinity;
+
+        hoteles.forEach(hotel => {
+            hotel.habitaciones.forEach(habitacion => {
+                if (habitacion.precioPorNoche < precioMinimo) {
+                    precioMinimo = habitacion.precioPorNoche;
+                    hotelMasEconomico = hotel;
+                }
+            });
+        });
+
+        if (!hotelMasEconomico) {
+            return res.status(404).json({ mensaje: 'No se encontraron hoteles' });
+        }
+
+        res.status(200).json(hotelMasEconomico); 
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error al obtener el hotel más económico', error });
+    }
+};
+
 module.exports = {
     crearHotel,
     obtenerHotel,
     obtenerHotelId,
     actualizarHotelId,
     eliminarHotel,
+    hotelEconomico
 };

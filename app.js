@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const cloudinary = require('cloudinary').v2;
 const mongoose = require('mongoose');
 require('dotenv').config();
 
@@ -18,6 +19,12 @@ const corsOptions = {
 };;
 
 api.use(cors(corsOptions));
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  });
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {

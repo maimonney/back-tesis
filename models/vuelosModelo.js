@@ -31,6 +31,10 @@ const vuelosSchema = new Schema({
         type: String,
         required: true
     },
+    imgAerolinea:{
+        type: String,  
+        required: true
+    },
     numeroAsientosDisponibles: {
         type: Number,
         required: true

@@ -14,7 +14,8 @@ const crearLugar = async (req, res) => {
             ubicacion,
             categoria,
             imagen,
-            video
+            video,
+            categoria
         });
 
         await nuevoLugar.save();
@@ -39,11 +40,14 @@ const obtenerLugarId = async (req, res) => {
         if (!lugar) {
             return res.status(404).json({ msg: 'Lugar no encontrado' });
         }
+        console.log(lugar);
         res.status(200).json({ data: lugar });
     } catch (error) {
+        console.error(error); 
         res.status(500).json({ msg: 'Error al obtener lugar', error: error.message });
     }
 };
+
 
 const actualizarLugarId = async (req, res) => {
     const { nombre, descripcion, ubicacion, categoria, imagen, video } = req.body;

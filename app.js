@@ -5,7 +5,7 @@ const cloudinary = require('cloudinary').v2;
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const routerAPI = require('./routes/index.js');
+const routerAPI = require('../routes/index.js');
 
 const api = express();
 

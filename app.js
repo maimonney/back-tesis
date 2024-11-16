@@ -48,3 +48,5 @@ api.use((err, req, res, next) => {
 api.listen(port, () => {
     console.log(`Servidor corriendo en el puerto ${port}`);
 });
+
+module.exports = api;

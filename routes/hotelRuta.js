@@ -7,7 +7,9 @@ const {
     obtenerHotelId,
     actualizarHotelId,
     eliminarHotel,
-    hotelEconomico
+    hotelEconomico,
+    obtenerHabitacion,
+    obtenerHabitacionId
 } = require('../controllers/hotelControlador');
 
 router.get('/', obtenerHotel);
@@ -16,5 +18,7 @@ router.get('/:id', obtenerHotelId);
 router.delete('/:id', eliminarHotel);
 router.put('/:id', actualizarHotelId);
 router.get('/precio/economico', hotelEconomico);
+router.get('/buscar/habitaciones', obtenerHabitacion);
+router.get('/:id/habitaciones', obtenerHabitacionId);
 
 module.exports = router;

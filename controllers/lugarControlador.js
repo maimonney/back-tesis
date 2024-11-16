@@ -41,13 +41,14 @@ const obtenerLugarId = async (req, res) => {
             return res.status(404).json({ msg: 'Lugar no encontrado' });
         }
         console.log(lugar);
+        lugar.id = lugar._id.toString();
+        delete lugar._id;
         res.status(200).json({ data: lugar });
     } catch (error) {
         console.error(error); 
         res.status(500).json({ msg: 'Error al obtener lugar', error: error.message });
     }
 };
-
 
 const actualizarLugarId = async (req, res) => {
     const { nombre, descripcion, ubicacion, categoria, imagen, video } = req.body;
@@ -76,10 +77,42 @@ const eliminarLugarId = async (req, res) => {
     }
 };
 
+const obtenerCategoria = async (req, res) => {
+    try {
+        const categorias = await Lugar.distinct('categoria');  
+
+        if (categorias.length === 0) {
+            return res.status(404).json({ msg: 'No se encontraron categorías' });
+        }
+
+        res.status(200).json({ data: categorias });
+    } catch (error) {
+        res.status(500).json({ msg: 'Error al obtener categorías', error: error.message });
+    }
+};
+
+const obtenerPorCategoria = async (req, res) => {
+    const { categoria } = req.params; 
+
+    try {
+        const lugares = await Lugar.find({ categoria: categoria });  
+
+        if (lugares.length === 0) {
+            return res.status(404).json({ msg: 'No se encontraron lugares para esta categoría' });
+        }
+
+        res.status(200).json({ data: lugares });
+    } catch (error) {
+        res.status(500).json({ msg: 'Error al obtener lugares', error: error.message });
+    }
+};
+
 module.exports = {
     crearLugar,
     obtenerLugares,
     obtenerLugarId,
     actualizarLugarId,
-    eliminarLugarId
+    eliminarLugarId,
+    obtenerCategoria,
+    obtenerPorCategoria
 };

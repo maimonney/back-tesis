@@ -6,7 +6,9 @@ const {
     obtenerLugares,
     obtenerLugarId,
     actualizarLugarId,
-    eliminarLugarId
+    eliminarLugarId,
+    obtenerCategoria,
+    obtenerPorCategoria
 } = require('../controllers/lugarControlador');
 
 router.get('/', obtenerLugares);
@@ -14,5 +16,7 @@ router.post('/', crearLugar);
 router.get('/:id', obtenerLugarId);
 router.delete('/:id', eliminarLugarId);
 router.put('/:id', actualizarLugarId);
+router.get('/cat/categoria', obtenerCategoria);
+router.get('/categoria/:categoria', obtenerPorCategoria);
 
 module.exports = router;

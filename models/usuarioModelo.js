@@ -10,7 +10,7 @@ const usuarioSchema = new Schema({
         required: true,
         unique: true,
     },
-    contraseña: {
+    contrasenia: {
         type: String,
         required: true,
     },
@@ -22,17 +22,6 @@ const usuarioSchema = new Schema({
     created: {
         type: Date,
         default: Date.now,
-    },
-    ubicacion: {
-        type: {
-            type: String,
-            enum: ['Point'], 
-            required: true
-        },
-        coordinates: {
-            type: [Number], 
-            required: true
-        }
     }
 });
 

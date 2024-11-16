@@ -20,6 +20,44 @@ const obtenerHotel = async (req, res) => {
     }
 };
 
+const obtenerHabitacion = async (req, res) => {
+    try {
+        const hoteles = await Hotel.find({}, 'habitaciones');
+        
+        const todasLasHabitaciones = hoteles.reduce((acumulador, hotel) => {
+            return acumulador.concat(hotel.habitaciones);
+        }, []);
+
+        if (todasLasHabitaciones.length === 0) {
+            return res.status(404).json({ mensaje: 'No hay habitaciones disponibles' });
+        }
+
+        res.status(200).json({ habitaciones: todasLasHabitaciones });
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error al obtener las habitaciones', error });
+    }
+};
+
+const obtenerHabitacionId = async (req, res) => {
+    const { id } = req.params; 
+
+    try {
+        const hotel = await Hotel.findById(id, 'habitaciones');
+
+        if (!hotel) {
+            return res.status(404).json({ mensaje: 'Hotel no encontrado' });
+        }
+
+        if (hotel.habitaciones.length === 0) {
+            return res.status(404).json({ mensaje: 'No hay habitaciones disponibles para este hotel' });
+        }
+
+        res.status(200).json({ habitaciones: hotel.habitaciones });
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error al obtener las habitaciones del hotel', error });
+    }
+};
+
 const obtenerHotelId = async (req, res) => {
     try {
         const hotel = await Hotel.findById(req.params.id);
@@ -82,5 +120,7 @@ module.exports = {
     obtenerHotelId,
     actualizarHotelId,
     eliminarHotel,
-    hotelEconomico
+    hotelEconomico,
+    obtenerHabitacion,
+    obtenerHabitacionId
 };

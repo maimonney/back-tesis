@@ -1,4 +1,5 @@
 const express = require('express');
+const { autenticar } = require('../middleware/autenticar');
 const router = express.Router();
 
 const { 
@@ -10,7 +11,7 @@ const {
     actualizarUsuarioId } = require('../controllers/usuariosControlador');
 
 
-router.get('/', obtenerUsuario );
+router.get('/', autenticar, obtenerUsuario );
 router.post('/', crearUsuario);
 router.post('/login', inicio);
 router.get('/:id', obtenerUsuarioId);

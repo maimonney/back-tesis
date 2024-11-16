@@ -2,19 +2,10 @@
     "version": 2,
     "builds": [
       {
-        "src": "api/app.js",
+        "src": "app.js",
         "use": "@vercel/node"
       }
     ],
-    "routes": [
-      {
-        "src": "/api/(.*)",
-        "dest": "/api/app.js"
-      },
-      {
-        "src": "/.well-known/vercel/microfrontend-routing",
-        "status": 404
-      }
-    ]
+    "routes": [{ "src": "/api/(.*)", "dest": "app.js" }]
   }
   

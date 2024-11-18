@@ -11,6 +11,7 @@ const api = express();
 
 const port = process.env.PORT || 3000; 
 const travelpayouts = process.env.API_KEY;
+const rapidAPI = process.env.RapidAPI_Key;
 
 const corsOptions = {
     origin: ['http://localhost:5173'],

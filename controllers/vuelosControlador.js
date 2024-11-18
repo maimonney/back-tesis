@@ -3,6 +3,7 @@ const axios = require('axios');
 const Vuelos = require('../models/vuelosModelo');
 
 const travelpayouts = process.env.API_KEY;
+const rapidAPI = process.env.RapidAPI_Key;
 
 function obtenerCodigoIATA() {
     const lugaresArgentinos = {
@@ -49,31 +50,67 @@ function mapearVuelos(data) {
     }));
 }
 
-//*Este solo obtiene vuelos que salen de Buenos Aires
+
 const obtenervuelos = async (req, res) => {
     try {
-        const codigosIATA = obtenerCodigoIATA();
+        // Definir los parámetros de la solicitud de manera estática dentro de la función
+        const origin = 'COR'; // Código IATA del origen
+        const destination = 'EZE'; // Código IATA del destino
+        const departure_date = '2024-12-15'; // Fecha de salida en formato YYYY-MM-DD
+        const return_date = '2024-12-30'; // Fecha de regreso en formato YYYY-MM-DD (opcional)
 
-        const response = await axios.get('https://api.travelpayouts.com/aviasales/v3/prices_for_dates', {
-            params: {
-                origin: 'BUE',
-                currency: 'ARS',
-                token: travelpayouts,
+        // Verificar si los parámetros necesarios están definidos
+        if (!origin || !destination || !departure_date) {
+            return res.status(400).json({ message: 'Faltan parámetros necesarios: origen, destino, y fecha de salida' });
+        }
+
+        // Definir los parámetros de la solicitud con valores fijos
+        const params = {
+            origin: origin, // Código IATA del origen
+            destination: destination, // Código IATA del destino
+            departure_date: departure_date, // Fecha de salida
+            return_date: return_date, // Fecha de regreso (opcional)
+        };
+
+        // Hacer la solicitud a la API de SkyScanner para obtener los vuelos
+        const response = await axios.request({
+            method: 'GET',
+            url: 'https://sky-scanner3.p.rapidapi.com/flights/skyId-list',
+            params: params,
+            headers: {
+                'X-RapidAPI-Key': process.env.RAPIDAPI_KEY, // Asegúrate de que tu clave de API esté en el entorno
+                'X-RapidAPI-Host': 'sky-scanner3.p.rapidapi.com',
             },
         });
 
-        const vuelosFiltrados = response.data.data.filter(vuelo =>
-            codigosIATA.includes(vuelo.destination)
-        );
+        // Verificar la respuesta de la API
+        if (!response.data || !response.data.data || response.data.data.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron vuelos' });
+        }
 
-        const vuelos = mapearVuelos(vuelosFiltrados);
+        // Filtrar los vuelos según los datos que necesitamos
+        const vuelos = response.data.data.map((vuelo) => ({
+            origen: vuelo.origin,
+            destino: vuelo.destination,
+            fecha_salida: vuelo.departure_date,
+            fecha_llegada: vuelo.arrival_date,
+            precio: vuelo.price, // Aquí asumimos que el precio está disponible
+            aerolinea: vuelo.airline, // Nombre de la aerolínea
+        }));
 
-        res.json(vuelos);
+        // Devolver los vuelos filtrados en la respuesta
+        return res.json(vuelos);
+
     } catch (error) {
-        console.error('Error al obtener los vuelos:', error);
-        res.status(500).json({ message: 'Error al obtener los datos de vuelos', error: error.message });
+        console.error('Error al obtener los vuelos:', error.response || error.message);
+
+        // Capturar el error y devolver un mensaje más detallado
+        return res.status(500).json({ message: 'Error al obtener los datos de vuelos', error: error.message });
     }
 };
+
+
+
 
 //!Hay que cambiar porque sale de mongoose y ya no se usa
 const buscarVueloPorId = async (req, res) => {

@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
+const axios = require('axios');
 const Vuelos = require('../models/vuelosModelo');
 
-function obtenerCodigoIATA(nombre) {
+const travelpayouts = process.env.API_KEY;
+
+function obtenerCodigoIATA() {
     const lugaresArgentinos = {
         'Buenos Aires - Aeropuerto Internacional Ministro Pistarini': 'EZE',
         'Buenos Aires - Aeroparque Jorge Newbery': 'AEP',
@@ -25,20 +28,54 @@ function obtenerCodigoIATA(nombre) {
         'San Luis': 'LUQ',
         'Resistencia': 'RES',
     };
-
-    return lugaresArgentinos[nombre] || nombre;
+    return Object.values(lugaresArgentinos);
 }
 
+function mapearVuelos(data) {
+    return data.map(vuelo => ({
+        origin: vuelo.origin, // Código IATA de origen
+        destination: vuelo.destination, // Código IATA de destino
+        origin_airport: vuelo.origin_airport, // Aeropuerto de origen
+        destination_airport: vuelo.destination_airport, // Aeropuerto de destino
+        price: vuelo.price, // Precio del vuelo
+        airline: vuelo.airline, // Aerolínea
+        flight_number: vuelo.flight_number, // Número de vuelo
+        departure_at: vuelo.departure_at, // Fecha y hora de salida
+        return_at: vuelo.return_at, // Fecha y hora de regreso (si aplica)
+        transfers: vuelo.transfers || 0, // Número de escalas
+        duration: vuelo.duration, // Duración total
+        link: vuelo.link, // Enlace al vuelo
+        logo: `http://pics.avs.io/200/200/${vuelo.airline}.png` // Logo de la aerolínea
+    }));
+}
+
+//*Este solo obtiene vuelos que salen de Buenos Aires
 const obtenervuelos = async (req, res) => {
     try {
-        const vuelos = await Vuelos.find();
-        res.json({ vuelos });
+        const codigosIATA = obtenerCodigoIATA();
+
+        const response = await axios.get('https://api.travelpayouts.com/aviasales/v3/prices_for_dates', {
+            params: {
+                origin: 'BUE',
+                currency: 'ARS',
+                token: travelpayouts,
+            },
+        });
+
+        const vuelosFiltrados = response.data.data.filter(vuelo =>
+            codigosIATA.includes(vuelo.destination)
+        );
+
+        const vuelos = mapearVuelos(vuelosFiltrados);
+
+        res.json(vuelos);
     } catch (error) {
-        console.error("Error al obtener los vuelos:", error);
-        res.status(500).json({ message: "Error al obtener los datos de vuelos", error: error.message });
+        console.error('Error al obtener los vuelos:', error);
+        res.status(500).json({ message: 'Error al obtener los datos de vuelos', error: error.message });
     }
 };
 
+//!Hay que cambiar porque sale de mongoose y ya no se usa
 const buscarVueloPorId = async (req, res) => {
     const { id } = req.params;
     console.log('ID recibido:', id);
@@ -65,13 +102,9 @@ const buscarVueloPorId = async (req, res) => {
 };
 
 const buscarVuelosIda = async (req, res) => {
-    let { origen, destino, fechaSalida } = req.params;
-    console.log('Consulta recibida:', { origen, destino, fechaSalida });
+    const { origen, destino, fechaSalida } = req.params; // O si es un POST, usa req.body
 
-    origen = obtenerCodigoIATA(origen);
-    destino = obtenerCodigoIATA(destino);
-    console.log('Códigos IATA:', { origen, destino });
-
+    // Verificar si faltan parámetros
     if (!origen || !destino || !fechaSalida) {
         return res.status(400).json({ error: 'Faltan parámetros requeridos: origen, destino y fechaSalida.' });
     }
@@ -79,26 +112,24 @@ const buscarVuelosIda = async (req, res) => {
     try {
         const fecha = new Date(fechaSalida);
 
+        // Verificar si la fecha es válida
         if (isNaN(fecha)) {
             return res.status(400).json({ error: 'Fecha de salida no válida.' });
         }
 
-        const vuelos = await Vuelos.find({
-            origen: origen,
-            destino: destino,
-            fechaSalida: {
-                $gte: fecha,
-                $lt: new Date(fecha.getTime() + 24 * 60 * 60 * 1000)
-            }
-        });
+        // Hacer la solicitud a la API externa para obtener los vuelos
+        const apiUrl = `https://api-de-vuelos.com/vuelos?origen=${origen}&destino=${destino}&fechaSalida=${fecha.toISOString()}`;
 
-        console.log('Vuelos encontrados:', vuelos);
+        const response = await axios.get(apiUrl);
 
-        if (vuelos.length === 0) {
+        // Comprobar si la respuesta tiene los datos de vuelos
+        if (response.data.length === 0) {
             return res.status(404).json({ error: 'No se encontraron vuelos de ida.' });
         }
 
-        res.json({ vuelos });
+        // Responder con los datos de vuelos obtenidos de la API externa
+        res.json({ vuelos: response.data });
+
     } catch (error) {
         console.error('Error al buscar vuelos de ida:', error);
         res.status(500).json({ error: 'Error al buscar vuelos de ida.' });
@@ -106,41 +137,42 @@ const buscarVuelosIda = async (req, res) => {
 };
 
 const buscarVuelosVuelta = async (req, res) => {
-    let { origen, destino, fechaSalida } = req.params;
-    console.log('Consulta recibida:', { origen, destino, fechaSalida });
+    const { origen, destino, fechaSalida } = req.query; // Puedes cambiar a req.params si usas parámetros en la URL
 
-    // Obtener los códigos IATA
-    origen = obtenerCodigoIATA(destino); 
-    destino = obtenerCodigoIATA(origen); 
-    console.log('Códigos IATA:', { origen, destino });
-
+    // Verificar si faltan parámetros
     if (!origen || !destino || !fechaSalida) {
         return res.status(400).json({ error: 'Faltan parámetros requeridos: origen, destino y fechaSalida.' });
     }
 
+    console.log('Consulta recibida:', { origen, destino, fechaSalida });
+
+    // Obtener los códigos IATA de los aeropuertos
+    const codigoOrigen = obtenerCodigoIATA(origen); 
+    const codigoDestino = obtenerCodigoIATA(destino); 
+    console.log('Códigos IATA:', { codigoOrigen, codigoDestino });
+
     try {
         const fecha = new Date(fechaSalida);
 
+        // Verificar si la fecha es válida
         if (isNaN(fecha)) {
             return res.status(400).json({ error: 'Fecha de salida no válida.' });
         }
 
-        const vuelos = await Vuelos.find({
-            origen: origen,
-            destino: destino,
-            fechaSalida: {
-                $gte: fecha,
-                $lt: new Date(fecha.getTime() + 24 * 60 * 60 * 1000)
-            }
-        });
+        // Hacer la solicitud a la API externa para obtener los vuelos de vuelta
+        const apiUrl = `https://api-de-vuelos.com/vuelos?origen=${destino}&destino=${origen}&fechaSalida=${fecha.toISOString()}`;
 
-        console.log('Vuelos encontrados:', vuelos);
+        // Realizar la solicitud a la API
+        const response = await axios.get(apiUrl);
 
-        if (vuelos.length === 0) {
+        // Comprobar si la respuesta tiene vuelos de vuelta
+        if (response.data.length === 0) {
             return res.status(404).json({ error: 'No se encontraron vuelos de vuelta.' });
         }
 
-        res.json({ vuelos });
+        // Responder con los vuelos encontrados
+        res.json({ vuelos: response.data });
+
     } catch (error) {
         console.error('Error al buscar vuelos de vuelta:', error);
         res.status(500).json({ error: 'Error al buscar vuelos de vuelta.' });
@@ -148,7 +180,7 @@ const buscarVuelosVuelta = async (req, res) => {
 };
 
 const buscarVuelosResultados = async (req, res) => {
-    let { origen, destino, fechaSalida, fechaVuelta } = req.params;
+    const { origen, destino, fechaSalida, fechaVuelta } = req.params; 
 
     console.log('Consulta recibida:', { origen, destino, fechaSalida, fechaVuelta });
 
@@ -180,23 +212,22 @@ const buscarVuelosResultados = async (req, res) => {
                 $gte: fechaVueltaObj 
             }
         });
-;
 
         console.log('Vuelos de ida:', vuelosIda);
         console.log('Vuelos de vuelta:', vuelosVuelta);
 
-        if (vuelosIda.length === 0 && vuelosVuelta.length === 0 && vuelosEntreFechas.length === 0) {
+        if (vuelosIda.length === 0 && vuelosVuelta.length === 0) {
             return res.status(404).json({ error: 'No se encontraron vuelos para los criterios solicitados.' });
         }
 
-        // Responder con los vuelos encontrados
-        res.json({ vuelosIda, vuelosVuelta});
+        res.json({ vuelosIda, vuelosVuelta });
 
     } catch (error) {
         console.error('Error al buscar vuelos:', error);
         res.status(500).json({ error: 'Error al buscar vuelos.' });
     }
 };
+
 
 module.exports = {
     obtenervuelos,

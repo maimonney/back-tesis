@@ -11,7 +11,7 @@ const {
     actualizarUsuarioId } = require('../controllers/usuariosControlador');
 
 
-router.get('/', autenticar, obtenerUsuario );
+router.get('/', obtenerUsuario );
 router.post('/', crearUsuario);
 router.post('/login', inicio);
 router.get('/:id', obtenerUsuarioId);

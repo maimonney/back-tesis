@@ -1,10 +1,41 @@
 const Lugar = require('../models/lugarModelo');
 
+const provinciasArgentinas = [
+  'Buenos Aires',
+  'Córdoba',
+  'Chubut',
+  'Neuquén',
+  'Misiones',
+  'Mendoza',
+  'San Juan',
+  'Salta',
+  'San Luis',
+  'Santa Cruz',
+  'Chaco',
+  'Santa Fe',
+  'Río Negro',
+  'Tucumán',
+  'La Pampa',
+  'La Rioja',
+  'Santiago del Estero',
+  'Formosa',
+  'Corrientes',
+  'Entre Ríos',
+  'Catamarca',
+  'Jujuy',
+  'Tierra del Fuego',
+  'San Juan',
+  ];
+
 const crearLugar = async (req, res) => {
     const { nombre, descripcion, ubicacion, categoria, imagen, video } = req.body;
 
     if (!nombre || !ubicacion) {
         return res.status(400).json({ msg: 'Faltan parámetros obligatorios: nombre y ubicacion' });
+    }
+
+    if (!provinciasArgentinas.includes(ubicacion)) {
+        return res.status(400).json({ msg: 'Ubicación no válida. Debe estar en la lista de lugares argentinos.' });
     }
 
     try {
@@ -14,8 +45,7 @@ const crearLugar = async (req, res) => {
             ubicacion,
             categoria,
             imagen,
-            video,
-            categoria
+            video
         });
 
         await nuevoLugar.save();
@@ -52,6 +82,10 @@ const obtenerLugarId = async (req, res) => {
 
 const actualizarLugarId = async (req, res) => {
     const { nombre, descripcion, ubicacion, categoria, imagen, video } = req.body;
+
+    if (ubicacion && !provinciasArgentinas.includes(ubicacion)) {
+        return res.status(400).json({ msg: 'Ubicación no válida. Debe estar en la lista de lugares argentinos.' });
+    }
 
     try {
         const updateData = { nombre, descripcion, ubicacion, categoria, imagen, video };

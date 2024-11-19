@@ -15,15 +15,8 @@ const lugarSchema = new Schema({
         required: true
     },
     ubicacion: {
-        type: {
             type: String,
-            enum: ['Point'],
             required: true
-        },
-        coordinates: {
-            type: [Number],
-            required: true
-        }
     },
     imagen: {
         type: [String],

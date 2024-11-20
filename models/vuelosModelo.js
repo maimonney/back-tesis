@@ -31,25 +31,26 @@ const vuelosSchema = new Schema({
         type: String,
         required: true
     },
-    imgAerolinea:{
-        type: String,  
-        required: true
-    },
-    numeroAsientosDisponibles: {
-        type: Number,
+    imgAerolinea: {
+        type: String,
         required: true
     },
     precio: {
         type: Number,
         required: true
     },
-    escala: {
-        type: Boolean,
-        default: false
+    moneda: {
+        type: String,
+        required: true,
+        default: 'ARS'
     },
-    lugarEscala: {
-        type: [String],
-        default: undefined
+    clase: {
+        type: String,
+        required: true
+    },
+    escala: {
+        type: [String], 
+        default: []      
     }
 });
 

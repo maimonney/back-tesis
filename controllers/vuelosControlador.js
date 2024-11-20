@@ -2,115 +2,101 @@ const mongoose = require('mongoose');
 const axios = require('axios');
 const Vuelos = require('../models/vuelosModelo');
 
-const travelpayouts = process.env.API_KEY;
-const rapidAPI = process.env.RapidAPI_Key;
+const apiVuelos = process.env.API_KEY;
 
 function obtenerCodigoIATA() {
-    const lugaresArgentinos = {
+    const aeropuertosArgentinos = {
         'Buenos Aires - Aeropuerto Internacional Ministro Pistarini': 'EZE',
         'Buenos Aires - Aeroparque Jorge Newbery': 'AEP',
-        'Córdoba': 'COR',
-        'Mendoza': 'MDZ',
-        'Mar del Plata': 'MDQ',
-        'Ushuaia': 'USH',
-        'Bariloche': 'BRC',
-        'Salta': 'SLA',
-        'Rosario': 'ROS',
-        'Tucumán': 'TUC',
-        'Iguazú': 'IGR',
-        'Neuquén': 'NQN',
-        'Misiones': 'MIR',
-        'Posadas': 'PSS',
-        'San Fernando del Valle de Catamarca': 'CTC',
-        'San Juan': 'UAQ',
-        'Río Gallegos': 'RGL',
-        'Río Grande': 'RGA',
-        'El Calafate': 'FTE',
-        'San Luis': 'LUQ',
-        'Resistencia': 'RES',
+        'Córdoba - Aeropuerto Internacional Ingeniero Ambrosio Taravella': 'COR',
+        'Mendoza - Aeropuerto Internacional Gobernador Francisco Gabrielli': 'MDZ',
+        'Mar del Plata - Aeropuerto Internacional Astor Piazzolla': 'MDQ',
+        'Ushuaia - Aeropuerto Internacional Malvinas Argentinas': 'USH',
+        'Bariloche - Aeropuerto Internacional Teniente Luis Candelaria': 'BRC',
+        'Salta - Aeropuerto Internacional Martín Miguel de Güemes': 'SLA',
+        'Rosario - Aeropuerto Internacional Islas Malvinas': 'ROS',
+        'Tucumán - Aeropuerto Internacional Teniente General Benjamín Matienzo': 'TUC',
+        'Iguazú - Aeropuerto Internacional Cataratas del Iguazú': 'IGR',
+        'Neuquén - Aeropuerto Internacional Presidente Perón': 'NQN',
+        'Posadas - Aeropuerto Internacional Libertador General José de San Martín': 'PSS',
+        'San Fernando del Valle de Catamarca - Aeropuerto Coronel Felipe Varela': 'CTC',
+        'San Juan - Aeropuerto Domingo Faustino Sarmiento': 'UAQ',
+        'Río Gallegos - Aeropuerto Internacional Piloto Civil Norberto Fernández': 'RGL',
+        'Río Grande - Aeropuerto Internacional Gobernador Ramón Trejo Noel': 'RGA',
+        'El Calafate - Aeropuerto Internacional Comandante Armando Tola': 'FTE',
+        'San Luis - Aeropuerto Brigadier Mayor César Raúl Ojeda': 'LUQ',
+        'Resistencia - Aeropuerto Internacional de Resistencia': 'RES',
     };
-    return Object.values(lugaresArgentinos);
-}
-
-function mapearVuelos(data) {
-    return data.map(vuelo => ({
-        origin: vuelo.origin, // Código IATA de origen
-        destination: vuelo.destination, // Código IATA de destino
-        origin_airport: vuelo.origin_airport, // Aeropuerto de origen
-        destination_airport: vuelo.destination_airport, // Aeropuerto de destino
-        price: vuelo.price, // Precio del vuelo
-        airline: vuelo.airline, // Aerolínea
-        flight_number: vuelo.flight_number, // Número de vuelo
-        departure_at: vuelo.departure_at, // Fecha y hora de salida
-        return_at: vuelo.return_at, // Fecha y hora de regreso (si aplica)
-        transfers: vuelo.transfers || 0, // Número de escalas
-        duration: vuelo.duration, // Duración total
-        link: vuelo.link, // Enlace al vuelo
-        logo: `http://pics.avs.io/200/200/${vuelo.airline}.png` // Logo de la aerolínea
-    }));
+    return Object.values(aeropuertosArgentinos);
 }
 
 
 const obtenervuelos = async (req, res) => {
     try {
-        // Definir los parámetros de la solicitud de manera estática dentro de la función
-        const origin = 'COR'; // Código IATA del origen
-        const destination = 'EZE'; // Código IATA del destino
-        const departure_date = '2024-12-15'; // Fecha de salida en formato YYYY-MM-DD
-        const return_date = '2024-12-30'; // Fecha de regreso en formato YYYY-MM-DD (opcional)
+        // Parámetros de entrada desde la solicitud
+        const origin = req.query.origen || 'COR'; // Origen: Córdoba (por defecto)
+        const destination = req.query.destino || 'EZE'; // Destino: Buenos Aires (por defecto)
+        const departure_date = req.query.fechaSalida || '2024-12-25'; // Fecha de salida (por defecto)
+        const return_date = req.query.fechaRegreso || '2024-12-30'; // Fecha de regreso (por defecto)
+        const travel_class = req.query.clase || 1; // Clase económica (por defecto)
+        const currency = req.query.moneda || 'ARS'; // Moneda en pesos argentinos (por defecto)
+        const hl = 'es'; // Idioma en español
+        const gl = 'ar'; // País de búsqueda en Argentina
+        const apiKey = apiVuelos; // Tu clave de API de SerpApi
 
-        // Verificar si los parámetros necesarios están definidos
+        // Validación de parámetros obligatorios
         if (!origin || !destination || !departure_date) {
             return res.status(400).json({ message: 'Faltan parámetros necesarios: origen, destino, y fecha de salida' });
         }
 
-        // Definir los parámetros de la solicitud con valores fijos
+        // Parámetros para la API
         const params = {
-            origin: origin, // Código IATA del origen
-            destination: destination, // Código IATA del destino
-            departure_date: departure_date, // Fecha de salida
-            return_date: return_date, // Fecha de regreso (opcional)
+            departure_id: origin,  // Origen
+            arrival_id: destination, // Destino
+            outbound_date: departure_date, // Fecha de salida
+            return_date: return_date, // Fecha de retorno
+            travel_class: travel_class, // Clase de viaje
+            currency: currency, // Moneda
+            hl: hl, // Idioma
+            gl: gl, // País
+            type: 1, // Tipo de vuelo: Round trip (viaje de ida y vuelta)
+            api_key: apiVuelos // Clave de la API
         };
 
-        // Hacer la solicitud a la API de SkyScanner para obtener los vuelos
-        const response = await axios.request({
-            method: 'GET',
-            url: 'https://sky-scanner3.p.rapidapi.com/flights/skyId-list',
-            params: params,
-            headers: {
-                'X-RapidAPI-Key': process.env.RAPIDAPI_KEY, // Asegúrate de que tu clave de API esté en el entorno
-                'X-RapidAPI-Host': 'sky-scanner3.p.rapidapi.com',
+        // Realizar la solicitud a SerpApi
+        const response = await axios.get('https://serpapi.com/search', {
+            params: {
+                engine: 'google_flights', // Motor de búsqueda de Google Flights
+                ...params,
             },
         });
 
-        // Verificar la respuesta de la API
-        if (!response.data || !response.data.data || response.data.data.length === 0) {
+        // Comprobación de respuesta
+        if (!response.data || !response.data.best_flights || response.data.best_flights.length === 0) {
             return res.status(404).json({ message: 'No se encontraron vuelos' });
         }
 
-        // Filtrar los vuelos según los datos que necesitamos
-        const vuelos = response.data.data.map((vuelo) => ({
-            origen: vuelo.origin,
-            destino: vuelo.destination,
-            fecha_salida: vuelo.departure_date,
-            fecha_llegada: vuelo.arrival_date,
-            precio: vuelo.price, // Aquí asumimos que el precio está disponible
-            aerolinea: vuelo.airline, // Nombre de la aerolínea
+        // Mapeo de vuelos obtenidos desde la API para adaptarlos a la estructura que necesitas
+        const vuelos = response.data.best_flights.map(flight => ({
+            numeroVuelo: flight.flights[0].flight_number,
+            origen: flight.flights[0].departure_airport.name,
+            destino: flight.flights[0].arrival_airport.name,
+            fechaSalida: flight.flights[0].departure_airport.time,
+            fechaLlegada: flight.flights[0].arrival_airport.time,
+            aerolinea: flight.flights[0].airline,
+            imgAerolinea: flight.flights[0].airline_logo,
+            precio: flight.price,
+            escala: flight.layovers && flight.layovers.length > 0,
         }));
 
-        // Devolver los vuelos filtrados en la respuesta
+        // Enviar respuesta con los vuelos obtenidos
         return res.json(vuelos);
 
     } catch (error) {
         console.error('Error al obtener los vuelos:', error.response || error.message);
-
-        // Capturar el error y devolver un mensaje más detallado
         return res.status(500).json({ message: 'Error al obtener los datos de vuelos', error: error.message });
     }
 };
-
-
-
 
 //!Hay que cambiar porque sale de mongoose y ya no se usa
 const buscarVueloPorId = async (req, res) => {
@@ -138,6 +124,7 @@ const buscarVueloPorId = async (req, res) => {
     }
 };
 
+
 const buscarVuelosIda = async (req, res) => {
     const { origen, destino, fechaSalida } = req.params; // O si es un POST, usa req.body
 
@@ -147,31 +134,49 @@ const buscarVuelosIda = async (req, res) => {
     }
 
     try {
+        // Validar y convertir la fecha de salida
         const fecha = new Date(fechaSalida);
-
-        // Verificar si la fecha es válida
         if (isNaN(fecha)) {
             return res.status(400).json({ error: 'Fecha de salida no válida.' });
         }
 
-        // Hacer la solicitud a la API externa para obtener los vuelos
-        const apiUrl = `https://api-de-vuelos.com/vuelos?origen=${origen}&destino=${destino}&fechaSalida=${fecha.toISOString()}`;
+        // Configurar parámetros para la API de SerpApi (Google Flights)
+        const apiKey = apiVuelos; // Asegúrate de tener tu clave de API válida
+        const hl = 'es'; // Idioma en español
+        const gl = 'ar'; // País de búsqueda en Argentina (puedes cambiarlo si es necesario)
 
+        // URL de la API con parámetros dinámicos
+        const apiUrl = `https://serpapi.com/search?engine=google_flights&departure_id=${origen}&arrival_id=${destino}&outbound_date=${new Date(fechaSalida).toISOString().split('T')[0]}&api_key=${apiKey}&hl=${hl}&gl=${gl}`;
+
+        // Realizar la solicitud a la API de SerpApi
         const response = await axios.get(apiUrl);
 
-        // Comprobar si la respuesta tiene los datos de vuelos
-        if (response.data.length === 0) {
-            return res.status(404).json({ error: 'No se encontraron vuelos de ida.' });
+        // Comprobar si la respuesta tiene datos de vuelos
+        if (!response.data || !response.data.flights_results || response.data.flights_results.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron vuelos de ida para la fecha seleccionada.' });
         }
 
-        // Responder con los datos de vuelos obtenidos de la API externa
-        res.json({ vuelos: response.data });
+        // Procesar los datos de vuelos obtenidos
+        const vuelos = response.data.flights_results.map(flight => ({
+            numeroVuelo: flight.flights[0].flight_number,
+            origen: flight.flights[0].departure_airport.id,
+            destino: flight.flights[0].arrival_airport.id,
+            fechaSalida: flight.flights[0].departure_airport.time,
+            fechaLlegada: flight.flights[0].arrival_airport.time,
+            aerolinea: flight.flights[0].airline,
+            precio: flight.price,
+            escala: flight.layovers.length > 0,
+        }));
+
+        // Enviar la respuesta con los vuelos encontrados
+        res.json({ vuelos });
 
     } catch (error) {
         console.error('Error al buscar vuelos de ida:', error);
         res.status(500).json({ error: 'Error al buscar vuelos de ida.' });
     }
 };
+
 
 const buscarVuelosVuelta = async (req, res) => {
     const { origen, destino, fechaSalida } = req.query; // Puedes cambiar a req.params si usas parámetros en la URL

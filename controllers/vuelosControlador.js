@@ -109,9 +109,9 @@ const buscarVuelosVuelta = async (req, res) => {
     let { origen, destino, fechaSalida } = req.params;
     console.log('Consulta recibida:', { origen, destino, fechaSalida });
 
-    // Obtener los códigos IATA
-    origen = obtenerCodigoIATA(destino); 
-    destino = obtenerCodigoIATA(origen); 
+    // Obtener los códigos IATA correctamente
+    origen = obtenerCodigoIATA(origen);  // Aquí no intercambiamos los valores
+    destino = obtenerCodigoIATA(destino);  // Aquí tampoco intercambiamos los valores
     console.log('Códigos IATA:', { origen, destino });
 
     if (!origen || !destino || !fechaSalida) {

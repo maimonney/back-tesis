@@ -29,7 +29,12 @@ const provinciasArgentinas = [
 
 const crearLugar = async (req, res) => {
     const { nombre, descripcion, ubicacion, categoria, video } = req.body;
-    const imagenes = req.files ? req.files.map(file => file.path) : [];
+    const imagenes = req.files ? await Promise.all(
+        req.files.map(async (file) => {
+            const result = await cloudinary.uploader.upload(file.path);  
+            return result.secure_url;  
+        })
+    ) : [];
 
     if (!nombre || !ubicacion) {
         return res.status(400).json({ msg: 'Faltan parámetros obligatorios: nombre y ubicacion' });

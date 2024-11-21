@@ -43,12 +43,11 @@ const provinciasArgentinas = [
      // Subir imágenes a Cloudinary 
      if (req.files && req.files.imagen) {
         try {
-            // Si hay una imagen, la subimos a Cloudinary
+
             for (let i = 0; i < req.files.imagen.length; i++) {
-                const image = req.files.imagen[i]; // Obtenemos cada imagen
-                const result = await cloudinary.uploader.upload(image.path); // Subimos la imagen a Cloudinary
-                
-                // Guardamos la URL de la imagen en el arreglo
+                const image = req.files.imagen[i];
+                const result = await cloudinary.uploader.upload(image.path); 
+
                 imagenes.push(result.secure_url);
             }
         } catch (error) {

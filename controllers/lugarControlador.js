@@ -27,14 +27,9 @@ const provinciasArgentinas = [
   'San Juan',
   ];
 
-const crearLugar = async (req, res) => {
+  const crearLugar = async (req, res) => {
     const { nombre, descripcion, ubicacion, categoria, video } = req.body;
-    const imagenes = req.files ? await Promise.all(
-        req.files.map(async (file) => {
-            const result = await cloudinary.uploader.upload(file.path);  
-            return result.secure_url;  
-        })
-    ) : [];
+    const imagenes = req.files ? req.files.map(file => file.path) : [];
 
     if (!nombre || !ubicacion) {
         return res.status(400).json({ msg: 'Faltan parámetros obligatorios: nombre y ubicacion' });
@@ -57,9 +52,11 @@ const crearLugar = async (req, res) => {
         await nuevoLugar.save();
         res.status(201).json({ msg: 'Lugar creado', data: nuevoLugar });
     } catch (error) {
+        console.error(error); 
         res.status(500).json({ msg: 'Error al crear el lugar', error: error.message });
     }
 };
+
 
 const obtenerLugares = async (req, res) => {
     try {

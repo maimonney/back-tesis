@@ -2,11 +2,10 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const multer = require('multer');
+
 require('dotenv').config(); 
 
+const cloudinaryUpload = require('./middleware/cloudinary');
 const routerAPI = require('./routes/index.js');
 
 const api = express();
@@ -22,20 +21,6 @@ const corsOptions = {
 
 api.use(cors(corsOptions));
 
-cloudinary.config({
-    cloudinary_url: process.env.CLOUDINARY_URL,
-  });
-
-  const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'lugares',
-      allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
-    },
-  });
-  
-  const upload = multer({ storage });
-
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
       console.log('Conexión a MongoDB Atlas correcta');
@@ -47,6 +32,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 
 api.use(express.json());
 api.use(express.static('public'));
+api.use('/upload', cloudinaryUpload.array('imagen')); 
 
 routerAPI(api);
 

@@ -1,3 +1,4 @@
+const cloudinary = require('cloudinary').v2;
 const Lugar = require('../models/lugarModelo');
 
 const provinciasArgentinas = [
@@ -29,23 +30,30 @@ const provinciasArgentinas = [
 
   const crearLugar = async (req, res) => {
     const { nombre, descripcion, ubicacion, categoria, video } = req.body;
+    const imagenes = [];
 
-    // Subir las imágenes a Cloudinary
-    const imagenes = req.files
-        ? await Promise.all(
-            req.files.map(async (file) => {
-                const result = await cloudinary.uploader.upload(file.path);
-                return result.secure_url; 
-            })
-        )
-        : [];
-        
     if (!nombre || !ubicacion) {
         return res.status(400).json({ msg: 'Faltan parámetros obligatorios: nombre y ubicacion' });
     }
 
     if (!provinciasArgentinas.includes(ubicacion)) {
         return res.status(400).json({ msg: 'Ubicación no válida. Debe estar en la lista de lugares argentinos.' });
+    }
+
+     // Subir imágenes a Cloudinary 
+     if (req.files && req.files.imagen) {
+        try {
+            // Si hay una imagen, la subimos a Cloudinary
+            for (let i = 0; i < req.files.imagen.length; i++) {
+                const image = req.files.imagen[i]; // Obtenemos cada imagen
+                const result = await cloudinary.uploader.upload(image.path); // Subimos la imagen a Cloudinary
+                
+                // Guardamos la URL de la imagen en el arreglo
+                imagenes.push(result.secure_url);
+            }
+        } catch (error) {
+            return res.status(500).json({ msg: 'Error al subir las imágenes', error: error.message });
+        }
     }
 
     try {

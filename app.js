@@ -1,11 +1,11 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
-const mongoose = require('mongoose');
-require('dotenv').config();
+require('dotenv').config(); 
 
 const routerAPI = require('./routes/index.js');
 

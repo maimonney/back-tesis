@@ -28,7 +28,8 @@ const provinciasArgentinas = [
   ];
 
 const crearLugar = async (req, res) => {
-    const { nombre, descripcion, ubicacion, categoria, imagen, video } = req.body;
+    const { nombre, descripcion, ubicacion, categoria, video } = req.body;
+    const imagenes = req.files ? req.files.map(file => file.path) : [];
 
     if (!nombre || !ubicacion) {
         return res.status(400).json({ msg: 'Faltan parámetros obligatorios: nombre y ubicacion' });
@@ -44,7 +45,7 @@ const crearLugar = async (req, res) => {
             descripcion,
             ubicacion,
             categoria,
-            imagen,
+            imagen: imagenes,
             video
         });
 

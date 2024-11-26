@@ -114,10 +114,50 @@ const hotelEconomico = async (req, res) => {
     }
 };
 
+const habitacionesDestino = async (req, res) => {
+    try {
+        const { destino } = req.query; 
+
+        const hoteles = await Hotel.find({
+            'ubicacion.ciudad': destino 
+        });
+        
+        if (hoteles.length === 0) {
+            return res.status(404).json({ mensaje: 'No se encontraron hoteles en el destino especificado' });
+        }
+
+        let habitacionesDestino = [];
+
+        hoteles.forEach(hotel => {
+            hotel.habitaciones.forEach(habitacion => {
+                habitacionesDestino.push({
+                    hotel: hotel.nombre, 
+                    ciudad: hotel.ubicacion.ciudad,
+                    tipo: habitacion.tipo, 
+                    descripcion: habitacion.descripcion, 
+                    capacidad: habitacion.capacidad, 
+                    precioPorNoche: habitacion.precioPorNoche, 
+                    imgHabitacion: habitacion.imgHabitacion 
+                });
+            });
+        });
+
+        if (habitacionesDestino.length === 0) {
+            return res.status(404).json({ mensaje: 'No se encontraron habitaciones disponibles en el destino especificado' });
+        }
+
+        res.status(200).json(habitacionesDestino); 
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error al obtener las habitaciones', error });
+    }
+};
+
+
 module.exports = {
     crearHotel,
     obtenerHotel,
     obtenerHotelId,
+    habitacionesDestino,
     actualizarHotelId,
     eliminarHotel,
     hotelEconomico,

@@ -146,9 +146,10 @@ const buscarVuelosVuelta = async (req, res) => {
     }
 };
 
-const buscarVuelosResultados = async (req, res) => {
+const buscarVuelosResultados = async (req, res) => { 
     let { origen, destino, fechaSalida, fechaVuelta } = req.params;
     console.log('Consulta recibida:', { origen, destino, fechaSalida, fechaVuelta });
+    
     if (!origen || !destino || !fechaSalida || !fechaVuelta) {
         return res.status(400).json({ error: 'Faltan parámetros requeridos: origen, destino, fechaSalida y fechaVuelta.' });
     }
@@ -158,9 +159,11 @@ const buscarVuelosResultados = async (req, res) => {
 
     const fechaSalidaObj = new Date(fechaSalida);
     const fechaVueltaObj = new Date(fechaVuelta);
+
     if (isNaN(fechaSalidaObj) || isNaN(fechaVueltaObj)) {
         return res.status(400).json({ error: 'Fecha de salida o vuelta no válidas.' });
     }
+
     try {
         const vuelosIda = await Vuelos.find({
             origen: origen,
@@ -170,6 +173,7 @@ const buscarVuelosResultados = async (req, res) => {
                 $lt: fechaVueltaObj 
             }
         });
+
         const vuelosVuelta = await Vuelos.find({
             origen: destino,
             destino: origen,
@@ -177,19 +181,21 @@ const buscarVuelosResultados = async (req, res) => {
                 $gte: fechaVueltaObj 
             }
         });
-;
+
         console.log('Vuelos de ida:', vuelosIda);
         console.log('Vuelos de vuelta:', vuelosVuelta);
-        if (vuelosIda.length === 0 && vuelosVuelta.length === 0 && vuelosEntreFechas.length === 0) {
+
+        if (vuelosIda.length === 0 && vuelosVuelta.length === 0) {
             return res.status(404).json({ error: 'No se encontraron vuelos para los criterios solicitados.' });
         }
-        // Responder con los vuelos encontrados
-        res.json({ vuelosIda, vuelosVuelta});
+
+        res.json({ vuelosIda, vuelosVuelta });
     } catch (error) {
         console.error('Error al buscar vuelos:', error);
         res.status(500).json({ error: 'Error al buscar vuelos.' });
     }
 };
+
 module.exports = {
     obtenervuelos,
     buscarVuelosIda,

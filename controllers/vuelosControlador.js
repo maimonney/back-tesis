@@ -152,6 +152,10 @@ const buscarVuelosResultados = async (req, res) => {
     if (!origen || !destino || !fechaSalida || !fechaVuelta) {
         return res.status(400).json({ error: 'Faltan parámetros requeridos: origen, destino, fechaSalida y fechaVuelta.' });
     }
+
+    origen = obtenerCodigoIATA(origen);
+    destino = obtenerCodigoIATA(destino);
+
     const fechaSalidaObj = new Date(fechaSalida);
     const fechaVueltaObj = new Date(fechaVuelta);
     if (isNaN(fechaSalidaObj) || isNaN(fechaVueltaObj)) {

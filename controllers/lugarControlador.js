@@ -42,19 +42,19 @@ const provinciasArgentinas = [
     }
 
      // Subir imágenes a Cloudinary 
-     if (req.files && req.files.imagen) {
-        try {
+    //  if (req.files && req.files.imagen) {
+    //     try {
 
-            for (let i = 0; i < req.files.imagen.length; i++) {
-                const image = req.files.imagen[i];
-                const result = await cloudinary.uploader.upload(image.path); 
+    //         for (let i = 0; i < req.files.imagen.length; i++) {
+    //             const image = req.files.imagen[i];
+    //             const result = await cloudinary.uploader.upload(image.path); 
 
-                imagenes.push(result.secure_url);
-            }
-        } catch (error) {
-            return res.status(500).json({ msg: 'Error al subir las imágenes', error: error.message });
-        }
-    }
+    //             imagenes.push(result.secure_url);
+    //         }
+    //     } catch (error) {
+    //         return res.status(500).json({ msg: 'Error al subir las imágenes', error: error.message });
+    //     }
+    // }
 
     try {
         const nuevoLugar = new Lugar({

@@ -64,18 +64,26 @@ const inicio = async (req, res) => {
             return res.status(401).json({ msg: 'Contraseña incorrecta' });
         }
 
-        // const token = jwt.sign({ userId: user._id, rols: user.rols, email: user.email, nombre: user.nombre }, claveSecreta, { expiresIn: '1h' });
+        // Generar el token
+        const token = jwt.sign({ 
+            userId: user._id, 
+            rols: user.rols, 
+            email: user.email, 
+            nombre: user.nombre 
+        }, claveSecreta, { expiresIn: '1h' });
 
+        // Enviar la respuesta con el token
         return res.status(200).json({
             msg: 'Inicio de sesión exitoso',
-            // token, 
-            user: { id: user._id, email: user.email, rols: user.rols, nombre: user.nombre }
+            user: { id: user._id, email: user.email, rols: user.rols, nombre: user.nombre },
+            token: token // Aquí agregamos el token en la respuesta
         });
     } catch (error) {
         console.error('Error al iniciar sesión:', error);
         res.status(500).json({ msg: 'Error al iniciar sesión' });
     }
 };
+
 
 const obtenerUsuario = async (req, res) => {
     try {

@@ -1,4 +1,4 @@
-const cloudinary = require('cloudinary').v2;
+// const cloudinary = require('cloudinary').v2;
 const Lugar = require('../models/lugarModelo');
 
 //Provincias

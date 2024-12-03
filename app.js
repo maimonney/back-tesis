@@ -15,10 +15,7 @@ const apiVuelos = process.env.API_KEY;
 const corsOptions = {
     origin: ['http://localhost:5173'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-
     credentials: true ,
-
-    credentials: true,
 
 };
 
@@ -38,17 +35,13 @@ api.use(express.json());
 api.use(express.static('public'));
 // api.use('/upload', cloudinaryUpload.array('imagen')); 
 
-api.use(express.json());
-api.use(express.static('public'));
-// api.use('/upload', cloudinaryUpload.array('imagen'));
+
 
 
 // Conectar a MongoDB
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         console.log('Conexión a MongoDB Atlas correcta');
-        
-        // Inicia el servidor solo después de conectar a la base de datos
         api.listen(port, () => {
             console.log(`Servidor corriendo en el puerto ${port}`);
         });
@@ -60,18 +53,7 @@ mongoose.connect(process.env.MONGO_URI)
 // Rutas
 routerAPI(api);
 
-// Manejo de errores
-api.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ message: 'Error interno del servidor' });
-});
-
-
-api.listen(port, () => {
-    console.log(`Servidor corriendo en el puerto ${port}`);
-});
-
 module.exports = api; 
 
-module.exports = api;
+
 

@@ -76,7 +76,7 @@ const inicio = async (req, res) => {
         return res.status(200).json({
             msg: 'Inicio de sesión exitoso',
             user: { id: user._id, email: user.email, rols: user.rols, nombre: user.nombre },
-            token: token // Aquí agregamos el token en la respuesta
+            token: token 
         });
     } catch (error) {
         console.error('Error al iniciar sesión:', error);

@@ -6,9 +6,9 @@ const secretKey = process.env.SECRETKEY;
 
 const autenticar = async (req, res, next) => {
     try {
-        const token = req.headers.authorization; 
+        // Extrae el token del encabezado 'Authorization'
+        const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
 
-      
         if (!token) {
             return res.status(401).json({ message: 'No se proporcionó un token', data: [] });
         }

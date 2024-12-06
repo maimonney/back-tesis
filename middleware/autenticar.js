@@ -6,14 +6,12 @@ const secretKey = process.env.SECRETKEY;
 
 const autenticar = async (req, res, next) => {
     try {
-        // Extrae el token del encabezado 'Authorization'
         const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
 
         if (!token) {
             return res.status(401).json({ message: 'No se proporcionó un token', data: [] });
         }
 
-        // Verificar el token
         jwt.verify(token, secretKey, (error, decoded) => {
             if (error) {
                 return res.status(403).json({ message: 'El token proporcionado es inválido o ha expirado', data: [] });

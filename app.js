@@ -12,17 +12,16 @@ const api = express();
 const port = process.env.PORT || 3000;
 const apiVuelos = process.env.API_KEY;
 
-// Configuración de CORS
 const corsOptions = {
     origin: 'http://localhost:5173',  
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD'],  
     credentials: true, 
 };
 
-// Middleware
+
 api.use(cors(corsOptions));
 
-// Conexión a MongoDB
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
       console.log('Conexión a MongoDB Atlas correcta');

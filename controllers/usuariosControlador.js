@@ -30,8 +30,6 @@ const crearUsuario = async (req, res) => {
         });
 
         await newUser.save();
-
-        // Generar token
         const token = jwt.sign({ 
             userId: newUser._id,  
             rols: newUser.rols, 
@@ -64,7 +62,6 @@ const inicio = async (req, res) => {
             return res.status(401).json({ msg: 'Contraseña incorrecta' });
         }
 
-        // Generar el token
         const token = jwt.sign({ 
             userId: user._id, 
             rols: user.rols, 
@@ -72,7 +69,7 @@ const inicio = async (req, res) => {
             nombre: user.nombre 
         }, claveSecreta, { expiresIn: '1h' });
 
-        // Enviar la respuesta con el token
+      
         return res.status(200).json({
             msg: 'Inicio de sesión exitoso',
             user: { id: user._id, email: user.email, rols: user.rols, nombre: user.nombre },

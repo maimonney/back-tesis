@@ -17,8 +17,8 @@ router.post('/login', inicio);
 
 // Rutas protegidas
 router.get('/', autenticar, obtenerUsuario);          
-router.get('/:id', obtenerUsuarioId);     
+router.get('/:id', autenticar, obtenerUsuarioId);     
 router.delete('/:id', autenticar, borrarUsuarioId);   
-router.put('/:id', actualizarUsuarioId); 
+router.put('/:id', autenticar, actualizarUsuarioId); 
 
 module.exports = router;

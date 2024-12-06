@@ -13,7 +13,7 @@ const port = process.env.PORT || 3000;
 const apiVuelos = process.env.API_KEY;
 
 const corsOptions = {
-    origin: ['https://react-hibridas-iimj.vercel.app/'],
+    origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true ,
 

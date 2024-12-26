@@ -130,6 +130,16 @@ const obtenerUsuario = async (req, res) => {
     }
 };
 
+const obtenerGuia = async (req, res) => {
+    try {
+        const users = await User.find({ role: 'guia' }); 
+        res.status(200).json({ data: users });
+    } catch (error) {
+        console.error('Error al obtener usuarios:', error);
+        res.status(500).json({ message: 'Error al obtener usuarios' });
+    }
+};
+
 const obtenerUsuarioId = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
@@ -178,6 +188,7 @@ module.exports = {
     crearGuias,
     inicio,
     obtenerUsuario,
+    obtenerGuia,
     obtenerUsuarioId,
     borrarUsuarioId,
     actualizarUsuarioId

@@ -8,7 +8,7 @@ const claveSecreta = process.env.SECRETKEY;
 const saltRounds = 10; 
 
 const crearUsuario = async (req, res) => {
-    const { nombre, email, contrasenia, rols } = req.body;
+    const { nombre, email, contrasenia, rols, provincia } = req.body;
 
     if (!nombre || !email || !contrasenia) {
         return res.status(400).json({ msg: 'Faltan parámetros obligatorios' });
@@ -26,7 +26,8 @@ const crearUsuario = async (req, res) => {
             nombre,
             email,
             contrasenia: contraseniaHash,
-            rols: rols || 'user'
+            rols: rols || 'user',
+            provincia  
         });
 
         await newUser.save();

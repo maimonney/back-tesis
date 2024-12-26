@@ -21,7 +21,7 @@ const usuarioSchema = new Schema({
     },
     provincia: {
         type: String,
-        required: true,
+        required: false,
     },
     created: {
         type: Date,

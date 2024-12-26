@@ -8,7 +8,7 @@ const claveSecreta = process.env.SECRETKEY;
 const saltRounds = 10; 
 
 const crearUsuario = async (req, res) => {
-    const { nombre, email, contrasenia, rols } = req.body;
+    const { nombre, email, contrasenia, rols, provincia } = req.body;
 
     if (!nombre || !email || !contrasenia) {
         return res.status(400).json({ msg: 'Faltan parámetros obligatorios' });
@@ -26,7 +26,8 @@ const crearUsuario = async (req, res) => {
             nombre,
             email,
             contrasenia: contraseniaHash,
-            rols: rols || 'user'  
+            rols: rols || 'user',
+            provincia  
         });
 
         await newUser.save();
@@ -38,6 +39,44 @@ const crearUsuario = async (req, res) => {
         }, claveSecreta, { expiresIn: '1h' });
 
         res.status(201).json({ msg: 'Usuario creado con éxito', data: newUser, token });
+    } catch (error) {
+        console.error(error); 
+        res.status(500).json({ msg: 'Error al crear el usuario', error: error.message });
+    }
+};
+
+const crearGuias = async (req, res) => {
+    const { nombre, email, contrasenia, provincia } = req.body;
+
+    if (!nombre || !email || !contrasenia || !provincia) { 
+        return res.status(400).json({ msg: 'Faltan parámetros obligatorios' });
+    }
+
+    try {
+        const usuarioExistente = await User.findOne({ email });
+        if (usuarioExistente) {
+            return res.status(400).json({ msg: 'El usuario ya existe con ese correo electrónico' });
+        }
+
+        const contraseniaHash = await bcrypt.hash(contrasenia, saltRounds);
+
+        const newUser = new User({
+            nombre,
+            email,
+            contrasenia: contraseniaHash,
+            rols: 'guia',
+            provincia 
+        });
+
+        await newUser.save();
+        const token = jwt.sign({ 
+            userId: newUser._id,  
+            rols: newUser.rols, 
+            email: newUser.email,  
+            nombre: newUser.nombre 
+        }, claveSecreta, { expiresIn: '1h' });
+
+        res.status(201).json({ msg: 'Usuario guía creado con éxito', data: newUser, token });
     } catch (error) {
         console.error(error); 
         res.status(500).json({ msg: 'Error al crear el usuario', error: error.message });
@@ -80,7 +119,6 @@ const inicio = async (req, res) => {
         res.status(500).json({ msg: 'Error al iniciar sesión' });
     }
 };
-
 
 const obtenerUsuario = async (req, res) => {
     try {
@@ -137,6 +175,7 @@ const actualizarUsuarioId = async (req, res) => {
 
 module.exports = {
     crearUsuario,
+    crearGuias,
     inicio,
     obtenerUsuario,
     obtenerUsuarioId,

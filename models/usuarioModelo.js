@@ -19,6 +19,10 @@ const usuarioSchema = new Schema({
         enum: ['user', 'admin', 'guia'],
         default: 'user'
     },
+    provincia: {
+        type: String,
+        required: true,
+    },
     created: {
         type: Date,
         default: Date.now,

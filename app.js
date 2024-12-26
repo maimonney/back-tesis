@@ -14,7 +14,7 @@ const apiVuelos = process.env.API_KEY;
 
 const corsOptions = {
     origin: '*',  
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD'],  
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD'], 
     credentials: true, 
 };
 

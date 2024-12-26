@@ -4,6 +4,7 @@ const router = express.Router();
 
 const { 
     crearUsuario,
+    crearGuias,
     inicio,
     obtenerUsuario,
     obtenerUsuarioId,
@@ -13,6 +14,7 @@ const {
 
 // Rutas públicas
 router.post('/', crearUsuario);
+router.post('/guias', crearGuias);
 router.post('/login', inicio);  
 
 // Rutas protegidas

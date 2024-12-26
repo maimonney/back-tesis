@@ -13,7 +13,7 @@ const {
 } = require('../controllers/usuariosControlador');
 
 // Rutas públicas
-router.post('/', crearUsuario);
+router.post('/usuarios', crearUsuario);
 router.post('/guias', crearGuias);
 router.post('/login', inicio);  
 

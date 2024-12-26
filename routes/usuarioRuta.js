@@ -20,7 +20,7 @@ router.post('/login', inicio);
 
 // Rutas protegidas
 router.get('/', autenticar, obtenerUsuario);          
-router.get('/guia', autenticar, obtenerGuia);          
+router.get('/guia', obtenerGuia);          
 router.get('/:id', autenticar, obtenerUsuarioId);     
 router.delete('/:id', autenticar, borrarUsuarioId);   
 router.put('/:id', autenticar, actualizarUsuarioId); 

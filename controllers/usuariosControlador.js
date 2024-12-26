@@ -132,7 +132,7 @@ const obtenerUsuario = async (req, res) => {
 
 const obtenerGuia = async (req, res) => {
     try {
-        const users = await User.find({ role: 'guia' }); 
+        const users = await User.find({ rols: 'guia' }); 
         res.status(200).json({ data: users });
     } catch (error) {
         console.error('Error al obtener usuarios:', error);

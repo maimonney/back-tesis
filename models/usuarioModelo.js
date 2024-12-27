@@ -25,11 +25,11 @@ const usuarioSchema = new Schema({
     },
     fotoPerfil: {
         type: String,
-        default: 'img/default_perfil.png'
+        default: '/img/default_perfil.png'
     },
     fotoPortada: {
         type: String,
-        default: 'img/default_portada.png' 
+        default: '/img/default_portada.png' 
     },
     created: {
         type: Date,

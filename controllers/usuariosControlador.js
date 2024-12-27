@@ -107,13 +107,13 @@ const inicio = async (req, res) => {
             email: user.email, 
             nombre: user.nombre 
         }, claveSecreta, { expiresIn: '1h' });
-
       
         return res.status(200).json({
             msg: 'Inicio de sesión exitoso',
             user: { id: user._id, email: user.email, rols: user.rols, nombre: user.nombre },
             token: token 
         });
+        
     } catch (error) {
         console.error('Error al iniciar sesión:', error);
         res.status(500).json({ msg: 'Error al iniciar sesión' });

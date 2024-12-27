@@ -23,6 +23,14 @@ const usuarioSchema = new Schema({
         type: String,
         required: false,
     },
+    fotoPerfil: {
+        type: String,
+        default: 'img/default_perfil.png'
+    },
+    fotoPortada: {
+        type: String,
+        default: 'img/default_portada.png' 
+    },
     created: {
         type: Date,
         default: Date.now,

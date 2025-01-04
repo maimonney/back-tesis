@@ -34,7 +34,11 @@ const usuarioSchema = new Schema({
     created: {
         type: Date,
         default: Date.now,
-    }
+    },
+    telefono: { 
+        type: String,
+        required: false,
+    },
 });
 
 

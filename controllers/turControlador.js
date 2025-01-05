@@ -25,7 +25,7 @@ const obtenerTursPorGuia = async (req, res) => {
             return res.status(400).json({ message: 'ID de guía inválido' });
         }
 
-        const guia = await User.findOne({ _id: guiaId, rol: 'guia' });
+        const guia = await User.findOne({ _id: guiaId, rols: 'guia' });
 
         if (!guia) {
             return res.status(404).json({ message: 'Guía no encontrado' });

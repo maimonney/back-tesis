@@ -4,6 +4,7 @@ const router = express.Router();
 
 const { 
     obtenerTurs,
+    obtenerTursPorGuia,
     TurId,
     crearTur,
     actualizarTur,
@@ -11,6 +12,7 @@ const {
 } = require('../controllers/turControlador');
 
 router.get('/', obtenerTurs);         
+router.get('/segunGuia', obtenerTursPorGuia);         
 router.get('/:id', TurId);  
 router.post('/',autenticar , crearTur);   
 router.delete('/:id', autenticar, deleteTur);   

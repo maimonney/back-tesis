@@ -2,10 +2,25 @@ const Tur = require('../models/turModelo');
 
 const obtenerTurs = async (req, res) => {
     try {
-        const tours = await Tur.find().populate('guia');
+        const tours = await Tur.find().populate('guia'); 
         res.status(200).json(tours);
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener los tours', error });
+    }
+};
+
+const obtenerTursPorGuia = async (req, res) => {
+    try {
+        const guiaId = req.params.id; 
+        const tours = await Tur.find({ guia: guiaId }).populate('guia'); 
+
+        if (!tours.length) {
+            return res.status(404).json({ message: 'No se encontraron tours para este guía' });
+        }
+
+        res.status(200).json(tours);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener los tours de este guía', error });
     }
 };
 
@@ -64,6 +79,7 @@ const deleteTur = async (req, res) => {
 
 module.exports = {
     obtenerTurs,
+    obtenerTursPorGuia,
     TurId,
     crearTur,
     actualizarTur,

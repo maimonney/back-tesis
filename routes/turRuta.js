@@ -12,7 +12,7 @@ const {
 
 router.get('/', obtenerTurs);         
 router.get('/:id', TurId);  
-router.post('/', crearTur);   
+router.post('/',autenticar , crearTur);   
 router.delete('/:id', autenticar, deleteTur);   
 router.put('/:id', autenticar, actualizarTur); 
 

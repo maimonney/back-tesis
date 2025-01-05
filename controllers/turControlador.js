@@ -11,27 +11,18 @@ const obtenerTurs = async (req, res) => {
 
 const TurId = async (req, res) => {
     try {
-        const { id } = req.params;
-
-        if (!id) {
-            return res.status(400).json({ message: 'El ID del tour es obligatorio.' });
-        }
-
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: 'ID del tour no es válido.' });
-        }
-
-        const tour = await Tur.findById(id).populate('guia');
-        
+        const tourId = req.params.id;
+        const tour = await Tur.findById(tourId); 
+    
         if (!tour) {
-            return res.status(404).json({ message: 'Tour no encontrado' });
+          return res.status(404).json({ message: 'Tour no encontrado' });
         }
-
-        res.status(200).json(tour);
-    } catch (error) {
-        console.error('Error al obtener el tour:', error); 
+    
+        res.json(tour);
+      } catch (error) {
+        console.error(error);
         res.status(500).json({ message: 'Error al obtener el tour', error: error.message });
-    }
+      }
 };
 
 

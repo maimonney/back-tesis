@@ -29,7 +29,7 @@ const TurId = async (req, res) => {
 
         res.status(200).json(tour);
     } catch (error) {
-        console.error('Error al obtener el tour:', error); // Para ayudar a depurar el error en el servidor
+        console.error('Error al obtener el tour:', error); 
         res.status(500).json({ message: 'Error al obtener el tour', error: error.message });
     }
 };

@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Tur = require('../models/turModelo');
 
 const obtenerTurs = async (req, res) => {

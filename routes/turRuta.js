@@ -14,7 +14,7 @@ const {
 router.get('/', obtenerTurs);         
 router.get('/segunGuia', obtenerTursPorGuia);         
 router.get('/:id', TurId);  
-router.post('/',autenticar , crearTur);   
+router.post('/', crearTur);   
 router.delete('/:id', autenticar, deleteTur);   
 router.put('/:id', autenticar, actualizarTur); 
 

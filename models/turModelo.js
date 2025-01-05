@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const turSchema = new Schema({
     guia: {
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'guia', 
+        ref: 'User', 
         required: true,
     },
     titulo:{

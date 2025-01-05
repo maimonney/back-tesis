@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Tur = require('../models/turModelo');
+const User = require('../models/usuarioModelo');
 
 const obtenerTurs = async (req, res) => {
     try {
@@ -12,9 +13,9 @@ const obtenerTurs = async (req, res) => {
 
 const obtenerTursPorGuia = async (req, res) => {
     try {
-        const guiaId = req.query.id; 
+        const guiaId = req.query.id;
 
-        console.log('ID del guía recibido:', guiaId); 
+        console.log('ID del guía recibido:', guiaId);
 
         if (!guiaId) {
             return res.status(400).json({ message: 'ID de guía no proporcionado' });
@@ -24,8 +25,13 @@ const obtenerTursPorGuia = async (req, res) => {
             return res.status(400).json({ message: 'ID de guía inválido' });
         }
 
-        const tours = await Tur.find({ guia: guiaId }).populate('guia');
-        console.log('Tours encontrados:', tours); 
+        const guia = await User.findOne({ _id: guiaId, rol: 'guia' });
+
+        if (!guia) {
+            return res.status(404).json({ message: 'Guía no encontrado' });
+        }
+
+        const tours = await Tur.find({ guia: guiaId }).populate('guia', 'nombre provincia descripcion fotoPerfil');  
 
         if (!tours.length) {
             return res.status(404).json({ message: 'No se encontraron tours para este guía' });
@@ -33,7 +39,7 @@ const obtenerTursPorGuia = async (req, res) => {
 
         res.status(200).json(tours);
     } catch (error) {
-        console.error('Error en obtenerTursPorGuia:', error); 
+        console.error('Error al obtener los tours del guía:', error);
         res.status(500).json({ message: 'Error al obtener los tours de este guía', error: error.message });
     }
 };

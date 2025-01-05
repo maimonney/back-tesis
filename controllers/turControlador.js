@@ -11,7 +11,16 @@ const obtenerTurs = async (req, res) => {
 
 const obtenerTursPorGuia = async (req, res) => {
     try {
-        const guiaId = req.params.id; 
+        const guiaId = req.query.id;
+
+        if (!guiaId) {
+            return res.status(400).json({ message: 'ID de guía no proporcionado' });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(guiaId)) {
+            return res.status(400).json({ message: 'ID de guía inválido' });
+        }
+
         const tours = await Tur.find({ guia: guiaId }).populate('guia'); 
 
         if (!tours.length) {
@@ -20,6 +29,7 @@ const obtenerTursPorGuia = async (req, res) => {
 
         res.status(200).json(tours);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: 'Error al obtener los tours de este guía', error });
     }
 };

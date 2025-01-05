@@ -31,7 +31,7 @@ const obtenerTursPorGuia = async (req, res) => {
             return res.status(404).json({ message: 'Guía no encontrado' });
         }
 
-        const tours = await Tur.find({ guia: guiaId }).populate('guia', 'nombre provincia descripcion fotoPerfil');  
+        const tours = await Tur.find({ guia: guiaId }).populate('guia', 'nombre provincia descripcion fotoPerfil');
 
         if (!tours.length) {
             return res.status(404).json({ message: 'No se encontraron tours para este guía' });

@@ -1,5 +1,4 @@
 const express = require('express');
-const { autenticar } = require('../middleware/autenticar'); 
 const router = express.Router();
 
 const { 
@@ -19,7 +18,7 @@ router.post('/guias', crearGuias);
 router.post('/login', inicio);  
 
 // Rutas protegidas
-router.get('/', autenticar, obtenerUsuario);          
+router.get('/', obtenerUsuario);          
 router.get('/guia', obtenerGuia);          
 router.get('/:id', obtenerUsuarioId);     
 router.delete('/:id', borrarUsuarioId);   

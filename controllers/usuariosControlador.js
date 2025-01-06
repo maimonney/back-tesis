@@ -165,23 +165,28 @@ const borrarUsuarioId = async (req, res) => {
 };
 
 const actualizarUsuarioId = async (req, res) => {
-    const { nombre, email, contrasenia, rols } = req.body;
+    const { nombre, email, contrasenia, rols, provincia, fotoPerfil, fotoPortada, telefono, descripcion } = req.body;
 
     try {
-        const updateData = { nombre, email, rols };
+        const updateData = { nombre, email, rols, provincia, fotoPerfil, fotoPortada, telefono, descripcion };
+        
         if (contrasenia) {
             updateData.contrasenia = await bcrypt.hash(contrasenia, saltRounds);
         }
 
         const user = await User.findByIdAndUpdate(req.params.id, updateData, { new: true });
+        
         if (!user) {
             return res.status(404).json({ msg: 'Usuario no encontrado' });
         }
+        
         res.status(200).json({ msg: 'Usuario actualizado', data: user });
     } catch (error) {
+        console.error(error); 
         res.status(500).json({ msg: 'Error al actualizar usuario' });
     }
 };
+
 
 module.exports = {
     crearUsuario,

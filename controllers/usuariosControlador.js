@@ -165,10 +165,10 @@ const borrarUsuarioId = async (req, res) => {
 };
 
 const actualizarUsuarioId = async (req, res) => {
-    const { nombre, email, contrasenia, rols, provincia, fotoPerfil, fotoPortada, telefono, descripcion } = req.body;
+    const { nombre, email, contrasenia, provincia, fotoPerfil, fotoPortada, telefono, descripcion } = req.body;
 
     try {
-        const updateData = { nombre, email, rols, provincia, fotoPerfil, fotoPortada, telefono, descripcion };
+        const updateData = { nombre, email, provincia, fotoPerfil, fotoPortada, telefono, descripcion };
         
         if (contrasenia) {
             updateData.contrasenia = await bcrypt.hash(contrasenia, saltRounds);

@@ -22,7 +22,7 @@ router.post('/login', inicio);
 router.get('/', autenticar, obtenerUsuario);          
 router.get('/guia', obtenerGuia);          
 router.get('/:id', obtenerUsuarioId);     
-router.delete('/:id', autenticar, borrarUsuarioId);   
-router.put('/:id', autenticar, actualizarUsuarioId); 
+router.delete('/:id', borrarUsuarioId);   
+router.put('/:id', actualizarUsuarioId); 
 
 module.exports = router;

@@ -15,7 +15,7 @@ router.get('/', obtenerTurs);
 router.get('/segunGuia', obtenerTursPorGuia);         
 router.get('/:id', TurId);  
 router.post('/', crearTur);   
-router.delete('/:id', autenticar, deleteTur);   
-router.put('/:id', autenticar, actualizarTur); 
+router.delete('/:id', deleteTur);   
+router.put('/:id', actualizarTur); 
 
 module.exports = router;

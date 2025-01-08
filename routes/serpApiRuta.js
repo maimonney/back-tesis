@@ -7,7 +7,7 @@ const serpApiClient = axios.create({
   timeout: 10000,
 });
 
-router.get('/', async (req, res) => {
+router.get('/lugares', async (req, res) => {
   const { provincia } = req.query;
 
   res.setHeader('Access-Control-Allow-Origin', '*'); 

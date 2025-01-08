@@ -2,34 +2,32 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-// Crear una instancia de axios configurada para la API de SerpApi
 const serpApiClient = axios.create({
   baseURL: 'https://serpapi.com',
   timeout: 10000,
 });
 
-// Ruta para obtener los lugares de una provincia
-router.get('/lugares', async (req, res) => {
+router.get('/', async (req, res) => {
   const { provincia } = req.query;
 
-  // Verificamos que se haya enviado el parámetro 'provincia'
+  res.setHeader('Access-Control-Allow-Origin', '*'); 
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); 
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); 
+
   if (!provincia) {
     return res.status(400).json({ error: 'Se debe proporcionar el nombre de la provincia' });
   }
 
   try {
-    // Realizamos la solicitud a SerpApi
     const response = await serpApiClient.get('/search', {
       params: {
-        engine: 'google_maps',  // Usamos el motor de búsqueda de Google Maps
-        q: provincia,           // La provincia que el usuario quiere buscar
-        api_key: process.env.SERP_API_KEY,  // Usamos la clave de la API desde el archivo .env
+        engine: 'google_maps',  
+        q: provincia,         
+        api_key: process.env.SERP_API_KEY, 
       }
     });
 
-    // Verificamos si hay resultados
     if (response.data && response.data.organic_results) {
-      // Filtramos y retornamos los lugares encontrados
       const lugares = response.data.organic_results.map(lugar => ({
         nombre: lugar.title,
         url: lugar.link,

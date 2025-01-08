@@ -6,8 +6,6 @@ require('dotenv').config();
 
 // const cloudinaryUpload = require('./middleware/cloudinary');
 const routerAPI = require('./routes/index.js');
-// const serpApiRuta = require('./routes/serpApiRuta');
-
 
 const api = express();
 
@@ -21,13 +19,6 @@ const corsOptions = {
 
 api.use(cors(corsOptions));
 
-// const serpApiClient = axios.create({
-//     baseURL: 'https://serpapi.com',
-//     timeout: 10000,
-// });
-
-// const apiKey = process.env.SERP_API_KEY;
-
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
       console.log('Conexión a MongoDB Atlas correcta');
@@ -39,12 +30,11 @@ mongoose.connect(process.env.MONGO_URI)
 
 api.use(express.json());
 api.use(express.static('public'));
-// api.use('/api', serpApiRuta);
+
+routerAPI(api);
 
 api.listen(port, () => {
     console.log(`Servidor corriendo en el puerto ${port}`);
 });
-
-routerAPI(api);
 
 module.exports = api;

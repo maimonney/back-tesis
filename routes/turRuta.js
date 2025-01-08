@@ -12,7 +12,7 @@ const {
 } = require('../controllers/turControlador');
 
 router.get('/', obtenerTurs);         
-router.get('/segunGuia/:id', obtenerTursPorGuia);         
+router.get('/segunGuia', obtenerTursPorGuia);         
 router.get('/:id', TurId);  
 router.post('/', crearTur);   
 router.delete('/:id', deleteTur);   

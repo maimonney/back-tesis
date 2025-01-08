@@ -6,7 +6,7 @@ require('dotenv').config();
 
 // const cloudinaryUpload = require('./middleware/cloudinary');
 const routerAPI = require('./routes/index.js');
-const serpApiRuta = require('./routes/serpApiRuta');
+// const serpApiRuta = require('./routes/serpApiRuta');
 
 
 const api = express();
@@ -21,12 +21,12 @@ const corsOptions = {
 
 api.use(cors(corsOptions));
 
-const serpApiClient = axios.create({
-    baseURL: 'https://serpapi.com',
-    timeout: 10000,
-});
+// const serpApiClient = axios.create({
+//     baseURL: 'https://serpapi.com',
+//     timeout: 10000,
+// });
 
-const apiKey = process.env.SERP_API_KEY;
+// const apiKey = process.env.SERP_API_KEY;
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
@@ -39,7 +39,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 api.use(express.json());
 api.use(express.static('public'));
-api.use('/api', serpApiRuta);
+// api.use('/api', serpApiRuta);
 
 api.listen(port, () => {
     console.log(`Servidor corriendo en el puerto ${port}`);

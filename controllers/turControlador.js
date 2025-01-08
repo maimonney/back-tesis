@@ -74,6 +74,9 @@ const crearTur = async (req, res) => {
 const actualizarTur = async (req, res) => {
     try {
         const { id } = req.params;
+
+        console.log(req.body);
+        
         const updatedTour = await Tur.findByIdAndUpdate(id, req.body, { new: true });
         if (!updatedTour) {
             return res.status(404).json({ message: 'Tour no encontrado' });

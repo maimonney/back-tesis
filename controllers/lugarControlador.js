@@ -74,7 +74,6 @@ const provinciasArgentinas = [
     }
 };
 
-
 const obtenerLugares = async (req, res) => {
     try {
         const lugares = await Lugar.find();

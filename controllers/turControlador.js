@@ -4,7 +4,7 @@ const User = require('../models/usuarioModelo');
 
 const obtenerTurs = async (req, res) => {
     try {
-        const tours = await Tur.findById(req.params.id).populate('guia'); 
+        const tours = await Tur.find().populate('guia'); 
         res.status(200).json(tours);
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener los tours', error });

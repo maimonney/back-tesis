@@ -33,9 +33,6 @@ const obtenerTursPorGuia = async (req, res) => {
 
         const tours = await Tur.find({ guia: guiaId }).populate('guia', 'nombre provincia descripcion fotoPerfil');
 
-        db.turs.find({ guia: { $exists: true } })
-
-
         if (!tours.length) {
             return res.status(404).json({ message: 'No se encontraron tours para este guía' });
         }
@@ -79,7 +76,7 @@ const actualizarTur = async (req, res) => {
         const { id } = req.params;
 
         console.log(req.body);
-
+        
         const updatedTour = await Tur.findByIdAndUpdate(id, req.body, { new: true });
         if (!updatedTour) {
             return res.status(404).json({ message: 'Tour no encontrado' });

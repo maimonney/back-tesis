@@ -23,7 +23,7 @@ router.get("/lugares", async (req, res) => {
     const response = await axios.get("https://serpapi.com/search", {
       params: {
         engine: "google_maps",
-        q: provincia,
+        q: `${provincia}, Argentina`,
         location: "Argentina",
         api_key: apiKey,
         hl: "es"

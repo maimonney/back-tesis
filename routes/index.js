@@ -15,7 +15,7 @@ function routerAPI( app){
     app.use('/arcana/lugares', lugarRuta);
     app.use('/arcana/tur', turRuta);
     app.use('/arcana/excursiones', excursionRuta);
-    app.use('/arcana/api', serpapi);
+    app.use('/prueba', serpapi);
 }
 
 module.exports = routerAPI;

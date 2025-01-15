@@ -1,29 +1,23 @@
+// serpApiRuta.js
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-const serpApiClient = axios.create({
-  baseURL: 'https://serpapi.com',
-  timeout: 10000,
-});
-
+// Ruta para obtener los lugares de una provincia
 router.get('/lugares', async (req, res) => {
   const { provincia } = req.query;
-
-  res.setHeader('Access-Control-Allow-Origin', '*'); 
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); 
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); 
 
   if (!provincia) {
     return res.status(400).json({ error: 'Se debe proporcionar el nombre de la provincia' });
   }
 
   try {
-    const response = await serpApiClient.get('/search', {
+    // Realiza la solicitud a la API externa para obtener lugares
+    const response = await axios.get('https://api.serpapi.com/search', {
       params: {
-        engine: 'google_maps',  
-        q: provincia,         
-        api_key: process.env.SERP_API_KEY, 
+        engine: 'google_maps',
+        q: provincia,
+        api_key: process.env.SERP_API_KEY,
       }
     });
 
@@ -31,7 +25,7 @@ router.get('/lugares', async (req, res) => {
       const lugares = response.data.organic_results.map(lugar => ({
         nombre: lugar.title,
         url: lugar.link,
-        descripcion: lugar.snippet
+        descripcion: lugar.snippet,
       }));
       res.json(lugares);
     } else {

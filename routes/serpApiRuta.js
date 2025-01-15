@@ -12,13 +12,12 @@ router.get('/lugares', async (req, res) => {
   }
 
   try {
-    // Realiza la solicitud a la API externa para obtener lugares
     const response = await axios.get('https://api.serpapi.com/search', {
       params: {
         engine: 'google_maps',
         q: provincia,
         api_key: process.env.SERP_API_KEY,
-      }
+      },
     });
 
     if (response.data && response.data.organic_results) {
@@ -31,11 +30,14 @@ router.get('/lugares', async (req, res) => {
     } else {
       res.status(404).json({ error: 'No se encontraron lugares para esta provincia' });
     }
-
   } catch (error) {
-    console.error('Error al obtener lugares:', error);
-    res.status(500).json({ error: 'Hubo un problema al obtener los lugares' });
+    console.error('Error al obtener lugares:', error.response?.data || error.message);
+    res.status(500).json({
+      error: 'Hubo un problema al obtener los lugares',
+      detalle: error.response?.data || error.message,
+    });
   }
 });
+
 
 module.exports = router;

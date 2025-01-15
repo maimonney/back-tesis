@@ -31,7 +31,11 @@ router.get('/lugares', async (req, res) => {
       res.status(404).json({ error: 'No se encontraron lugares para esta provincia' });
     }
   } catch (error) {
-    console.error('Error al obtener lugares:', error);
+    console.error('Error al realizar la solicitud a SerpAPI:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+    });
     res.status(500).json({ error: 'Hubo un problema al obtener los lugares' });
   }
 });

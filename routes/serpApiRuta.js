@@ -31,6 +31,7 @@ router.get("/lugares", async (req, res) => {
     console.log("Respuesta de SerpAPI recibida:", response.data);
 
     if (response.data && response.data.place_results) {
+      console.log("Informacion encontrada:", response.data.place_results);
       return res.json(response.data);
     } else {
       console.log("No se encontraron resultados para esta provincia.");

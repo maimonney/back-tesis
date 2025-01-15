@@ -16,7 +16,7 @@ router.get('/lugares', async (req, res) => {
       params: {
         engine: 'google_maps',
         q: provincia,
-        api_key: process.env.SERP_API_KEY,
+        api_key: fce2e8159dbdd9b9bbfec98bffc70e1c891f67e2845890afb96636a2aa59fa6c,
       },
     });
 

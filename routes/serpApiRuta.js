@@ -32,13 +32,17 @@ router.get("/lugares", async (req, res) => {
 
     console.log("Respuesta de SerpAPI recibida:", response.data);
 
-    if (response.data && response.data.organic_results) {
-      console.log("Lugares encontrados:", response.data.organic_results);
-      const lugares = response.data.organic_results.map((lugar) => ({
-        nombre: lugar.title,
-        url: lugar.link,
-        descripcion: lugar.snippet,
+    // Usamos place_results en lugar de organic_results
+    if (response.data && response.data.place_results) {
+      console.log("Lugares encontrados:", response.data.place_results);
+      
+      // Mapeamos los datos de place_results
+      const lugares = response.data.place_results.map((lugar) => ({
+        nombre: lugar.title,        // Asegúrate de que `title` sea el campo adecuado
+        url: lugar.link,            // Asegúrate de que `link` sea el campo adecuado
+        descripcion: lugar.snippet, // Asegúrate de que `snippet` sea el campo adecuado
       }));
+
       return res.json(lugares);
     } else {
       console.log("No se encontraron resultados para esta provincia.");

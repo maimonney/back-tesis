@@ -12,7 +12,7 @@ router.get('/lugares', async (req, res) => {
   }
 
   try {
-    const response = await axios.get('https://api.serpapi.com/search', {
+    const response = await axios.get('https://serpapi.com/search', {
       params: {
         engine: 'google_maps',
         q: provincia,

@@ -3,7 +3,6 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 
-// Ruta para obtener los lugares de una provincia
 router.get("/lugares", async (req, res) => {
   const { provincia } = req.query;
 
@@ -19,7 +18,6 @@ router.get("/lugares", async (req, res) => {
   try {
     const apiKey = process.env.SERP_API_KEY;
 
-    // Verifica que la API Key esté correctamente configurada
     console.log("API Key:", apiKey);
 
     const response = await axios.get("https://serpapi.com/search", {
@@ -32,18 +30,8 @@ router.get("/lugares", async (req, res) => {
 
     console.log("Respuesta de SerpAPI recibida:", response.data);
 
-    // Usamos place_results en lugar de organic_results
     if (response.data && response.data.place_results) {
-      console.log("Lugares encontrados:", response.data.place_results);
-      
-      // Mapeamos los datos de place_results
-      const lugares = response.data.place_results.map((lugar) => ({
-        nombre: lugar.title,        // Asegúrate de que `title` sea el campo adecuado
-        url: lugar.link,            // Asegúrate de que `link` sea el campo adecuado
-        descripcion: lugar.snippet, // Asegúrate de que `snippet` sea el campo adecuado
-      }));
-
-      return res.json(lugares);
+      return res.json(response.data);
     } else {
       console.log("No se encontraron resultados para esta provincia.");
       return res

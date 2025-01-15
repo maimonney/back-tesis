@@ -59,9 +59,7 @@ router.get("/destinos", async (req, res) => {
 
   if (!provincia) {
     console.log("Error: No se proporcionó provincia.");
-    return res
-      .status(400)
-      .json({ error: "Se debe proporcionar el nombre de la provincia" });
+    return res.status(400).json({ error: "Se debe proporcionar el nombre de la provincia" });
   }
 
   try {
@@ -78,24 +76,22 @@ router.get("/destinos", async (req, res) => {
       params: {
         engine: "google",
         q: `${provincia} Destinations, Argentina`,
-        location: "Argentina",
+        location: "Argentina", 
         api_key: apiKey,
-        hl: "es"
+        hl: "es" 
       },
     });
 
     console.log("Respuesta completa de SerpAPI:", response.data);
 
-    // Asegurarse de que la propiedad local_results exista en la respuesta
-    if (response.data && response.data.local_results) {
+    if (response.data && response.data.local_results && response.data.local_results.length > 0) {
       console.log("Información de destinos encontrada:", response.data.local_results);
-      return res.json(response.data.local_results); 
+      return res.json(response.data.local_results);
     } else {
       console.log("No se encontraron destinos para esta provincia.");
-      return res
-        .status(404)
-        .json({ error: "No se encontraron destinos para esta provincia" });
+      return res.status(404).json({ error: "No se encontraron destinos para esta provincia" });
     }
+
   } catch (error) {
     console.error("Error al realizar la solicitud a SerpAPI para destinos:", error);
     console.error("Detalles del error:", error.response ? error.response.data : error.message);
@@ -107,6 +103,5 @@ router.get("/destinos", async (req, res) => {
     });
   }
 });
-
 
 module.exports = router;

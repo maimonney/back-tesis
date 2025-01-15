@@ -24,6 +24,7 @@ router.get("/lugares", async (req, res) => {
       params: {
         engine: "google_maps",
         q: provincia,
+        location: "Argentina",
         api_key: apiKey,
         hl: "es"
       },

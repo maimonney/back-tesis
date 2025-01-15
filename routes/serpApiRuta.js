@@ -36,7 +36,11 @@ router.get('/lugares', async (req, res) => {
       response: error.response?.data,
       status: error.response?.status,
     });
-    res.status(500).json({ error: 'Hubo un problema al obtener los lugares' });
+    res.status(500).json({ error: 'Hubo un problema al obtener los lugares', 
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+     });
   }
 });
 

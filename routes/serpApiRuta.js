@@ -21,7 +21,7 @@ router.get('/lugares', async (req, res) => {
     });
 
     if (response.data && response.data.organic_results) {
-      const lugares = response.data.organic_results.map(lugar => ({
+      const lugares = response.data.organic_results.map((lugar) => ({
         nombre: lugar.title,
         url: lugar.link,
         descripcion: lugar.snippet,
@@ -31,13 +31,11 @@ router.get('/lugares', async (req, res) => {
       res.status(404).json({ error: 'No se encontraron lugares para esta provincia' });
     }
   } catch (error) {
-    console.error('Error al obtener lugares:', error.response?.data || error.message);
-    res.status(500).json({
-      error: 'Hubo un problema al obtener los lugares',
-      detalle: error.response?.data || error.message,
-    });
+    console.error('Error al obtener lugares:', error);
+    res.status(500).json({ error: 'Hubo un problema al obtener los lugares' });
   }
 });
+
 
 
 module.exports = router;

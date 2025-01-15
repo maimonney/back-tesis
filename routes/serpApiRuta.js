@@ -67,6 +67,11 @@ router.get("/destinos", async (req, res) => {
   try {
     const apiKey = process.env.SERP_API_KEY;
 
+    if (!apiKey) {
+      console.log("Error: La clave API no está configurada.");
+      return res.status(500).json({ error: "API key no configurada" });
+    }
+
     console.log("API Key:", apiKey);
 
     const response = await axios.get("https://serpapi.com/search", {
@@ -79,8 +84,9 @@ router.get("/destinos", async (req, res) => {
       },
     });
 
-    console.log("Respuesta de SerpAPI para destinos recibida:", response.data);
+    console.log("Respuesta completa de SerpAPI:", response.data);
 
+    // Asegurarse de que la propiedad local_results exista en la respuesta
     if (response.data && response.data.local_results) {
       console.log("Información de destinos encontrada:", response.data.local_results);
       return res.json(response.data.local_results); 
@@ -92,14 +98,15 @@ router.get("/destinos", async (req, res) => {
     }
   } catch (error) {
     console.error("Error al realizar la solicitud a SerpAPI para destinos:", error);
-    console.error("Detalles del error:", error.response?.data);
+    console.error("Detalles del error:", error.response ? error.response.data : error.message);
+
     return res.status(500).json({
       error: "Hubo un problema al obtener los destinos turísticos",
       message: error.message,
-      response: error.response?.data,
-      status: error.response?.status,
+      details: error.response ? error.response.data : "Sin detalles de respuesta",
     });
   }
 });
+
 
 module.exports = router;

@@ -206,7 +206,7 @@ const buscarVuelosResultados = async (req, res) => {
             console.log("Resultados de vuelos encontrados:", response.data.flights);
             return res.json(response.data.flights);
         } else {
-            console.log("No se encontraron vuelos o no está la propiedad 'flights'.");
+            console.log("No se encontraron vuelos en la respuesta:", response.data);
             return res.status(404).json({ error: 'No se encontraron resultados para los criterios solicitados.' });
         }
     } catch (error) {

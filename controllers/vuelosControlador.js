@@ -155,6 +155,7 @@ const buscarVuelosResultados = async (req, res) => {
     console.log('Consulta recibida:', { origen, destino, fechaSalida, fechaVuelta });
 
     if (!origen || !destino || !fechaSalida || !fechaVuelta) {
+        console.log('Faltan parámetros requeridos.');
         return res.status(400).json({
             error: 'Faltan parámetros requeridos: origen, destino, fechaSalida y fechaVuelta.'
         });
@@ -164,8 +165,11 @@ const buscarVuelosResultados = async (req, res) => {
     const fechaVueltaObj = new Date(fechaVuelta);
 
     if (isNaN(fechaSalidaObj) || isNaN(fechaVueltaObj)) {
+        console.log('Fechas no válidas:', { fechaSalidaObj, fechaVueltaObj });
         return res.status(400).json({ error: 'Fecha de salida o vuelta no válidas.' });
     }
+
+    console.log("Fechas convertidas:", { fechaSalidaObj, fechaVueltaObj });
 
     try {
         const apiKey = process.env.SERP_API_KEY;
@@ -177,14 +181,13 @@ const buscarVuelosResultados = async (req, res) => {
 
         console.log("Clave API utilizada:", apiKey);
 
-        // Realizando la consulta a SerpAPI
         const response = await axios.get("https://serpapi.com/search", {
             params: {
                 engine: "google_flights",
                 departure_id: origen.toUpperCase(),
                 arrival_id: destino.toUpperCase(),
-                outbound_date: fechaSalida,  // Se pasa fecha de salida
-                return_date: fechaVuelta,    // Se pasa fecha de vuelta
+                outbound_date: fechaSalida,  
+                return_date: fechaVuelta,   
                 currency: "ARS",
                 hl: "es",
                 api_key: apiKey
@@ -209,7 +212,6 @@ const buscarVuelosResultados = async (req, res) => {
         });
     }
 };
-
 
 module.exports = {
     obtenervuelos,

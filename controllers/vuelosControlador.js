@@ -155,35 +155,16 @@ const buscarVuelosResultados = async (req, res) => {
     console.log('Consulta recibida:', { departure_id, arrival_id, outbound_date, return_date });
 
     if (!departure_id || !arrival_id || !outbound_date || !return_date) {
-        console.log('Faltan parámetros requeridos.');
         return res.status(400).json({
             error: 'Faltan parámetros requeridos: departure_id, arrival_id, outbound_date y return_date.'
         });
     }
 
-    const fechaSalidaObj = new Date(outbound_date);
-    const fechaVueltaObj = new Date(return_date);
-
-    if (isNaN(fechaSalidaObj) || isNaN(fechaVueltaObj)) {
-        console.log('Fechas no válidas:', { fechaSalidaObj, fechaVueltaObj });
-        return res.status(400).json({ error: 'Fecha de salida o vuelta no válidas.' });
-    }
-
-    console.log("Fechas convertidas:", { fechaSalidaObj, fechaVueltaObj });
-
     try {
         const apiKey = process.env.SERP_API_KEY;
 
         if (!apiKey) {
-            console.error('Error: La clave API no está configurada.');
             return res.status(500).json({ error: 'API key no configurada' });
-        }
-
-        console.log("Clave API utilizada:", apiKey);
-
-        if (!/^[A-Za-z]{3}$/.test(departure_id) || !/^[A-Za-z]{3}$/.test(arrival_id)) {
-            console.log('Los códigos de aeropuerto no son válidos:', { departure_id, arrival_id });
-            return res.status(400).json({ error: 'Los códigos de aeropuerto deben ser de 3 letras (IATA).' });
         }
 
         const response = await axios.get("https://serpapi.com/search", {
@@ -199,14 +180,11 @@ const buscarVuelosResultados = async (req, res) => {
             },
         });
 
-        console.log("Estructura de la respuesta de SerpAPI:", response.data);
+        console.log("Respuesta de SerpAPI:", response.data);
 
-        // Comprobación de los resultados de vuelos
         if (response.data && response.data.flights_results) {
-            console.log("Resultados de vuelos encontrados:", response.data.flights_results);
             return res.json(response.data.flights_results);
         } else {
-            console.log("No se encontraron resultados para los vuelos.");
             return res.status(404).json({ error: 'No se encontraron resultados para los criterios solicitados.' });
         }
     } catch (error) {
@@ -218,6 +196,7 @@ const buscarVuelosResultados = async (req, res) => {
         });
     }
 };
+
 
 module.exports = {
     obtenervuelos,

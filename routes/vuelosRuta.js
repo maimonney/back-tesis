@@ -11,6 +11,6 @@ router.get('/', obtenervuelos);
 router.get('/:id', buscarVueloPorId);
 router.get('/ida/:origen/:destino/:fechaSalida', buscarVuelosIda);
 router.get('/vuelta/:origen/:destino/:fechaSalida', buscarVuelosVuelta);
-router.get('/resultados', buscarVuelosResultados);
+router.get('/buscar/resultados', buscarVuelosResultados);
 
 module.exports = router;

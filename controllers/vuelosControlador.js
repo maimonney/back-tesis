@@ -199,15 +199,14 @@ const buscarVuelosResultados = async (req, res) => {
             },
         });
 
-        console.log("Estructura de la respuesta de SerpAPI:", response.data);
+        console.log("Estructura completa de la respuesta de SerpAPI:", response.data);
 
-        const { flights } = response.data;
-
-        if (flights && flights.length > 0) {
-            console.log("Resultados de vuelos encontrados:", flights);
-            return res.json(flights); 
+        // Verifica si la respuesta contiene los vuelos
+        if (response.data && response.data.flights && Array.isArray(response.data.flights)) {
+            console.log("Resultados de vuelos encontrados:", response.data.flights);
+            return res.json(response.data.flights);
         } else {
-            console.log("No se encontraron resultados para los vuelos.");
+            console.log("No se encontraron vuelos o no está la propiedad 'flights'.");
             return res.status(404).json({ error: 'No se encontraron resultados para los criterios solicitados.' });
         }
     } catch (error) {
@@ -219,6 +218,7 @@ const buscarVuelosResultados = async (req, res) => {
         });
     }
 };
+
 
 module.exports = {
     obtenervuelos,

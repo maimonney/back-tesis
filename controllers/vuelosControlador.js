@@ -154,7 +154,6 @@ const buscarVuelosResultados = async (req, res) => {
 
     console.log('Consulta recibida:', { departure_id, arrival_id, outbound_date, return_date });
 
-    // Verificar si faltan parámetros
     if (!departure_id || !arrival_id || !outbound_date || !return_date) {
         console.log('Faltan parámetros requeridos.');
         return res.status(400).json({
@@ -162,11 +161,9 @@ const buscarVuelosResultados = async (req, res) => {
         });
     }
 
-    // Convertir las fechas de salida y vuelta
     const fechaSalidaObj = new Date(outbound_date);
     const fechaVueltaObj = new Date(return_date);
 
-    // Verificar si las fechas son válidas
     if (isNaN(fechaSalidaObj) || isNaN(fechaVueltaObj)) {
         console.log('Fechas no válidas:', { fechaSalidaObj, fechaVueltaObj });
         return res.status(400).json({ error: 'Fecha de salida o vuelta no válidas.' });
@@ -184,13 +181,11 @@ const buscarVuelosResultados = async (req, res) => {
 
         console.log("Clave API utilizada:", apiKey);
 
-        // Validar los códigos IATA
         if (!/^[A-Za-z]{3}$/.test(departure_id) || !/^[A-Za-z]{3}$/.test(arrival_id)) {
             console.log('Los códigos de aeropuerto no son válidos:', { departure_id, arrival_id });
             return res.status(400).json({ error: 'Los códigos de aeropuerto deben ser de 3 letras (IATA).' });
         }
 
-        // Realizar la solicitud a SerpAPI
         const response = await axios.get("https://serpapi.com/search", {
             params: {
                 engine: "google_flights",
@@ -205,20 +200,32 @@ const buscarVuelosResultados = async (req, res) => {
             },
         });
 
-        console.log("Estructura completa de la respuesta de SerpAPI:", response.data);
+        console.log("Estructura completa de la respuesta de SerpAPI:", JSON.stringify(response.data, null, 2));
 
-        // Verificar si se encuentran resultados de vuelos
-        if (response.data && response.data.flights && Array.isArray(response.data.flights)) {
-            console.log("Resultados de vuelos encontrados:", response.data.flights);
-            return res.json(response.data.flights);
+        if (response.data && response.data.best_flights && Array.isArray(response.data.best_flights)) {
+            console.log("Mejores vuelos encontrados:");
+            
+            response.data.best_flights.forEach((flight, index) => {
+                console.log(`Vuelo ${index + 1}:`);
+                console.log("Duración total:", flight.total_duration);
+                console.log("Emisiones de carbono:", flight.carbon_emissions);
+                console.log("Precio:", flight.price);
+                console.log("Tipo de vuelo:", flight.type);
+                console.log("Logo de aerolínea:", flight.airline_logo);
+                console.log("Token de salida:", flight.departure_token);
+
+                flight.flights.forEach((vuelo, i) => {
+                    console.log(`  Vuelo ${i + 1}:`, vuelo);
+                });
+            });
+
+            return res.json(response.data.best_flights);
         } else {
             console.log("No se encontraron vuelos en la respuesta:", response.data);
             return res.status(404).json({ error: 'No se encontraron resultados para los criterios solicitados.' });
         }
     } catch (error) {
         console.error('Error al buscar vuelos en SerpAPI:', error);
-
-        // Manejo mejorado de errores con detalles
         return res.status(500).json({
             error: 'Error al buscar vuelos en SerpAPI.',
             message: error.message,
@@ -226,6 +233,7 @@ const buscarVuelosResultados = async (req, res) => {
         });
     }
 };
+
 
 
 module.exports = {

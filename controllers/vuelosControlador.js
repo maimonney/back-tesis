@@ -202,11 +202,13 @@ const buscarVuelosResultados = async (req, res) => {
 
         console.log("Estructura completa de la respuesta de SerpAPI:", JSON.stringify(response.data, null, 2));
 
+        const vuelosEncontrados = [];
+
+        // Procesar los resultados de "best_flights"
         if (response.data && response.data.best_flights && Array.isArray(response.data.best_flights)) {
             console.log("Mejores vuelos encontrados:");
-            
             response.data.best_flights.forEach((flight, index) => {
-                console.log(`Vuelo ${index + 1}:`);
+                console.log(`Vuelo ${index + 1} (Mejor vuelo):`);
                 console.log("Duración total:", flight.total_duration);
                 console.log("Emisiones de carbono:", flight.carbon_emissions);
                 console.log("Precio:", flight.price);
@@ -218,12 +220,39 @@ const buscarVuelosResultados = async (req, res) => {
                     console.log(`  Vuelo ${i + 1}:`, vuelo);
                 });
             });
-
-            return res.json(response.data.best_flights);
+            vuelosEncontrados.push(...response.data.best_flights);
         } else {
-            console.log("No se encontraron vuelos en la respuesta:", response.data);
+            console.log("No se encontraron vuelos en best_flights:", response.data);
+        }
+
+        // Procesar los resultados de "other_flights"
+        if (response.data && response.data.other_flights && Array.isArray(response.data.other_flights)) {
+            console.log("Otros vuelos encontrados:");
+            response.data.other_flights.forEach((flight, index) => {
+                console.log(`Vuelo ${index + 1} (Otro vuelo):`);
+                console.log("Duración total:", flight.total_duration);
+                console.log("Emisiones de carbono:", flight.carbon_emissions);
+                console.log("Precio:", flight.price);
+                console.log("Tipo de vuelo:", flight.type);
+                console.log("Logo de aerolínea:", flight.airline_logo);
+                console.log("Token de salida:", flight.departure_token);
+
+                flight.flights.forEach((vuelo, i) => {
+                    console.log(`  Vuelo ${i + 1}:`, vuelo);
+                });
+            });
+            vuelosEncontrados.push(...response.data.other_flights);
+        } else {
+            console.log("No se encontraron vuelos en other_flights:", response.data);
+        }
+
+        // Si se encontraron vuelos, devolverlos
+        if (vuelosEncontrados.length > 0) {
+            return res.json(vuelosEncontrados);
+        } else {
             return res.status(404).json({ error: 'No se encontraron resultados para los criterios solicitados.' });
         }
+
     } catch (error) {
         console.error('Error al buscar vuelos en SerpAPI:', error);
         return res.status(500).json({
@@ -233,6 +262,7 @@ const buscarVuelosResultados = async (req, res) => {
         });
     }
 };
+
 
 
 

@@ -154,7 +154,6 @@ const buscarVuelosResultados = async (req, res) => {
 
     console.log('Consulta recibida:', { departure_id, arrival_id, outbound_date, return_date });
 
-    // Verificación de parámetros faltantes
     if (!departure_id || !arrival_id || !outbound_date || !return_date) {
         console.log('Faltan parámetros requeridos.');
         return res.status(400).json({
@@ -165,7 +164,7 @@ const buscarVuelosResultados = async (req, res) => {
     const fechaSalidaObj = new Date(outbound_date);
     const fechaVueltaObj = new Date(return_date);
 
-    if (isNaN(fechaSalidaObj.getTime()) || isNaN(fechaVueltaObj.getTime())) {
+    if (isNaN(fechaSalidaObj) || isNaN(fechaVueltaObj)) {
         console.log('Fechas no válidas:', { fechaSalidaObj, fechaVueltaObj });
         return res.status(400).json({ error: 'Fecha de salida o vuelta no válidas.' });
     }
@@ -192,16 +191,17 @@ const buscarVuelosResultados = async (req, res) => {
                 engine: "google_flights",
                 departure_id: departure_id.toUpperCase(),
                 arrival_id: arrival_id.toUpperCase(),
-                outbound_date: outbound_date,  
-                return_date: return_date,   
+                outbound_date: outbound_date,
+                return_date: return_date,
                 currency: "ARS",
                 hl: "es",
                 api_key: apiKey
             },
         });
 
-        console.log("Respuesta completa de SerpAPI:", response.data);
+        console.log("Estructura de la respuesta de SerpAPI:", response.data);
 
+        // Comprobación de los resultados de vuelos
         if (response.data && response.data.flights_results) {
             console.log("Resultados de vuelos encontrados:", response.data.flights_results);
             return res.json(response.data.flights_results);
@@ -214,11 +214,10 @@ const buscarVuelosResultados = async (req, res) => {
         return res.status(500).json({
             error: 'Error al buscar vuelos en SerpAPI.',
             message: error.message,
-            details: error.response?.data || "Sin detalles adicionales"
+            details: error.response ? error.response.data : "Sin detalles adicionales"
         });
     }
 };
-
 
 module.exports = {
     obtenervuelos,

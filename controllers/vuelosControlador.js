@@ -195,13 +195,13 @@ const buscarVuelosResultados = async (req, res) => {
                 return_date: return_date,
                 currency: "ARS",
                 hl: "es",
-                api_key: apiKey
+                api_key: apiKey,
+                deep_search: true 
             },
         });
 
         console.log("Estructura completa de la respuesta de SerpAPI:", response.data);
 
-        // Verifica si la respuesta contiene los vuelos
         if (response.data && response.data.flights && Array.isArray(response.data.flights)) {
             console.log("Resultados de vuelos encontrados:", response.data.flights);
             return res.json(response.data.flights);
@@ -218,7 +218,6 @@ const buscarVuelosResultados = async (req, res) => {
         });
     }
 };
-
 
 module.exports = {
     obtenervuelos,

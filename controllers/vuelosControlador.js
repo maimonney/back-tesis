@@ -154,6 +154,7 @@ const buscarVuelosResultados = async (req, res) => {
 
     console.log('Consulta recibida:', { departure_id, arrival_id, outbound_date, return_date });
 
+    // Verificación de parámetros faltantes
     if (!departure_id || !arrival_id || !outbound_date || !return_date) {
         console.log('Faltan parámetros requeridos.');
         return res.status(400).json({
@@ -164,7 +165,7 @@ const buscarVuelosResultados = async (req, res) => {
     const fechaSalidaObj = new Date(outbound_date);
     const fechaVueltaObj = new Date(return_date);
 
-    if (isNaN(fechaSalidaObj) || isNaN(fechaVueltaObj)) {
+    if (isNaN(fechaSalidaObj.getTime()) || isNaN(fechaVueltaObj.getTime())) {
         console.log('Fechas no válidas:', { fechaSalidaObj, fechaVueltaObj });
         return res.status(400).json({ error: 'Fecha de salida o vuelta no válidas.' });
     }
@@ -180,6 +181,11 @@ const buscarVuelosResultados = async (req, res) => {
         }
 
         console.log("Clave API utilizada:", apiKey);
+
+        if (!/^[A-Za-z]{3}$/.test(departure_id) || !/^[A-Za-z]{3}$/.test(arrival_id)) {
+            console.log('Los códigos de aeropuerto no son válidos:', { departure_id, arrival_id });
+            return res.status(400).json({ error: 'Los códigos de aeropuerto deben ser de 3 letras (IATA).' });
+        }
 
         const response = await axios.get("https://serpapi.com/search", {
             params: {

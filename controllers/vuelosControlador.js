@@ -150,19 +150,19 @@ const buscarVuelosVuelta = async (req, res) => {
 };
 
 const buscarVuelosResultados = async (req, res) => {
-    let { origen, destino, fechaSalida, fechaVuelta } = req.query;
+    let { departure_id, arrival_id, outbound_date, return_date } = req.query;
 
-    console.log('Consulta recibida:', { origen, destino, fechaSalida, fechaVuelta });
+    console.log('Consulta recibida:', { departure_id, arrival_id, outbound_date, return_date });
 
-    if (!origen || !destino || !fechaSalida || !fechaVuelta) {
+    if (!departure_id || !arrival_id || !outbound_date || !return_date) {
         console.log('Faltan parámetros requeridos.');
         return res.status(400).json({
-            error: 'Faltan parámetros requeridos: origen, destino, fechaSalida y fechaVuelta.'
+            error: 'Faltan parámetros requeridos: departure_id, arrival_id, outbound_date y return_date.'
         });
     }
 
-    const fechaSalidaObj = new Date(fechaSalida);
-    const fechaVueltaObj = new Date(fechaVuelta);
+    const fechaSalidaObj = new Date(outbound_date);
+    const fechaVueltaObj = new Date(return_date);
 
     if (isNaN(fechaSalidaObj) || isNaN(fechaVueltaObj)) {
         console.log('Fechas no válidas:', { fechaSalidaObj, fechaVueltaObj });
@@ -184,10 +184,10 @@ const buscarVuelosResultados = async (req, res) => {
         const response = await axios.get("https://serpapi.com/search", {
             params: {
                 engine: "google_flights",
-                departure_id: origen.toUpperCase(),
-                arrival_id: destino.toUpperCase(),
-                outbound_date: fechaSalida,  
-                return_date: fechaVuelta,   
+                departure_id: departure_id.toUpperCase(),
+                arrival_id: arrival_id.toUpperCase(),
+                outbound_date: outbound_date,  
+                return_date: return_date,   
                 currency: "ARS",
                 hl: "es",
                 api_key: apiKey
@@ -212,6 +212,7 @@ const buscarVuelosResultados = async (req, res) => {
         });
     }
 };
+
 
 module.exports = {
     obtenervuelos,

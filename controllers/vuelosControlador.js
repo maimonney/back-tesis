@@ -146,16 +146,16 @@ const buscarVuelosVuelta = async (req, res) => {
     }
 };
 
-const buscarVuelosResultados = async (req, res) => { 
-    let { origen, destino, fechaSalida, fechaVuelta } = req.params;
-    console.log('Consulta recibida:', { origen, destino, fechaSalida, fechaVuelta });
-    
-    if (!origen || !destino || !fechaSalida || !fechaVuelta) {
-        return res.status(400).json({ error: 'Faltan parámetros requeridos: origen, destino, fechaSalida y fechaVuelta.' });
-    }
+const buscarVuelosResultados = async (req, res) => {
+    let { origen, destino, fechaSalida, fechaVuelta } = req.query;
 
-    origen = obtenerCodigoIATA(origen);
-    destino = obtenerCodigoIATA(destino);
+    console.log('Consulta recibida:', { origen, destino, fechaSalida, fechaVuelta });
+
+    if (!origen || !destino || !fechaSalida || !fechaVuelta) {
+        return res.status(400).json({
+            error: 'Faltan parámetros requeridos: origen, destino, fechaSalida y fechaVuelta.'
+        });
+    }
 
     const fechaSalidaObj = new Date(fechaSalida);
     const fechaVueltaObj = new Date(fechaVuelta);
@@ -165,34 +165,44 @@ const buscarVuelosResultados = async (req, res) => {
     }
 
     try {
-        const vuelosIda = await Vuelos.find({
-            origen: origen,
-            destino: destino,
-            fechaSalida: {
-                $gte: fechaSalidaObj,
-                $lt: fechaVueltaObj 
-            }
-        });
+        const apiKey = process.env.SERP_API_KEY;
 
-        const vuelosVuelta = await Vuelos.find({
-            origen: destino,
-            destino: origen,
-            fechaSalida: {
-                $gte: fechaVueltaObj 
-            }
-        });
-
-        console.log('Vuelos de ida:', vuelosIda);
-        console.log('Vuelos de vuelta:', vuelosVuelta);
-
-        if (vuelosIda.length === 0 && vuelosVuelta.length === 0) {
-            return res.status(404).json({ error: 'No se encontraron vuelos para los criterios solicitados.' });
+        if (!apiKey) {
+            console.error('Error: La clave API no está configurada.');
+            return res.status(500).json({ error: 'API key no configurada' });
         }
 
-        res.json({ vuelosIda, vuelosVuelta });
+        console.log("Clave API utilizada:", apiKey);
+
+        const response = await axios.get("https://serpapi.com/search", {
+            params: {
+                engine: "google_flights",
+                departure_id: origen.toUpperCase(),
+                arrival_id: destino.toUpperCase(),
+                outbound_date: fechaSalida,
+                return_date: fechaVuelta,
+                currency: "ARS",
+                hl: "es",
+                api_key: apiKey
+            },
+        });
+
+        console.log("Respuesta completa de SerpAPI:", response.data);
+
+        if (response.data && response.data.flights_results) {
+            console.log("Resultados de vuelos encontrados:", response.data.flights_results);
+            return res.json(response.data.flights_results);
+        } else {
+            console.log("No se encontraron resultados para los vuelos.");
+            return res.status(404).json({ error: 'No se encontraron resultados para los criterios solicitados.' });
+        }
     } catch (error) {
-        console.error('Error al buscar vuelos:', error);
-        res.status(500).json({ error: 'Error al buscar vuelos.' });
+        console.error('Error al buscar vuelos en SerpAPI:', error);
+        return res.status(500).json({
+            error: 'Error al buscar vuelos en SerpAPI.',
+            message: error.message,
+            details: error.response?.data || "Sin detalles adicionales"
+        });
     }
 };
 

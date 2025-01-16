@@ -177,13 +177,14 @@ const buscarVuelosResultados = async (req, res) => {
 
         console.log("Clave API utilizada:", apiKey);
 
+        // Realizando la consulta a SerpAPI
         const response = await axios.get("https://serpapi.com/search", {
             params: {
                 engine: "google_flights",
                 departure_id: origen.toUpperCase(),
                 arrival_id: destino.toUpperCase(),
-                outbound_date: fechaSalida,
-                return_date: fechaVuelta,
+                outbound_date: fechaSalida,  // Se pasa fecha de salida
+                return_date: fechaVuelta,    // Se pasa fecha de vuelta
                 currency: "ARS",
                 hl: "es",
                 api_key: apiKey
@@ -208,6 +209,7 @@ const buscarVuelosResultados = async (req, res) => {
         });
     }
 };
+
 
 module.exports = {
     obtenervuelos,

@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 const Vuelos = require('../models/vuelosModelo');
+const express = require("express");
+const axios = require("axios");
+const router = express.Router();
 
 function obtenerCodigoIATA(nombre) {
     const lugaresArgentinos = {

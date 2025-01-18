@@ -1,171 +1,113 @@
-// const cloudinary = require('cloudinary').v2;
-const Lugar = require('../models/lugarModelo');
+const axios = require("axios");
 
-//Provincias
-const provinciasArgentinas = [
-  'Buenos Aires',
-  'Córdoba',
-  'Chubut',
-  'Neuquén',
-  'Misiones',
-  'Mendoza',
-  'San Juan',
-  'Salta',
-  'San Luis',
-  'Santa Cruz',
-  'Chaco',
-  'Santa Fe',
-  'Río Negro',
-  'Tucumán',
-  'La Pampa',
-  'La Rioja',
-  'Santiago del Estero',
-  'Formosa',
-  'Corrientes',
-  'Entre Ríos',
-  'Catamarca',
-  'Jujuy',
-  'Tierra del Fuego',
-  'San Juan',
-  ];
-
-  const crearLugar = async (req, res) => {
-    const { nombre, descripcion, ubicacion, categoria, video } = req.body;
-    const imagenes = [];
-
-    if (!nombre || !ubicacion) {
-        return res.status(400).json({ msg: 'Faltan parámetros obligatorios: nombre y ubicacion' });
+const obtenerProvincias = async (req, res) => {
+    const { provincia } = req.query;
+  
+    console.log("Recibida solicitud para obtener lugares, provincia:", provincia);
+  
+    if (!provincia) {
+      console.log("Error: No se proporcionó provincia.");
+      return res.status(400).json({ error: "Se debe proporcionar el nombre de la provincia" });
     }
-
-    if (!provinciasArgentinas.includes(ubicacion)) {
-        return res.status(400).json({ msg: 'Ubicación no válida. Debe estar en la lista de lugares argentinos.' });
-    }
-
-     // Subir imágenes a Cloudinary 
-    //  if (req.files && req.files.imagen) {
-    //     try {
-
-    //         for (let i = 0; i < req.files.imagen.length; i++) {
-    //             const image = req.files.imagen[i];
-    //             const result = await cloudinary.uploader.upload(image.path); 
-
-    //             imagenes.push(result.secure_url);
-    //         }
-    //     } catch (error) {
-    //         return res.status(500).json({ msg: 'Error al subir las imágenes', error: error.message });
-    //     }
-    // }
-
+  
     try {
-        const nuevoLugar = new Lugar({
-            nombre,
-            descripcion,
-            ubicacion,
-            categoria,
-            imagen: imagenes,
-            video
+      const apiKey = process.env.SERP_API_KEY;
+  
+      console.log("API Key:", apiKey);
+  
+      const response = await axios.get("https://serpapi.com/search", {
+        params: {
+          engine: "google_maps",
+          q: `${provincia}, Argentina`, 
+          api_key: apiKey,
+          hl: "es", 
+        },
+      });
+  
+      console.log("Respuesta de SerpAPI recibida:", response.data);
+  
+      if (response.data && response.data.place_results && Array.isArray(response.data.place_results)) {
+        console.log("Información encontrada:", response.data.place_results);
+        return res.json(response.data.place_results);
+      } else {
+        console.log("No se encontraron resultados para esta provincia.");
+        return res.status(404).json({ error: "No se encontraron lugares para esta provincia" });
+      }
+    } catch (error) {
+      console.error("Error al realizar la solicitud a SerpAPI:", error);
+  
+      if (error.response) {
+        console.error("Detalles del error:", error.response.data);
+        return res.status(error.response.status).json({
+          error: "Hubo un problema al obtener los lugares",
+          message: error.message,
+          response: error.response.data,
+          status: error.response.status,
         });
-
-        await nuevoLugar.save();
-        res.status(201).json({ msg: 'Lugar creado', data: nuevoLugar });
-    } catch (error) {
-        console.error(error); 
-        res.status(500).json({ msg: 'Error al crear el lugar', error: error.message });
+      }
+  
+      console.error("Error desconocido:", error.message);
+      return res.status(500).json({
+        error: "Hubo un problema al obtener los lugares",
+        message: error.message,
+      });
     }
-};
+  };
+  
 
-const obtenerLugares = async (req, res) => {
+  const obtenerLugares = async (req, res) => {
+    const { provincia } = req.query;
+  
+    console.log("Recibida solicitud para obtener destinos, provincia:", provincia);
+  
+    if (!provincia) {
+      console.log("Error: No se proporcionó provincia.");
+      return res.status(400).json({ error: "Se debe proporcionar el nombre de la provincia" });
+    }
+  
     try {
-        const lugares = await Lugar.find();
-        res.status(200).json({ data: lugares });
+      const apiKey = process.env.SERP_API_KEY;
+      if (!apiKey) {
+        console.log("Error: La clave API no está configurada.");
+        return res.status(500).json({ error: "API key no configurada" });
+      }
+  
+      console.log("API Key:", apiKey);
+  
+      const response = await axios.get("https://serpapi.com/search", {
+        params: {
+          engine: "google",
+          q: `${provincia} Destinations, Argentina`, 
+          location: "Argentina",
+          api_key: apiKey,  
+          hl: "es",  
+        },
+      });
+  
+      console.log("Respuesta completa de SerpAPI:", response.data);
+  
+      if (response.data && response.data.local_results && response.data.local_results.length > 0) {
+        console.log("Información de destinos encontrada:", response.data.local_results);
+        return res.json(response.data.local_results);  
+      } else {
+        console.log("No se encontraron destinos para esta provincia.");
+        return res.status(404).json({ error: "No se encontraron destinos para esta provincia" });
+      }
+  
     } catch (error) {
-        res.status(500).json({ msg: 'Error al obtener lugares', error: error.message });
+      console.error("Error al realizar la solicitud a SerpAPI para destinos:", error);
+      console.error("Detalles del error:", error.response ? error.response.data : error.message);
+  
+      return res.status(500).json({
+        error: "Hubo un problema al obtener los destinos turísticos",
+        message: error.message,
+        details: error.response ? error.response.data : "Sin detalles de respuesta",
+      });
     }
-};
-
-const obtenerLugarId = async (req, res) => {
-    try {
-        const lugar = await Lugar.findById(req.params.id);
-        if (!lugar) {
-            return res.status(404).json({ msg: 'Lugar no encontrado' });
-        }
-        console.log(lugar);
-        lugar.id = lugar._id.toString();
-        delete lugar._id;
-        res.status(200).json({ data: lugar });
-    } catch (error) {
-        console.error(error); 
-        res.status(500).json({ msg: 'Error al obtener lugar', error: error.message });
-    }
-};
-
-const actualizarLugarId = async (req, res) => {
-    const { nombre, descripcion, ubicacion, categoria, imagen, video } = req.body;
-
-    if (ubicacion && !provinciasArgentinas.includes(ubicacion)) {
-        return res.status(400).json({ msg: 'Ubicación no válida. Debe estar en la lista de lugares argentinos.' });
-    }
-
-    try {
-        const updateData = { nombre, descripcion, ubicacion, categoria, imagen, video };
-        const lugar = await Lugar.findByIdAndUpdate(req.params.id, updateData, { new: true });
-        if (!lugar) {
-            return res.status(404).json({ msg: 'Lugar no encontrado' });
-        }
-        res.status(200).json({ msg: 'Lugar actualizado', data: lugar });
-    } catch (error) {
-        res.status(500).json({ msg: 'Error al actualizar lugar', error: error.message });
-    }
-};
-
-const eliminarLugarId = async (req, res) => {
-    try {
-        const lugar = await Lugar.findByIdAndDelete(req.params.id);
-        if (!lugar) {
-            return res.status(404).json({ msg: 'Lugar no encontrado' });
-        }
-        res.status(200).json({ msg: 'Lugar eliminado', data: lugar });
-    } catch (error) {
-        res.status(500).json({ msg: 'Error al eliminar lugar', error: error.message });
-    }
-};
-
-const obtenerCategoria = async (req, res) => {
-    try {
-        const categorias = await Lugar.distinct('categoria');  
-
-        if (categorias.length === 0) {
-            return res.status(404).json({ msg: 'No se encontraron categorías' });
-        }
-
-        res.status(200).json({ data: categorias });
-    } catch (error) {
-        res.status(500).json({ msg: 'Error al obtener categorías', error: error.message });
-    }
-};
-
-const obtenerPorCategoria = async (req, res) => {
-    const { categoria } = req.params; 
-
-    try {
-        const lugares = await Lugar.find({ categoria: categoria });  
-
-        if (lugares.length === 0) {
-            return res.status(404).json({ msg: 'No se encontraron lugares para esta categoría' });
-        }
-
-        res.status(200).json({ data: lugares });
-    } catch (error) {
-        res.status(500).json({ msg: 'Error al obtener lugares', error: error.message });
-    }
-};
+  };
+  
 
 module.exports = {
-    crearLugar,
+    obtenerProvincias,
     obtenerLugares,
-    obtenerLugarId,
-    actualizarLugarId,
-    eliminarLugarId,
-    obtenerCategoria,
-    obtenerPorCategoria
 };

@@ -20,13 +20,22 @@ const obtenerProvincias = async (req, res) => {
         hl: "es"
     };
 
+    console.log("Realizando solicitud a SerpAPI con parámetros:", params);
+
     let retries = 3;
     while (retries > 0) {
         try {
+            console.log(`Intento ${4 - retries}`);
             const response = await axios.get(url, { params });
+
+            console.log("Respuesta de SerpAPI:", response.data);
+
             if (response.data && response.data.place_results && Array.isArray(response.data.place_results)) {
+                console.log("Lugares encontrados:", response.data.place_results);
                 return res.json(response.data.place_results);
             }
+
+            console.log("No se encontraron resultados para esta provincia.");
             return res.status(404).json({ error: "No se encontraron lugares para esta provincia" });
         } catch (error) {
             console.error("Error al hacer la solicitud a SerpAPI:", error.message);
@@ -46,6 +55,7 @@ const obtenerProvincias = async (req, res) => {
 
     return res.status(502).json({ error: "El servicio no pudo procesar la solicitud después de varios intentos" });
 };
+
  
 
   const obtenerLugares = async (req, res) => {

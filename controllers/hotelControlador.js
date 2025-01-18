@@ -13,6 +13,10 @@ const obtenerHotel = async (req, res) => {
         const apiKey = process.env.SERP_API_KEY;
         console.log("Clave API:", apiKey ? "Presente" : "No presente");
 
+        if (!apiKey) {
+            return res.status(500).json({ mensaje: "Clave API no configurada correctamente" });
+        }
+
         const response = await axios.get("https://serpapi.com/search", {
             params: {
                 engine: "google_hotels",
@@ -33,7 +37,7 @@ const obtenerHotel = async (req, res) => {
         console.log("Hoteles encontrados:", hoteles);
 
         if (hoteles.length === 0) {
-            console.log("No se encontraron hoteles");
+            console.log("No se encontraron hoteles para los parámetros especificados");
             return res.status(404).json({ mensaje: "No se encontraron hoteles para los parámetros especificados" });
         }
 

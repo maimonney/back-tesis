@@ -13,10 +13,34 @@ const crearHotel = async (req, res) => {
 
 const obtenerHotel = async (req, res) => {
     try {
-        const hoteles = await Hotel.find();
-        res.status(200).json(hoteles);
+        const { location, checkInDate, checkOutDate, adults } = req.query;
+
+        if (!location || !checkInDate || !checkOutDate || !adults) {
+            return res.status(400).json({ mensaje: 'Faltan parámetros requeridos' });
+        }
+
+        const apiKey = process.env.SERP_API_KEY;
+
+        const response = await axios.get("https://serpapi.com/search", {
+            params: {
+                engine: "google_hotels",
+                q: location,
+                check_in_date: checkInDate,
+                check_out_date: checkOutDate,
+                currency: "ARS",
+                hl: "es",
+                gl: "ar",
+                api_key: apiKey,
+                deep_search: true,
+            },
+        });
+
+        const hoteles = response.data.hotels_results || [];
+        res.status(200).json({ hoteles });
+
     } catch (error) {
-        res.status(500).json({ mensaje: 'Error al obtener los hoteles', error });
+        console.error("Error al obtener los hoteles:", error.message);
+        res.status(500).json({ mensaje: 'Error al obtener los hoteles', error: error.message });
     }
 };
 

@@ -22,38 +22,26 @@ const obtenerProvincias = async (req, res) => {
 
     console.log("Realizando solicitud a SerpAPI con parámetros:", params);
 
-    let retries = 3;
-    while (retries > 0) {
-        try {
-            console.log(`Intento ${4 - retries}`);
-            const response = await axios.get(url, { params });
+    try {
+        const response = await axios.get(url, { params });
 
-            console.log("Respuesta de SerpAPI:", response.data);
+        console.log("Respuesta de SerpAPI:", response.data);
 
-            if (response.data && response.data.place_results && Array.isArray(response.data.place_results)) {
-                console.log("Lugares encontrados:", response.data.place_results);
-                return res.json(response.data.place_results);
-            }
-
-            console.log("No se encontraron resultados para esta provincia.");
-            return res.status(404).json({ error: "No se encontraron lugares para esta provincia" });
-        } catch (error) {
-            console.error("Error al hacer la solicitud a SerpAPI:", error.message);
-            if (error.response && error.response.status === 502 && retries > 0) {
-                console.log("Reintentando... Intentos restantes:", retries);
-                retries--;
-                await new Promise(resolve => setTimeout(resolve, 1000));  // Espera 1 segundo antes de reintentar
-            } else {
-                return res.status(error.response ? error.response.status : 500).json({
-                    error: "Hubo un problema al obtener los lugares",
-                    message: error.message,
-                    details: error.response ? error.response.data : "Sin detalles de respuesta",
-                });
-            }
+        if (response.data && response.data.place_results && Array.isArray(response.data.place_results)) {
+            console.log("Lugares encontrados:", response.data.place_results);
+            return res.json(response.data.place_results);
         }
-    }
 
-    return res.status(502).json({ error: "El servicio no pudo procesar la solicitud después de varios intentos" });
+        console.log("No se encontraron resultados para esta provincia.");
+        return res.status(404).json({ error: "No se encontraron lugares para esta provincia" });
+    } catch (error) {
+        console.error("Error al hacer la solicitud a SerpAPI:", error.message);
+        return res.status(error.response ? error.response.status : 500).json({
+            error: "Hubo un problema al obtener los lugares",
+            message: error.message,
+            details: error.response ? error.response.data : "Sin detalles de respuesta",
+        });
+    }
 };
 
  

@@ -1,5 +1,3 @@
-const axios = require("axios");
-
 const obtenerHotel = async (req, res) => {
     try {
         const { q, check_in_date, check_out_date, adults } = req.query;
@@ -24,17 +22,17 @@ const obtenerHotel = async (req, res) => {
                 check_in_date: check_in_date,
                 check_out_date: check_out_date,
                 adults: adults,
-                currency: "ARS",
-                hl: "es",
+                currency: "ARS",  
+                hl: "es",  
                 gl: "ar",
                 api_key: apiKey,
                 deep_search: true,
             },
         });
 
-        console.log("Respuesta de la API recibida:", response.data);
+        console.log("Respuesta completa de la API recibida:", response.data);
 
-        const hoteles = response.data.hotels_results || [];
+        const hoteles = response.data.properties || [];
         console.log("Hoteles encontrados:", hoteles);
 
         if (hoteles.length === 0) {

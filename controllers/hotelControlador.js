@@ -1,9 +1,11 @@
+const axios = require("axios");
+
 const obtenerHotel = async (req, res) => {
     try {
         const { q, check_in_date, check_out_date, adults } = req.query;
         console.log("Parámetros recibidos:", { q, check_in_date, check_out_date, adults });
 
-        if (!q || !check_in_date || !check_out_date || !adults) {
+        if (!q || !check_in_date || !check_out_date) {
             console.log("Faltan parámetros requeridos");
             return res.status(400).json({ mensaje: "Faltan parámetros requeridos" });
         }

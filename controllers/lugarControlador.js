@@ -27,21 +27,24 @@ const obtenerProvincias = async (req, res) => {
 
         console.log("Respuesta completa de SerpAPI:", response.data);
 
-        if (response.data && response.data.place_results && Array.isArray(response.data.place_results)) {
-            response.data.place_results.forEach((place) => {
-                console.log(`Title: ${place.title}`);
-                console.log(`Photos Link: ${place.photos_link}`);
-                if (place.description && place.description.snippet) {
-                    console.log(`Description: ${place.description.snippet}`);
-                }
-                if (Array.isArray(place.images)) {
-                    console.log(`Images: ${place.images.map(image => image.url).join(", ")}`);
-                }
-                if (Array.isArray(place.at_this_location)) {
-                    console.log(`At this location: ${place.at_this_location.length} places`);
-                }
-            });
-            return res.json(response.data.place_results);
+        if (response.data && response.data.place_results && typeof response.data.place_results === 'object') {
+            const place = response.data.place_results;
+
+            console.log(`Title: ${place.title}`);
+            console.log(`Photos Link: ${place.photos_link}`);
+            if (place.description && place.description.snippet) {
+                console.log(`Description: ${place.description.snippet}`);
+            }
+
+            if (Array.isArray(place.images)) {
+                console.log(`Images: ${place.images.map(image => image.url).join(", ")}`);
+            }
+
+            if (Array.isArray(place.at_this_location)) {
+                console.log(`At this location: ${place.at_this_location.length} places`);
+            }
+
+            return res.json(place);  
         } else {
             console.log("No se encontraron 'place_results' en la respuesta.");
             return res.status(404).json({ error: "No se encontraron lugares para esta provincia" });
@@ -56,6 +59,7 @@ const obtenerProvincias = async (req, res) => {
         });
     }
 };
+
 
  
 

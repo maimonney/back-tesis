@@ -2,10 +2,10 @@ const axios = require("axios");
 
 const obtenerHotel = async (req, res) => {
     try {
-        const { location, checkInDate, checkOutDate, adults } = req.query;
-        console.log("Parámetros recibidos:", { location, checkInDate, checkOutDate, adults });
+        const { q, check_in_date, check_out_date, adults } = req.query;
+        console.log("Parámetros recibidos:", { q, check_in_date, check_out_date, adults });
 
-        if (!location || !checkInDate || !checkOutDate || !adults) {
+        if (!q || !check_in_date || !check_out_date || !adults) {
             console.log("Faltan parámetros requeridos");
             return res.status(400).json({ mensaje: "Faltan parámetros requeridos" });
         }
@@ -17,12 +17,13 @@ const obtenerHotel = async (req, res) => {
             return res.status(500).json({ mensaje: "Clave API no configurada correctamente" });
         }
 
-        const response = await axios.get("https://serpapi.com/search", {
+        const response = await axios.get("https://serpapi.com/search.json", {
             params: {
                 engine: "google_hotels",
-                q: location,
-                check_in_date: checkInDate,
-                check_out_date: checkOutDate,
+                q: q,
+                check_in_date: check_in_date,
+                check_out_date: check_out_date,
+                adults: adults,
                 currency: "ARS",
                 hl: "es",
                 gl: "ar",

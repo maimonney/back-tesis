@@ -8,6 +8,6 @@ const {
 
 router.get('/provincia', obtenerProvincias);
 
-router.post('/lugar',  obtenerLugares);
+router.get('/lugar',  obtenerLugares);
 
 module.exports = router;

@@ -60,6 +60,7 @@ const obtenerProvincias = async (req, res) => {
     }
 };
 
+//hay que arreglar esta parte
 const obtenerLugares = async (req, res) => {
     const { provincia } = req.query;
     

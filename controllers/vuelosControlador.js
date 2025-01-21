@@ -117,7 +117,7 @@ const buscarVuelosDeVuelta = async (req, res) => {
 
     console.log('Consulta recibida para vuelos de vuelta:', { departure_id, arrival_id, outbound_date, return_date });
 
-    if (!departure_id || !arrival_id || !outbound_date || !return_date) {
+    if (!departure_id || !arrival_id || !outbound_date ) {
         console.log('Faltan parámetros requeridos.');
         return res.status(400).json({
             error: 'Faltan parámetros requeridos: departure_id, arrival_id, outbound_date y return_date.'
@@ -155,7 +155,6 @@ const buscarVuelosDeVuelta = async (req, res) => {
                 departure_id: arrival_id.toUpperCase(),
                 arrival_id: departure_id.toUpperCase(),
                 outbound_date: return_date,
-                return_date: outbound_date,
                 currency: "ARS",
                 hl: "es",
                 api_key: apiKey,

@@ -152,9 +152,10 @@ const buscarVuelosDeVuelta = async (req, res) => {
         const response = await axios.get("https://serpapi.com/search", {
             params: {
                 engine: "google_flights",
-                departure_id: arrival_id.toUpperCase(), 
-                arrival_id: departure_id.toUpperCase(), 
+                departure_id: arrival_id.toUpperCase(),
+                arrival_id: departure_id.toUpperCase(),
                 outbound_date: return_date,
+                return_date: outbound_date,
                 currency: "ARS",
                 hl: "es",
                 api_key: apiKey,

@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-// const cloudinaryUpload = require('./middleware/cloudinary');
+const cloudinaryRouter = require('./routes/cloudinaryRuta');  // Asegúrate de que la ruta esté correcta
 const routerAPI = require('./routes/index.js');
 
 const api = express();
@@ -12,9 +12,9 @@ const api = express();
 const port = process.env.PORT || 3000;
 
 const corsOptions = {
-    origin: '*',  
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD'], 
-    credentials: true, 
+    credentials: true,
 };
 
 api.use(cors(corsOptions));
@@ -27,9 +27,11 @@ mongoose.connect(process.env.MONGO_URI)
       console.error('Error al conectar a MongoDB Atlas:', err);
   });
 
-
 api.use(express.json());
 api.use(express.static('public'));
+
+// Aquí se agregan las rutas de Cloudinary
+api.use('/arcana', cloudinaryRouter);  // Esto permite que las rutas de Cloudinary estén disponibles bajo /arcana
 
 routerAPI(api);
 

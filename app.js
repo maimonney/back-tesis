@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const cloudinaryRouter = require('./routes/cloudinaryRuta');  // Asegúrate de que la ruta esté correcta
+const cloudinaryRouter = require('./routes/cloudinaryRutas'); // Se importa el router de Cloudinary
 const routerAPI = require('./routes/index.js');
 
 const api = express();

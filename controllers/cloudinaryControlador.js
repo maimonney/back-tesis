@@ -12,18 +12,17 @@ cloudinary.config({
     secure: true,
 });
 
-// Configuración de Multer para almacenar imágenes en memoria
-const storage = multer.memoryStorage();
-const imageUpload = multer({ storage });
-
 // Función para subir imágenes a Cloudinary
 const uploadToCloudinary = (fileBuffer) => {
     return new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
             { folder: 'perfil', resource_type: 'auto' },
             (error, result) => {
-                if (error) reject(error);
-                else resolve(result);
+                if (error) {
+                    console.error('Error al subir imagen a Cloudinary:', error);
+                    return reject(error); // Asegúrate de rechazar la promesa correctamente
+                }
+                resolve(result);
             }
         );
         uploadStream.end(fileBuffer);
@@ -129,5 +128,4 @@ module.exports = {
     subirImagen,
     eliminarImagen,
     actualizarImagen,
-    imageUpload,
 };

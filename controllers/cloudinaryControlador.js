@@ -1,7 +1,7 @@
 const cloudinary = require('cloudinary').v2;
-const User = require('../models/usuarioModelo'); // Asegúrate de que la ruta sea correcta
+const User = require('../models/usuarioModelo');
 const dotenv = require('dotenv');
-dotenv.config(); // Cargar las variables de entorno
+dotenv.config();
 
 // Configurar Cloudinary
 cloudinary.config({
@@ -14,14 +14,17 @@ cloudinary.config({
 // Subir imagen
 const subirImagen = async (req, res) => {
     try {
-        const { id } = req.params; // ID del usuario
-        const { path } = req.file; // Path del archivo cargado
+        const { id } = req.params; 
+        const { path } = req.file; 
+
+        console.log('Subiendo imagen, ruta del archivo:', path);
 
         const resultado = await cloudinary.uploader.upload(path, {
-            folder: 'perfil' // Cambiar según la carpeta deseada
+            folder: 'perfil'
         });
 
-        // Actualizar el usuario con la URL de la imagen subida
+        console.log('Imagen subida a Cloudinary:', resultado);
+
         const user = await User.findByIdAndUpdate(
             id,
             { fotoPerfil: resultado.secure_url },
@@ -29,6 +32,7 @@ const subirImagen = async (req, res) => {
         );
 
         if (!user) {
+            console.log('Usuario no encontrado');
             return res.status(404).json({ msg: 'Usuario no encontrado' });
         }
 
@@ -37,7 +41,7 @@ const subirImagen = async (req, res) => {
             data: user,
         });
     } catch (error) {
-        console.error(error);
+        console.error('Error al subir la imagen:', error);
         res.status(500).json({ msg: 'Error al subir la imagen', error: error.message });
     }
 };
@@ -45,35 +49,38 @@ const subirImagen = async (req, res) => {
 // Eliminar imagen
 const eliminarImagen = async (req, res) => {
     try {
-        const { public_id } = req.body; // Public ID de la imagen en Cloudinary
+        const { public_id } = req.body; 
+
+        console.log('Eliminando imagen de Cloudinary, public_id:', public_id);
 
         await cloudinary.uploader.destroy(public_id);
 
         res.status(200).json({ msg: 'Imagen eliminada con éxito' });
     } catch (error) {
-        console.error(error);
+        console.error('Error al eliminar la imagen:', error);
         res.status(500).json({ msg: 'Error al eliminar la imagen', error: error.message });
     }
 };
 
-// Actualizar imagen (eliminar la anterior y subir una nueva)
 const actualizarImagen = async (req, res) => {
     try {
-        const { id } = req.params; // ID del usuario
-        const { public_id } = req.body; // Public ID de la imagen actual
-        const { path } = req.file; // Path del archivo cargado
+        const { id } = req.params;
+        const { public_id } = req.body;
+        const { path } = req.file;
 
-        // Eliminar la imagen anterior
+        console.log('Actualizando imagen, id:', id, 'public_id:', public_id, 'ruta del archivo:', path);
+
         if (public_id) {
+            console.log('Eliminando imagen anterior de Cloudinary con public_id:', public_id);
             await cloudinary.uploader.destroy(public_id);
         }
 
-        // Subir la nueva imagen
         const resultado = await cloudinary.uploader.upload(path, {
-            folder: 'perfil' // Cambiar según la carpeta deseada
+            folder: 'perfil'
         });
 
-        // Actualizar el usuario con la URL de la nueva imagen
+        console.log('Imagen actualizada en Cloudinary:', resultado);
+
         const user = await User.findByIdAndUpdate(
             id,
             { fotoPerfil: resultado.secure_url },
@@ -81,6 +88,7 @@ const actualizarImagen = async (req, res) => {
         );
 
         if (!user) {
+            console.log('Usuario no encontrado');
             return res.status(404).json({ msg: 'Usuario no encontrado' });
         }
 
@@ -89,7 +97,7 @@ const actualizarImagen = async (req, res) => {
             data: user,
         });
     } catch (error) {
-        console.error(error);
+        console.error('Error al actualizar la imagen:', error);
         res.status(500).json({ msg: 'Error al actualizar la imagen', error: error.message });
     }
 };

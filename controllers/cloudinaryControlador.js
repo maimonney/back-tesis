@@ -87,8 +87,8 @@ const eliminarImagen = async (req, res) => {
 const actualizarImagen = async (req, res) => {
     try {
         const { id } = req.params;
-        const { public_id } = req.body;
-        const file = req.file;
+        const { public_id } = req.body; // Este campo debe enviarse en el cuerpo de la solicitud
+        const file = req.file; // El archivo que sube el usuario
 
         if (!file) {
             return res.status(400).json({ msg: 'No se ha subido ninguna imagen.' });
@@ -97,16 +97,16 @@ const actualizarImagen = async (req, res) => {
         console.log('Actualizando imagen en Cloudinary...');
         if (public_id) {
             console.log('Eliminando imagen anterior...');
-            await cloudinary.uploader.destroy(public_id);
+            await cloudinary.uploader.destroy(public_id); // Eliminar la imagen anterior en Cloudinary
         }
 
-        const result = await uploadToCloudinary(file.buffer);
+        const result = await uploadToCloudinary(file.buffer); // Subir la nueva imagen a Cloudinary
 
         console.log('Imagen actualizada correctamente en Cloudinary:', result);
 
         const user = await User.findByIdAndUpdate(
             id,
-            { fotoPerfil: result.secure_url },
+            { fotoPerfil: result.secure_url }, // Actualizar la URL de la foto de perfil del usuario
             { new: true }
         );
 
@@ -123,6 +123,7 @@ const actualizarImagen = async (req, res) => {
         res.status(500).json({ msg: 'Error al actualizar la imagen', error: error.message });
     }
 };
+
 
 module.exports = {
     subirImagen,

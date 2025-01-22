@@ -1,15 +1,20 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+
+// Configuración de Multer para almacenar imágenes en memoria
+const storage = multer.memoryStorage();
+const imageUpload = multer({ storage }).single('file'); // Definición del middleware de Multer
 
 const {
     subirImagen,
     eliminarImagen,
     actualizarImagen,
-    imageUploader, // Ajustado
 } = require('../controllers/cloudinaryControlador');
 
-router.post('/upload/:id', imageUploader.single('image'), subirImagen);
+// Rutas para subir, eliminar y actualizar imágenes
+router.post('/upload/:id', imageUpload, subirImagen);
 router.delete('/delete', eliminarImagen);
-router.put('/update/:id', imageUploader.single('image'), actualizarImagen);
+router.put('/update/:id', imageUpload, actualizarImagen);
 
 module.exports = router;

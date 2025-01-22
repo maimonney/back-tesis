@@ -19,8 +19,8 @@ const upload = multer({ storage: storage });
 // Subir imagen
 const subirImagen = async (req, res) => {
     try {
-        const { id } = req.params;
-        const file = req.file; // Imagen en memoria
+        const { id } = req.params; // ID del usuario a actualizar
+        const file = req.file; // Archivo subido por el cliente
 
         if (!file) {
             return res.status(400).json({ msg: 'No se ha subido ninguna imagen.' });
@@ -29,46 +29,40 @@ const subirImagen = async (req, res) => {
         console.log('Subiendo imagen a Cloudinary...');
 
         // Subir la imagen a Cloudinary desde la memoria
-        const resultado = await cloudinary.uploader.upload_stream(
-            {
-                folder: 'perfil', // Carpeta en Cloudinary
-                resource_type: 'auto', 
-            },
-            async (error, result) => {
-                if (error) {
-                    console.error('Error al subir la imagen a Cloudinary:', error);
-                    return res.status(500).json({ msg: 'Error al subir la imagen', error: error.message });
+        const result = await new Promise((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream(
+                { folder: 'perfil', resource_type: 'auto' },
+                (error, result) => {
+                    if (error) reject(error);
+                    else resolve(result);
                 }
+            );
+            file.stream.pipe(uploadStream);
+        });
 
-                console.log('Imagen subida correctamente a Cloudinary:', result);
+        console.log('Imagen subida correctamente a Cloudinary:', result);
 
-                // Actualizar el perfil del usuario con la URL de la imagen
-                const user = await User.findByIdAndUpdate(
-                    id,
-                    { fotoPerfil: result.secure_url },
-                    { new: true }
-                );
-
-                if (!user) {
-                    console.log('Usuario no encontrado');
-                    return res.status(404).json({ msg: 'Usuario no encontrado' });
-                }
-
-                res.status(200).json({
-                    msg: 'Imagen subida y usuario actualizado',
-                    data: user,
-                });
-            }
+        // Actualizar el usuario con la URL de la imagen subida
+        const user = await User.findByIdAndUpdate(
+            id,
+            { fotoPerfil: result.secure_url },
+            { new: true }
         );
 
-        // Pasar el archivo a Cloudinary para su carga
-        file.stream.pipe(resultado);
+        if (!user) {
+            return res.status(404).json({ msg: 'Usuario no encontrado' });
+        }
 
+        res.status(200).json({
+            msg: 'Imagen subida y usuario actualizado',
+            data: user,
+        });
     } catch (error) {
         console.error('Error al subir la imagen:', error);
         res.status(500).json({ msg: 'Error al subir la imagen', error: error.message });
     }
 };
+
 
 // Eliminar imagen
 const eliminarImagen = async (req, res) => {

@@ -94,6 +94,9 @@ const actualizarImagen = async (req, res) => {
             return res.status(400).json({ msg: 'No se ha subido ninguna imagen.' });
         }
 
+        // Imprimir el nombre del archivo subido
+        console.log('Nombre del archivo subido:', file.originalname);
+
         console.log('Actualizando imagen en Cloudinary...');
         if (public_id) {
             console.log('Eliminando imagen anterior...');
@@ -123,6 +126,7 @@ const actualizarImagen = async (req, res) => {
         res.status(500).json({ msg: 'Error al actualizar la imagen', error: error.message });
     }
 };
+
 
 
 module.exports = {

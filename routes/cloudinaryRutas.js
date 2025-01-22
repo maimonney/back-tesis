@@ -12,7 +12,6 @@ const {
     actualizarImagen,
 } = require('../controllers/cloudinaryControlador');
 
-// Rutas para subir, eliminar y actualizar imágenes
 router.post('/upload/:id', imageUpload, subirImagen);
 router.delete('/delete', eliminarImagen);
 router.put('/update/:id', imageUpload, actualizarImagen);

@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../middleware/multer'); 
+
 const {
     subirImagen,
     eliminarImagen,
     actualizarImagen,
+    upload,
 } = require('../controllers/cloudinaryControlador');
 
 router.post('/upload/:id', upload.single('image'), subirImagen);

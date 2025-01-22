@@ -84,7 +84,7 @@ const eliminarImagen = async (req, res) => {
 };
 
 // Actualizar imagen
-const actualizarImagen = async (req, res) => {
+const actualizarPerfil = async (req, res) => {
     try {
         const { id } = req.params;
         const { public_id } = req.body; // Este campo debe enviarse en el cuerpo de la solicitud
@@ -128,9 +128,52 @@ const actualizarImagen = async (req, res) => {
 };
 
 
+const actualizarPortada = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { public_id } = req.body; // Este campo debe enviarse en el cuerpo de la solicitud
+        const file = req.file; // El archivo que sube el usuario
+
+        if (!file) {
+            return res.status(400).json({ msg: 'No se ha subido ninguna imagen.' });
+        }
+
+        console.log('Nombre del archivo subido:', file.originalname);
+
+        console.log('Actualizando imagen en Cloudinary...');
+        if (public_id) {
+            console.log('Eliminando imagen anterior...');
+            await cloudinary.uploader.destroy(public_id); 
+        }
+
+        const result = await uploadToCloudinary(file.buffer);
+
+        console.log('Imagen actualizada correctamente en Cloudinary:', result);
+
+        const user = await User.findByIdAndUpdate(
+            id,
+            { fotoPortada: result.secure_url },
+            { new: true }
+        );
+
+        if (!user) {
+            return res.status(404).json({ msg: 'Usuario no encontrado' });
+        }
+
+        res.status(200).json({
+            msg: 'Imagen actualizada con éxito',
+            data: user,
+        });
+    } catch (error) {
+        console.error('Error al actualizar la imagen:', error);
+        res.status(500).json({ msg: 'Error al actualizar la imagen', error: error.message });
+    }
+};
+
 
 module.exports = {
     subirImagen,
     eliminarImagen,
-    actualizarImagen,
+    actualizarPortada,
+    actualizarPerfil,
 };

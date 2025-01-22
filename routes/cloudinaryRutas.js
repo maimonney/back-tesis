@@ -9,11 +9,13 @@ const imageUpload = multer({ storage }).single('file'); // Definición del middl
 const {
     subirImagen,
     eliminarImagen,
-    actualizarImagen,
+    actualizarPortada,
+    actualizarPerfil,
 } = require('../controllers/cloudinaryControlador');
 
 router.post('/upload/:id', imageUpload, subirImagen);
 router.delete('/delete', eliminarImagen);
-router.put('/update/:id', imageUpload, actualizarImagen);
+router.put('/updatePerfil/:id', imageUpload, actualizarPerfil);
+router.put('/updatePortada/:id', imageUpload, actualizarPortada);
 
 module.exports = router;

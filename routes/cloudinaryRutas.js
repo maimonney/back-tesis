@@ -4,7 +4,7 @@ const multer = require('multer');
 
 // Configuración de Multer para almacenar imágenes en memoria
 const storage = multer.memoryStorage();
-const imageUpload = multer({ storage }).single('file'); // Definición del middleware de Multer
+const imageUpload = multer({ storage }).single('file'); 
 
 const {
     subirImagen,

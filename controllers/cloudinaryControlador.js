@@ -28,7 +28,7 @@ const uploadToCloudinary = (fileBuffer) => {
     });
 };
 
-// Subir imagen
+// Subir imagen (puedes eliminarla si no la usas)
 const subirImagen = async (req, res) => {
     try {
         const { id } = req.params;
@@ -63,22 +63,53 @@ const subirImagen = async (req, res) => {
     }
 };
 
-// Eliminar imagen
+// Eliminar imagen de perfil
 const eliminarImagen = async (req, res) => {
     try {
-        const { public_id } = req.body;
+        const { id } = req.params;
 
-        if (!public_id) {
-            return res.status(400).json({ msg: 'No se ha proporcionado el public_id de la imagen.' });
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ msg: 'Usuario no encontrado' });
         }
 
-        console.log('Eliminando imagen de Cloudinary...');
-        await cloudinary.uploader.destroy(public_id);
+        if (user.fotoPerfil) {
+            const public_id = user.fotoPerfil.split('/').pop().split('.')[0];
+            await cloudinary.uploader.destroy(public_id);
+        }
 
-        res.status(200).json({ msg: 'Imagen eliminada con éxito' });
+        user.fotoPerfil = null;
+        await user.save();
+
+        res.status(200).json({ msg: 'Foto de perfil eliminada con éxito', data: user });
     } catch (error) {
         console.error('Error al eliminar la imagen:', error);
         res.status(500).json({ msg: 'Error al eliminar la imagen', error: error.message });
+    }
+};
+
+// Eliminar imagen de portada
+const eliminarPortada = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ msg: 'Usuario no encontrado' });
+        }
+
+        if (user.fotoPortada) {
+            const public_id = user.fotoPortada.split('/').pop().split('.')[0];
+            await cloudinary.uploader.destroy(public_id);
+        }
+
+        user.fotoPortada = null;
+        await user.save();
+
+        res.status(200).json({ msg: 'Foto de portada eliminada con éxito', data: user });
+    } catch (error) {
+        console.error('Error al eliminar la foto de portada:', error);
+        res.status(500).json({ msg: 'Error al eliminar la foto de portada', error: error.message });
     }
 };
 
@@ -159,6 +190,7 @@ const actualizarPortada = async (req, res) => {
 module.exports = {
     subirImagen,
     eliminarImagen,
+    eliminarPortada,
     actualizarPerfil,
     actualizarPortada,
 };

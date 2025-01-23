@@ -116,19 +116,12 @@ const eliminarPortada = async (req, res) => {
 const actualizarPerfil = async (req, res) => {
     try {
         const { id } = req.params;
-        const file = req.file;
+        const file = req.file; 
 
         if (!file) {
             return res.status(400).json({ msg: 'No se ha subido ninguna imagen.' });
         }
-
-        console.log('Nombre del archivo subido:', file.originalname);
-
-        console.log('Actualizando imagen en Cloudinary...');
         const result = await uploadToCloudinary(file.buffer);
-
-        console.log('Imagen actualizada correctamente en Cloudinary:', result);
-
         const user = await User.findByIdAndUpdate(
             id,
             { fotoPerfil: result.secure_url },
@@ -140,12 +133,12 @@ const actualizarPerfil = async (req, res) => {
         }
 
         res.status(200).json({
-            msg: 'Imagen de perfil actualizada con éxito',
+            msg: 'Foto de perfil actualizada con éxito',
             data: user,
         });
     } catch (error) {
-        console.error('Error al actualizar la imagen de perfil:', error);
-        res.status(500).json({ msg: 'Error al actualizar la imagen de perfil', error: error.message });
+        console.error('Error al actualizar la foto de perfil:', error);
+        res.status(500).json({ msg: 'Error al actualizar la foto de perfil', error: error.message });
     }
 };
 

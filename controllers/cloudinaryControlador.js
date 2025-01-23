@@ -11,11 +11,10 @@ cloudinary.config({
     secure: true,
 });
 
-// Función para subir imágenes a Cloudinary
 const uploadToCloudinary = (fileBuffer) => {
     return new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
-            { folder: 'perfil', resource_type: 'auto' },
+            { folder: 'portada', resource_type: 'auto' },
             (error, result) => {
                 if (error) {
                     console.error('Error al subir imagen a Cloudinary:', error);
@@ -28,7 +27,7 @@ const uploadToCloudinary = (fileBuffer) => {
     });
 };
 
-// Subir imagen (puedes eliminarla si no la usas)
+// Subir imagen 
 const subirImagen = async (req, res) => {
     try {
         const { id } = req.params;
@@ -150,23 +149,17 @@ const actualizarPerfil = async (req, res) => {
     }
 };
 
-// Actualizar imagen de portada
 const actualizarPortada = async (req, res) => {
     try {
         const { id } = req.params;
-        const file = req.file;
+        const file = req.file; // Archivo subido
 
         if (!file) {
             return res.status(400).json({ msg: 'No se ha subido ninguna imagen.' });
         }
 
-        console.log('Nombre del archivo subido:', file.originalname);
-
-        console.log('Actualizando imagen en Cloudinary...');
+        
         const result = await uploadToCloudinary(file.buffer);
-
-        console.log('Imagen actualizada correctamente en Cloudinary:', result);
-
         const user = await User.findByIdAndUpdate(
             id,
             { fotoPortada: result.secure_url },
@@ -178,12 +171,12 @@ const actualizarPortada = async (req, res) => {
         }
 
         res.status(200).json({
-            msg: 'Imagen de portada actualizada con éxito',
+            msg: 'Foto de portada actualizada con éxito',
             data: user,
         });
     } catch (error) {
-        console.error('Error al actualizar la imagen de portada:', error);
-        res.status(500).json({ msg: 'Error al actualizar la imagen de portada', error: error.message });
+        console.error('Error al actualizar la foto de portada:', error);
+        res.status(500).json({ msg: 'Error al actualizar la foto de portada', error: error.message });
     }
 };
 

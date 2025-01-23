@@ -14,7 +14,7 @@ cloudinary.config({
 const uploadToCloudinary = (fileBuffer) => {
     return new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
-            { folder: 'portada', resource_type: 'auto' },
+            { folder: 'perfil', resource_type: 'auto' },
             (error, result) => {
                 if (error) {
                     console.error('Error al subir imagen a Cloudinary:', error);
@@ -145,7 +145,7 @@ const actualizarPerfil = async (req, res) => {
 const actualizarPortada = async (req, res) => {
     try {
         const { id } = req.params;
-        const file = req.file; // Archivo subido
+        const file = req.file; 
 
         if (!file) {
             return res.status(400).json({ msg: 'No se ha subido ninguna imagen.' });

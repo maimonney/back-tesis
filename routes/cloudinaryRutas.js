@@ -24,7 +24,7 @@ router.delete('/eliminarImagen/:id', eliminarImagen);
 router.delete('/eliminarPortada/:id', eliminarPortada);
 router.put('/updatePerfil/:id', upload.single('file'), actualizarPerfil);
 router.put('/updatePortada/:id', upload.single('file'), actualizarPortada);
-router.put('/uploadTourPortada/:id', upload.single('file'), subirFotoTour); 
+router.put('/updateTourPortada/:id', upload.single('file'), subirFotoTour); 
 
 
 

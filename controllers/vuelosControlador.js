@@ -45,6 +45,7 @@ const buscarVuelosResultados = async (req, res) => {
                 arrival_id: arrival_id.toUpperCase(),
                 outbound_date: outbound_date,
                 return_date: return_date,
+                departure_token: departure_token,
                 currency: "ARS",
                 hl: "es",
                 api_key: apiKey,

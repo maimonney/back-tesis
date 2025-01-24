@@ -6,7 +6,7 @@ const buscarVuelosResultados = async (req, res) => {
 
     console.log('Consulta recibida:', { departure_id, arrival_id, outbound_date, return_date, departure_token });
 
-    if (!departure_id || !arrival_id || !outbound_date || !return_date || !departure_token) {
+    if (!departure_id || !arrival_id || !outbound_date || !return_date) {
         console.log('Faltan parámetros requeridos.');
         return res.status(400).json({
             error: 'Faltan parámetros requeridos: departure_id, arrival_id, outbound_date y return_date.'

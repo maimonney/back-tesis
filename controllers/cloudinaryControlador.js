@@ -3,7 +3,6 @@ const User = require('../models/usuarioModelo');
 const dotenv = require('dotenv');
 dotenv.config();
 
-// Configuración de Cloudinary
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -27,7 +26,6 @@ const uploadToCloudinary = (fileBuffer) => {
     });
 };
 
-// Subir imagen 
 const subirImagen = async (req, res) => {
     try {
         const { id } = req.params;
@@ -62,7 +60,6 @@ const subirImagen = async (req, res) => {
     }
 };
 
-// Eliminar imagen de perfil
 const eliminarImagen = async (req, res) => {
     try {
         const { id } = req.params;
@@ -87,7 +84,6 @@ const eliminarImagen = async (req, res) => {
     }
 };
 
-// Eliminar imagen de portada
 const eliminarPortada = async (req, res) => {
     try {
         const { id } = req.params;
@@ -112,7 +108,6 @@ const eliminarPortada = async (req, res) => {
     }
 };
 
-// Actualizar imagen de perfil
 const actualizarPerfil = async (req, res) => {
     try {
         const { id } = req.params;

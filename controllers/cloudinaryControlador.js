@@ -172,7 +172,6 @@ const actualizarPortada = async (req, res) => {
 
 
 
-
 const subirFotoTour = async (req, res) => {
     try {
       const { id } = req.params;
@@ -182,13 +181,13 @@ const subirFotoTour = async (req, res) => {
         return res.status(400).json({ msg: 'No se ha subido ninguna imagen.' });
       }
   
-      
       const bufferStream = new stream.PassThrough();
       bufferStream.end(file.buffer);
   
+    
       const result = await new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
-          { folder: 'portada', resource_type: 'auto' },
+          { folder: 'portada', resource_type: 'auto' }, 
           (error, result) => {
             if (error) {
               reject(error);
@@ -197,9 +196,10 @@ const subirFotoTour = async (req, res) => {
             }
           }
         );
-        bufferStream.pipe(uploadStream);
+        bufferStream.pipe(uploadStream); 
       });
   
+
       const tour = await Tur.findByIdAndUpdate(
         id,
         { fotoPortada: result.secure_url },

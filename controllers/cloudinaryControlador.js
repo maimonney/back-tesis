@@ -1,7 +1,8 @@
 const cloudinary = require('cloudinary').v2;
-const Tour = require('../models/turModelo'); 
+const Tur = require('../models/turModelo'); 
 const User = require('../models/usuarioModelo');
 const dotenv = require('dotenv');
+const stream = require('stream'); 
 dotenv.config();
 
 cloudinary.config({
@@ -181,14 +182,25 @@ const subirFotoTour = async (req, res) => {
         return res.status(400).json({ msg: 'No se ha subido ninguna imagen.' });
       }
   
-    
-      const result = await cloudinary.uploader.upload(file.buffer, {
-        folder: 'portada', 
-        resource_type: 'auto', 
+      
+      const bufferStream = new stream.PassThrough();
+      bufferStream.end(file.buffer);
+  
+      const result = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: 'portada', resource_type: 'auto' },
+          (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+        bufferStream.pipe(uploadStream);
       });
   
-      
-      const tour = await Tur.findByIdAndUpdate( 
+      const tour = await Tur.findByIdAndUpdate(
         id,
         { fotoPortada: result.secure_url },
         { new: true }
@@ -204,7 +216,7 @@ const subirFotoTour = async (req, res) => {
       res.status(500).json({ msg: 'Error al subir la imagen de portada para el tour', error: error.message });
     }
   };
-
+  
 module.exports = {
     subirImagen,
     eliminarImagen,

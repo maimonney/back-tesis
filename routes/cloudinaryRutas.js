@@ -15,6 +15,7 @@ const {
     eliminarPortada,
     actualizarPerfil,
     actualizarPortada,
+    subirFotoTour, 
 } = require('../controllers/cloudinaryControlador');
 
 // Rutas
@@ -23,5 +24,4 @@ router.delete('/eliminarImagen/:id', eliminarImagen);
 router.delete('/eliminarPortada/:id', eliminarPortada);
 router.put('/updatePerfil/:id', upload.single('file'), actualizarPerfil);
 router.put('/updatePortada/:id', upload.single('file'), actualizarPortada);
-
-module.exports = router;
+router.post('/uploadTourPortada/:id', upload.single('file'), subirFotoTour); 

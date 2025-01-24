@@ -27,4 +27,6 @@ router.put('/updatePortada/:id', upload.single('file'), actualizarPortada);
 router.post('/uploadTourPortada/:id', upload.single('file'), subirFotoTour); 
 
 
+
+
 module.exports = router;

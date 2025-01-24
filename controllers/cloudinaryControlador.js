@@ -94,7 +94,7 @@ const eliminarPortada = async (req, res) => {
         }
 
         if (user.fotoPortada) {
-            const public_id = user.fotoPortada.split('/').pop().split('.')[0];
+            const public_id = user.fotoPortada.split('/banner').pop().split('.')[0];
             await cloudinary.uploader.destroy(public_id);
         }
 
@@ -147,7 +147,7 @@ const actualizarPortada = async (req, res) => {
         }
 
         
-        const result = await uploadToCloudinary(file.buffer);
+        const result = await uploadToCloudinary(file.buffer, 'banner'); 
         const user = await User.findByIdAndUpdate(
             id,
             { fotoPortada: result.secure_url },
@@ -179,7 +179,7 @@ const subirFotoTour = async (req, res) => {
         }
 
         console.log('Subiendo imagen de portada para el tour a Cloudinary...');
-        const result = await uploadToCloudinary(file.buffer, 'portada'); 
+        const result = await uploadToCloudinary(file.buffer, 'fotoTour'); 
 
         console.log('Imagen de portada para el tour subida correctamente a Cloudinary:', result);
         const tour = await Tour.findByIdAndUpdate(

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 
-// Configuración de Multer
+
 const storage = multer.memoryStorage();
 const upload = multer({
     storage,
@@ -25,3 +25,6 @@ router.delete('/eliminarPortada/:id', eliminarPortada);
 router.put('/updatePerfil/:id', upload.single('file'), actualizarPerfil);
 router.put('/updatePortada/:id', upload.single('file'), actualizarPortada);
 router.post('/uploadTourPortada/:id', upload.single('file'), subirFotoTour); 
+
+
+module.exports = router;

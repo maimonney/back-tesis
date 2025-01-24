@@ -25,3 +25,5 @@ router.delete('/eliminarPortada/:id', eliminarPortada);
 router.put('/updatePerfil/:id', upload.single('file'), actualizarPerfil);
 router.put('/updatePortada/:id', upload.single('file'), actualizarPortada);
 router.post('/uploadTourPortada/:id', upload.single('file'), subirFotoTour); 
+
+module.exports = router;

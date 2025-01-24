@@ -1,4 +1,5 @@
 const cloudinary = require('cloudinary').v2;
+const Tour = require('../models/turModelo'); 
 const User = require('../models/usuarioModelo');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -169,39 +170,40 @@ const actualizarPortada = async (req, res) => {
 };
 
 
+
+
 const subirFotoTour = async (req, res) => {
     try {
-        const { id } = req.params;
-        const file = req.file;
-
-        if (!file) {
-            return res.status(400).json({ msg: 'No se ha subido ninguna imagen.' });
-        }
-
-        console.log('Subiendo imagen de portada para el tour a Cloudinary...');
-        const result = await uploadToCloudinary(file.buffer, 'fotoTour'); 
-
-        console.log('Imagen de portada para el tour subida correctamente a Cloudinary:', result);
-        const tour = await Tour.findByIdAndUpdate(
-            id,
-            { fotoPortada: result.secure_url },
-            { new: true }
-        );
-
-        if (!tour) {
-            return res.status(404).json({ msg: 'Tour no encontrado' });
-        }
-
-        res.status(200).json({
-            msg: 'Imagen de portada para el tour subida y tour actualizado',
-            data: tour,
-        });
+      const { id } = req.params;
+      const file = req.file;
+  
+      if (!file) {
+        return res.status(400).json({ msg: 'No se ha subido ninguna imagen.' });
+      }
+  
+    
+      const result = await cloudinary.uploader.upload(file.buffer, {
+        folder: 'portada', 
+        resource_type: 'auto', 
+      });
+  
+      
+      const tour = await Tur.findByIdAndUpdate( 
+        id,
+        { fotoPortada: result.secure_url },
+        { new: true }
+      );
+  
+      if (!tour) {
+        return res.status(404).json({ msg: 'Tour no encontrado' });
+      }
+  
+      res.status(200).json({ secure_url: result.secure_url });
     } catch (error) {
-        console.error('Error al subir la imagen de portada para el tour:', error);
-        res.status(500).json({ msg: 'Error al subir la imagen de portada para el tour', error: error.message });
+      console.error('Error al subir la imagen de portada para el tour:', error);
+      res.status(500).json({ msg: 'Error al subir la imagen de portada para el tour', error: error.message });
     }
-};
-
+  };
 
 module.exports = {
     subirImagen,

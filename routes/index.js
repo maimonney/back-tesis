@@ -6,6 +6,7 @@ const lugarRuta = require('./lugarRuta.js');
 const turRuta = require('./turRuta.js');
 const excursionRuta = require('./excursionRuta.js');
 const cloudinaryRouter = require('./cloudinaryRutas.js'); 
+const reservaViaje = require('./reservaViajeRuta.js');
 
 function routerAPI( app){
     app.use('/arcana/usuarios', usuarioRuta);
@@ -16,6 +17,7 @@ function routerAPI( app){
     app.use('/arcana/tur', turRuta);
     app.use('/arcana/excursiones', excursionRuta);
     app.use('/arcana/imagen', cloudinaryRouter);  
+    app.use('/reserva', reservaViaje);  
 }
 
 module.exports = routerAPI;

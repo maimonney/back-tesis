@@ -1,120 +1,93 @@
-const mongoose = require('mongoose');
-const Reserva = require('../models/reservasModelo');
-const Excursion = require('../models/excursionModelo'); // Importar el modelo de excursión
+const Excursion = require('../models/excursionModelo');
 
-const crearReserva = async (req, res) => {
-    const { userId, vueloIda, vueloVuelta, hotel, excursionId } = req.body;
+const crearExcursion = async (req, res) => {
+    const { titulo, descripcion, duracion, precio, fecha, guia, imagenes } = req.body;
 
-    // Validar IDs
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return res.status(400).json({ msg: 'ID de usuario no válido' });
-    }
-    if (excursionId && !mongoose.Types.ObjectId.isValid(excursionId)) {
-        return res.status(400).json({ msg: 'ID de excursión no válido' });
+    if (!titulo || !descripcion || !duracion || !precio || !fecha || !guia) {
+        return res.status(400).json({ msg: 'Faltan parámetros obligatorios' });
     }
 
     try {
-        // Verificar si la excursión existe (si se proporciona)
-        if (excursionId) {
-            const excursion = await Excursion.findById(excursionId);
-            if (!excursion) {
-                return res.status(404).json({ msg: 'Excursión no encontrada' });
-            }
-        }
-
-        // Crear la reserva
-        const nuevaReserva = new Reserva({
-            userId,
-            vueloIda,
-            vueloVuelta,
-            hotel,
-            excursionId // Este campo es opcional
+        // Crear una nueva excursión
+        const nuevaExcursion = new Excursion({
+            titulo,
+            descripcion,
+            duracion,
+            precio,
+            fecha,
+            guia,
+            imagenes
         });
 
-        await nuevaReserva.save();
-        res.status(201).json({ msg: 'Reserva creada', data: nuevaReserva });
+        // Guardar la excursión en la base de datos
+        await nuevaExcursion.save();
+
+        res.status(201).json({ msg: 'Excursión creada', data: nuevaExcursion });
     } catch (error) {
-        res.status(500).json({ msg: 'Error al crear la reserva', error: error.message });
+        res.status(500).json({ msg: 'Error al crear la excursión', error: error.message });
     }
 };
 
-const obtenerReservas = async (req, res) => {
+const obtenerExcursiones = async (req, res) => {
     try {
-        const reservas = await Reserva.find()
-            .populate('userId')
-            .populate('excursionId'); // Poblar la excursión si existe
+        const excursiones = await Excursion.find().populate('guia', 'nombre email'); 
 
-        res.status(200).json({ msg: 'Reservas obtenidas', data: reservas });
+        res.status(200).json({ data: excursiones });
     } catch (error) {
-        res.status(500).json({ msg: 'Error al obtener las reservas', error: error.message });
+        res.status(500).json({ msg: 'Error al obtener las excursiones', error: error.message });
     }
 };
 
-const obtenerReservaId = async (req, res) => {
-    const { id } = req.params;
-
+const obtenerExcursionId = async (req, res) => {
     try {
-        const reserva = await Reserva.findById(id)
-            .populate('userId')
-            .populate('excursionId'); // Poblar la excursión si existe
-
-        if (!reserva) {
-            return res.status(404).json({ msg: 'Reserva no encontrada' });
+        const excursion = await Excursion.findById(req.params.id).populate('guia', 'nombre email');
+        
+        if (!excursion) {
+            return res.status(404).json({ msg: 'Excursión no encontrada' });
         }
 
-        res.status(200).json({ msg: 'Reserva obtenida', data: reserva });
+        res.status(200).json({ data: excursion });
     } catch (error) {
-        res.status(500).json({ msg: 'Error al obtener la reserva', error: error.message });
+        res.status(500).json({ msg: 'Error al obtener la excursión', error: error.message });
     }
 };
 
-const borrarReserva = async (req, res) => {
-    const { id } = req.params;
+const actualizarExcursionId = async (req, res) => {
+    const { titulo, descripcion, duracion, precio, fecha, guia, imagenes } = req.body;
 
     try {
-        const reserva = await Reserva.findByIdAndDelete(id);
-        if (!reserva) {
-            return res.status(404).json({ msg: 'Reserva no encontrada' });
+        const updateData = { titulo, descripcion, duracion, precio, fecha, guia, imagenes };
+
+        const excursion = await Excursion.findByIdAndUpdate(req.params.id, updateData, { new: true });
+        
+        if (!excursion) {
+            return res.status(404).json({ msg: 'Excursión no encontrada' });
         }
-        res.status(200).json({ msg: 'Reserva borrada', data: reserva });
+
+        res.status(200).json({ msg: 'Excursión actualizada', data: excursion });
     } catch (error) {
-        res.status(500).json({ msg: 'Error al borrar la reserva', error: error.message });
+        res.status(500).json({ msg: 'Error al actualizar la excursión', error: error.message });
     }
 };
 
-const actualizarReserva = async (req, res) => {
-    const { id } = req.params;
-    const { userId, vueloIda, vueloVuelta, hotel, excursionId } = req.body;
-
+const eliminarExcursionId = async (req, res) => {
     try {
-        // Verificar si la excursión existe (si se proporciona)
-        if (excursionId) {
-            const excursion = await Excursion.findById(excursionId);
-            if (!excursion) {
-                return res.status(404).json({ msg: 'Excursión no encontrada' });
-            }
+        const excursion = await Excursion.findByIdAndDelete(req.params.id);
+
+        if (!excursion) {
+            return res.status(404).json({ msg: 'Excursión no encontrada' });
         }
 
-        const reserva = await Reserva.findByIdAndUpdate(
-            id,
-            { userId, vueloIda, vueloVuelta, hotel, excursionId },
-            { new: true, runValidators: true }
-        );
-
-        if (!reserva) {
-            return res.status(404).json({ msg: 'Reserva no encontrada' });
-        }
-
-        res.status(200).json({ msg: 'Reserva actualizada', data: reserva });
+        res.status(200).json({ msg: 'Excursión eliminada', data: excursion });
     } catch (error) {
-        res.status(500).json({ msg: 'Error al actualizar la reserva', error: error.message });
+        res.status(500).json({ msg: 'Error al eliminar la excursión', error: error.message });
     }
 };
 
 module.exports = {
-    crearReserva,
-    obtenerReservas,
-    obtenerReservaId,
-    borrarReserva,
-    actualizarReserva,
+    crearExcursion,
+    obtenerExcursiones,
+    obtenerExcursionId,
+    actualizarExcursionId,
+    eliminarExcursionId
 };

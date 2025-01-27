@@ -1,12 +1,11 @@
 const mongoose = require('mongoose');
 
 const reservaSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' }, // Usuario que hace la reserva
-    tourId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tur', required: false }, // Tour reservado (opcional)
-    vueloIda: { type: Object, required: false }, // Opcional
-    vueloVuelta: { type: [Object], required: false }, // Opcional
-    hotel: { type: Object, required: false }, // Opcional
-    fechaReserva: { type: Date, default: Date.now }, // Fecha en que se hizo la reserva
+    userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
+    vueloIda: { type: Object, required: true },
+    vueloVuelta: { type: [Object], required: true },
+    hotel: { type: Object, required: true },
+
 });
 
 const Reserva = mongoose.model('Reserva', reservaSchema);

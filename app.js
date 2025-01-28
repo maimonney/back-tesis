@@ -3,7 +3,7 @@ const axios = require('axios');
 const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
-const reservaTurRutas = require('./routes/reservaTurRutas');
+const reservaTurRutas = require('./routes/reservaTourRuta.js');
 
 const routerAPI = require('./routes/index.js');
 

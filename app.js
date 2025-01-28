@@ -3,7 +3,7 @@ const axios = require('axios');
 const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
-const reservaTurRutas = require('./routes/reservaTourRuta.js');
+const reservaTourRutas = require('./routes/reservaTourRuta.js');
 
 const routerAPI = require('./routes/index.js');
 
@@ -19,7 +19,7 @@ const corsOptions = {
 };
 
 api.use(cors(corsOptions));
-api.use('/arcana/reservas-tours', reservaTurRutas);
+api.use('/arcana/reservas-tours', reservaTourRutas);
 
 api.use(express.json({ limit: '50mb' })); 
 api.use(express.urlencoded({ limit: '50mb', extended: true })); 

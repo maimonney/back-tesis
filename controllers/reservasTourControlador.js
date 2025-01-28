@@ -1,4 +1,4 @@
-const ReservaTur = require('../models/reservaTurModelo');
+const ReservaTur = require('../models/reservaTourModelo');
 const Tur = require('../models/turModelo');
 const mongoose = require('mongoose');
 

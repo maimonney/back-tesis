@@ -7,7 +7,7 @@ const {
     obtenerReservasTur,
     obtenerReservaTurPorId,
     cancelarReservaTur,
-} = require('../controllers/reservaTurControlador');
+} = require('../controllers/reservasTourControlador');
 
 // Crear una reserva de tour
 router.post('/', autenticar, crearReservaTur);

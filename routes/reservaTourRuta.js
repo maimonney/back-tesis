@@ -10,15 +10,15 @@ const {
 } = require('../controllers/reservasTourControlador');
 
 // Crear una reserva de tour
-router.post('/', autenticar, crearReservaTur);
+router.post('/reservas/tours', autenticar, crearReservaTur);
 
 // Obtener todas las reservas de tours
-router.get('/', autenticar, obtenerReservasTur);
+router.get('/reservas/tours', autenticar, obtenerReservasTur);
 
 // Obtener una reserva de tour por su ID
-router.get('/:id', autenticar, obtenerReservaTurPorId);
+router.get('/reservas/tours/:id', autenticar, obtenerReservaTurPorId);
 
 // Cancelar una reserva de tour
-router.put('/:id/cancelar', autenticar, cancelarReservaTur);
+router.put('/reservas/tours/:id/cancelar', autenticar, cancelarReservaTur);
 
 module.exports = router;

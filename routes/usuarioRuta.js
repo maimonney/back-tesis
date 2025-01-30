@@ -18,8 +18,8 @@ router.post('/guias', crearGuias);
 router.post('/login', inicio);  
 
 // Rutas protegidas
-router.get('/', obtenerUsuario);          
-router.get('/guia', obtenerGuia);          
+router.get('/', obtenerUsuario);
+router.get('/guia', obtenerGuia);         
 router.get('/:id', obtenerUsuarioId);     
 router.delete('/:id', borrarUsuarioId);   
 router.put('/:id', actualizarUsuarioId); 

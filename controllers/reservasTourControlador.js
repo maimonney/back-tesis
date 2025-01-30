@@ -2,7 +2,6 @@ const ReservaTur = require('../models/reservaTourModelo');
 const Tur = require('../models/turModelo');
 const mongoose = require('mongoose');
 
-// Crear una reserva de tour
 const crearReservaTur = async (req, res) => {
     const { userId, tourId, fechaTour, cantidadPersonas } = req.body;
 
@@ -17,6 +16,17 @@ const crearReservaTur = async (req, res) => {
         return res.status(404).json({ message: 'Tour no encontrado' });
     }
 
+    // Validar que la fecha del tour esté dentro de las fechas disponibles
+    const fechaTourObj = new Date(fechaTour);
+    if (!tour.fechasDisponibles.includes(fechaTourObj.toISOString())) {
+        return res.status(400).json({ message: 'Fecha no disponible para este tour' });
+    }
+
+    // Validar que la cantidad de personas no exceda un límite (por ejemplo, 10)
+    if (cantidadPersonas > 10) {
+        return res.status(400).json({ message: 'La cantidad de personas no puede exceder 10' });
+    }
+
     try {
         const nuevaReserva = new ReservaTur({ userId, tourId, fechaTour, cantidadPersonas });
         await nuevaReserva.save();
@@ -24,7 +34,7 @@ const crearReservaTur = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error al crear la reserva', error: error.message });
     }
-};
+}; 
 
 // Obtener todas las reservas de tours
 const obtenerReservasTur = async (req, res) => {

@@ -22,9 +22,17 @@ const crearReservaTur = async (req, res) => {
 
     console.log('Tour encontrado:', tour);
 
-    // Validar que la fecha del tour esté dentro de las fechas disponibles
+    // Normalizar la fecha del tour
     const fechaTourObj = new Date(fechaTour);
-    if (!tour.fechasDisponibles.includes(fechaTourObj.toISOString())) {
+    const fechaTourISO = fechaTourObj.toISOString().split('T')[0]; // Obtener solo la parte de la fecha (YYYY-MM-DD)
+
+    // Verificar si la fecha del tour está dentro de las fechas disponibles
+    const fechaDisponible = tour.fechasDisponibles.some(fecha => {
+        const fechaDisponibleISO = new Date(fecha).toISOString().split('T')[0]; // Normalizar fecha disponible
+        return fechaDisponibleISO === fechaTourISO;
+    });
+
+    if (!fechaDisponible) {
         console.log('Fecha no disponible para el tour:', fechaTour);
         return res.status(400).json({ message: 'Fecha no disponible para este tour' });
     }
@@ -49,7 +57,6 @@ const crearReservaTur = async (req, res) => {
         res.status(500).json({ message: 'Error al crear la reserva', error: error.message });
     }
 };
-
 // Obtener todas las reservas de tours
 const obtenerReservasTur = async (req, res) => {
     try {

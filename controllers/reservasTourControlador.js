@@ -22,13 +22,13 @@ const crearReservaTur = async (req, res) => {
 
     console.log('Tour encontrado:', tour);
 
-    // Normalizar la fecha del tour
+ 
     const fechaTourObj = new Date(fechaTour);
-    const fechaTourISO = fechaTourObj.toISOString().split('T')[0]; // Obtener solo la parte de la fecha (YYYY-MM-DD)
+    const fechaTourISO = fechaTourObj.toISOString().split('T')[0];
 
-    // Verificar si la fecha del tour está dentro de las fechas disponibles
+
     const fechaDisponible = tour.fechasDisponibles.some(fecha => {
-        const fechaDisponibleISO = new Date(fecha).toISOString().split('T')[0]; // Normalizar fecha disponible
+        const fechaDisponibleISO = new Date(fecha).toISOString().split('T')[0]; 
         return fechaDisponibleISO === fechaTourISO;
     });
 
@@ -39,7 +39,6 @@ const crearReservaTur = async (req, res) => {
 
     console.log('Fecha del tour válida:', fechaTour);
 
-    // Validar que la cantidad de personas no exceda un límite (por ejemplo, 10)
     if (cantidadPersonas > 10) {
         console.log('Cantidad de personas excede el límite:', cantidadPersonas);
         return res.status(400).json({ message: 'La cantidad de personas no puede exceder 10' });
@@ -62,8 +61,8 @@ const obtenerReservasTur = async (req, res) => {
     try {
         console.log('Obteniendo todas las reservas de tours...');
         const reservas = await ReservaTur.find()
-            .populate('userId', 'nombre email') // Popula los datos del usuario
-            .populate('tourId', 'titulo descripcion precio'); // Popula los datos del tour
+            .populate('userId', 'nombre email') 
+            .populate('tourId', 'titulo descripcion precio');
 
         console.log('Reservas encontradas:', reservas);
         res.status(200).json({ message: 'Reservas de tours obtenidas', data: reservas });

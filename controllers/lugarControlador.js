@@ -61,7 +61,7 @@ const obtenerProvincias = async (req, res) => {
 };
 
 const obtenerProvinciasPopulares = async (req, res) => {
-  const provinciasPopulares = ['Buenos Aires', 'Misiones', 'Salta', 'Córdoba', 'Mendoza'];
+  const provinciasPopulares = ['Buenos Aires', 'Misiones', 'Salta', 'Córdoba', 'Mendoza', 'Tucumán'];
   const apiKey = process.env.SERP_API_KEY;
 
   if (!apiKey) {
@@ -70,7 +70,6 @@ const obtenerProvinciasPopulares = async (req, res) => {
 
   const url = "https://serpapi.com/search";
   
-  // Crear un array de promesas para todas las provincias
   const promises = provinciasPopulares.map((provincia) => {
       const params = {
           engine: "google_maps",

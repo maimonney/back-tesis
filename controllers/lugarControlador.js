@@ -60,6 +60,55 @@ const obtenerProvincias = async (req, res) => {
     }
 };
 
+const obtenerProvinciasPopulares = async (req, res) => {
+  const provinciasPopulares = ['Buenos Aires', 'Misiones', 'Salta', 'Córdoba', 'Mendoza'];
+  const apiKey = process.env.SERP_API_KEY;
+
+  if (!apiKey) {
+      return res.status(500).json({ error: "API key no configurada" });
+  }
+
+  const url = "https://serpapi.com/search";
+  
+  // Crear un array de promesas para todas las provincias
+  const promises = provinciasPopulares.map((provincia) => {
+      const params = {
+          engine: "google_maps",
+          q: `${provincia}, Argentina`,
+          api_key: apiKey,
+          hl: "es"
+      };
+
+      return axios.get(url, { params })
+          .then(response => {
+              if (response.data && response.data.place_results) {
+                  const place = response.data.place_results;
+                  return {
+                      provincia: provincia,
+                      title: place.title,
+                      description: place.description?.snippet || "No description available",
+                      images: place.images?.map(image => image.url) || [],
+                      photosLink: place.photos_link || null
+                  };
+              }
+          })
+          .catch(error => {
+              console.error(`Error al obtener provincia ${provincia}:`, error.message);
+              return null; // Retornar null en caso de error
+          });
+  });
+
+  try {
+      const results = await Promise.all(promises); // Esperar que todas las promesas se resuelvan
+      // Filtrar los resultados nulos (en caso de error)
+      const filteredResults = results.filter(result => result !== null);
+      return res.json(filteredResults);
+  } catch (error) {
+      console.error("Error en la obtención de provincias:", error.message);
+      return res.status(500).json({ error: "Hubo un problema al obtener las provincias populares" });
+  }
+};
+
 //hay que arreglar esta parte
 const obtenerLugares = async (req, res) => {
     const { provincia } = req.query;
@@ -114,5 +163,6 @@ const obtenerLugares = async (req, res) => {
 
 module.exports = {
     obtenerProvincias,
+    obtenerProvinciasPopulares,
     obtenerLugares,
 };

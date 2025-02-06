@@ -17,7 +17,8 @@ const obtenerProvincias = async (req, res) => {
         engine: "google_maps",
         q: `${provincia}, Argentina`,
         api_key: apiKey,
-        hl: "es"
+        hl: "es",
+        image_size: "large",
     };
 
     console.log("Realizando solicitud a SerpAPI con parámetros:", params);
@@ -75,7 +76,8 @@ const obtenerProvinciasPopulares = async (req, res) => {
           engine: "google_maps",
           q: `${provincia}, Argentina`,
           api_key: apiKey,
-          hl: "es"
+          hl: "es",
+          image_size: "large",
       };
 
       return axios.get(url, { params })
@@ -134,16 +136,15 @@ const obtenerLugares = async (req, res) => {
           location: "Argentina",
           api_key: apiKey,  
           hl: "es",  
+          image_size: "large",
         },
       });
   
       console.log("Respuesta completa de SerpAPI:", response.data);
   
-      // Verificamos si la respuesta contiene lugares turísticos
     if (response.data && response.data.top_sights && response.data.top_sights.sights && response.data.top_sights.sights.length > 0) {
         console.log("Información de lugares turísticos encontrada:", response.data.top_sights.sights);
   
-        // Formateamos la respuesta para solo devolver la información necesaria
         const lugares = response.data.top_sights.sights.map(lugar => {
           return {
             title: lugar.title,

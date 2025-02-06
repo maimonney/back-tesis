@@ -139,9 +139,23 @@ const obtenerLugares = async (req, res) => {
   
       console.log("Respuesta completa de SerpAPI:", response.data);
   
-      if (response.data && response.data.local_results && response.data.local_results.length > 0) {
-        console.log("Información de lugares turísticos encontrada:", response.data.local_results);
-        return res.json(response.data.local_results);  
+      // Verificamos si la respuesta contiene lugares turísticos
+    if (response.data && response.data.top_sights && response.data.top_sights.sights && response.data.top_sights.sights.length > 0) {
+        console.log("Información de lugares turísticos encontrada:", response.data.top_sights.sights);
+  
+        // Formateamos la respuesta para solo devolver la información necesaria
+        const lugares = response.data.top_sights.sights.map(lugar => {
+          return {
+            title: lugar.title,
+            description: lugar.description,
+            rating: lugar.rating,
+            reviews: lugar.reviews,
+            price: lugar.price || 'Gratis',
+            thumbnail: lugar.thumbnail,
+          };
+        });
+  
+        return res.json(lugares);  
       } else {
         console.log("No se encontraron lugares turísticos para esta provincia.");
         return res.status(404).json({ error: "No se encontraron lugares turísticos para esta provincia" });

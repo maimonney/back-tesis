@@ -108,7 +108,6 @@ const obtenerProvinciasPopulares = async (req, res) => {
   }
 };
 
-//hay que arreglar esta parte
 const obtenerLugares = async (req, res) => {
     const { provincia } = req.query;
     
@@ -131,7 +130,7 @@ const obtenerLugares = async (req, res) => {
       const response = await axios.get("https://serpapi.com/search", {
         params: {
           engine: "google",
-          q: `Lugares turísticos ${provincia}, Argentina`,
+          q: `Lugares para visitar en ${provincia}, Argentina`,
           location: "Argentina",
           api_key: apiKey,  
           hl: "es",  

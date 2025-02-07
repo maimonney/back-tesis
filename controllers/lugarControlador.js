@@ -181,7 +181,7 @@ const obtenerLugares = async (req, res) => {
     const { data_id } = req.query; 
 
     if (!data_id) {
-        return res.status(400).json({ error: "Se deben proporcionar tanto el nombre de la provincia como el data_id" });
+        return res.status(400).json({ error: "Se debe proporcionar el data_id" });
     }
 
     const apiKey = process.env.SERP_API_KEY;

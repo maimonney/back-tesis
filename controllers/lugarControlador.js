@@ -101,7 +101,7 @@ const obtenerProvinciasPopulares = async (req, res) => {
 
   try {
       const results = await Promise.all(promises); 
-      
+
       const filteredResults = results.filter(result => result !== null);
       return res.json(filteredResults);
   } catch (error) {
@@ -193,6 +193,7 @@ const obtenerLugares = async (req, res) => {
         api_key: apiKey,
         hl: "es",
         image_size: "large",
+        data_id: "0x89c259af336b3341:0xa4969e07ce3108de",
     };
 
     console.log("Realizando solicitud a SerpAPI con parámetros:", params);

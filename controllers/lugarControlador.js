@@ -178,10 +178,10 @@ const obtenerLugares = async (req, res) => {
   };
 
   const obtenerImagenLugar = async (req, res) => {
-    const { provincia } = req.query;
+    const { provincia, data_id } = req.query; 
 
-    if (!provincia) {
-        return res.status(400).json({ error: "Se debe proporcionar el nombre de la provincia" });
+    if (!provincia || !data_id) {
+        return res.status(400).json({ error: "Se deben proporcionar tanto el nombre de la provincia como el data_id" });
     }
 
     const apiKey = process.env.SERP_API_KEY;
@@ -191,8 +191,8 @@ const obtenerLugares = async (req, res) => {
 
     const url = "https://serpapi.com/search";
     const params = {
-        engine: "google_maps_photos",
-        q: "dataId",
+        engine: "google_maps_photos", 
+        q: data_id, 
         api_key: apiKey,
         hl: "es",
         image_size: "large",
@@ -205,27 +205,12 @@ const obtenerLugares = async (req, res) => {
 
         console.log("Respuesta completa de SerpAPI:", response.data);
 
-        if (response.data && Array.isArray(response.data.place_results) && response.data.place_results.length > 0) {
-            const place = response.data.place_results[0]; 
-            console.log(`Title: ${place.title}`);
-            console.log(`Photos Link: ${place.photos_link}`);
-            if (place.description && place.description.snippet) {
-                console.log(`Description: ${place.description.snippet}`);
-            }
-
-            if (Array.isArray(place.images) && place.images.length > 0) {
-                console.log(`Images: ${place.images.map(image => image.url).join(", ")}`);
-                return res.json({ images: place.images.map(image => image.url) }); 
-            } else {
-                console.log("No se encontraron imágenes.");
-                return res.status(404).json({ error: "No se encontraron imágenes para este lugar" });
-            }
-
+        if (response.data && Array.isArray(response.data.images)) {
+            console.log("Images:", response.data.images.map(image => image.url).join(", "));
+            return res.json({ images: response.data.images.map(image => image.url) });
         } else {
-            console.log("No se encontraron 'place_results' en la respuesta.");
-            return res.status(404).json({ error: "No se encontraron lugares para esta provincia" });
+            return res.status(404).json({ error: "No se encontraron imágenes para este lugar" });
         }
-
     } catch (error) {
         console.error("Error al hacer la solicitud a SerpAPI:", error.message);
         return res.status(error.response ? error.response.status : 500).json({
@@ -235,7 +220,6 @@ const obtenerLugares = async (req, res) => {
         });
     }
 };
-
 
 module.exports = {
     obtenerProvincias,

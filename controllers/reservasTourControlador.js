@@ -7,13 +7,13 @@ const crearReservaTur = async (req, res) => {
 
     console.log('Datos recibidos en la solicitud:', { userId, tourId, fechaTour, cantidadPersonas });
 
-    // Validar IDs
+   
     if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(tourId)) {
         console.log('IDs no válidos:', { userId, tourId });
         return res.status(400).json({ message: 'IDs no válidos' });
     }
 
-    // Verificar si el tour existe
+  
     const tour = await Tur.findById(tourId);
     if (!tour) {
         console.log('Tour no encontrado con ID:', tourId);
@@ -56,7 +56,7 @@ const crearReservaTur = async (req, res) => {
         res.status(500).json({ message: 'Error al crear la reserva', error: error.message });
     }
 };
-// Obtener todas las reservas de tours
+
 const obtenerReservasTur = async (req, res) => {
     try {
         console.log('Obteniendo todas las reservas de tours...');
@@ -72,7 +72,7 @@ const obtenerReservasTur = async (req, res) => {
     }
 };
 
-// Obtener una reserva de tour por su ID
+
 const obtenerReservaTurPorId = async (req, res) => {
     const { id } = req.params;
     console.log('Buscando reserva con ID:', id);
@@ -95,7 +95,7 @@ const obtenerReservaTurPorId = async (req, res) => {
     }
 };
 
-// Cancelar una reserva de tour
+
 const cancelarReservaTur = async (req, res) => {
     const { id } = req.params;
     console.log('Cancelando reserva con ID:', id);
@@ -120,9 +120,34 @@ const cancelarReservaTur = async (req, res) => {
     }
 };
 
+const obtenerReservasPorGuia = async (req, res) => {
+    const { guiaId } = req.params; 
+
+    try {
+        
+        const toursDelGuia = await Tur.find({ guiaId });
+
+        if (toursDelGuia.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron tours para este guía' });
+        }
+
+       
+        const reservas = await ReservaTur.find({ tourId: { $in: toursDelGuia.map(tour => tour._id) } })
+            .populate('userId', 'nombre email') 
+            .populate('tourId', 'titulo descripcion precio'); 
+
+        console.log('Reservas encontradas para el guía:', reservas);
+        res.status(200).json({ message: 'Reservas obtenidas', data: reservas });
+    } catch (error) {
+        console.error('Error al obtener las reservas:', error);
+        res.status(500).json({ message: 'Error al obtener las reservas', error: error.message });
+    }
+}; 
+
 module.exports = {
     crearReservaTur,
     obtenerReservasTur,
     obtenerReservaTurPorId,
     cancelarReservaTur,
+    obtenerReservasPorGuia,
 };

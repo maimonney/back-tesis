@@ -203,7 +203,7 @@ const obtenerLugares = async (req, res) => {
     try {
         const response = await axios.get(url, { params });
 
-        console.log("Respuesta completa de SerpAPI:", response.data);
+        console.log("Respuesta completa de SerpAPI(img):", response.data);
 
         if (response.data && Array.isArray(response.data.images)) {
             console.log("Images:", response.data.images.map(image => image.url).join(", "));

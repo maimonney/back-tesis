@@ -178,7 +178,7 @@ const obtenerLugares = async (req, res) => {
   };
 
   const obtenerImagenLugar = async (req, res) => {
-    const { data_id } = req.query; 
+    const { data_id } = req.query;
 
     if (!data_id) {
         return res.status(400).json({ error: "Se debe proporcionar el data_id" });
@@ -191,11 +191,9 @@ const obtenerLugares = async (req, res) => {
 
     const url = "https://serpapi.com/search";
     const params = {
-        engine: "google_maps_photos", 
-        data_id: data_id, 
+        engine: "google_maps_photos",
+        data_id: data_id,
         api_key: apiKey,
-        hl: "es",
-        image_size: "large",
     };
 
     console.log("Realizando solicitud a SerpAPI con parámetros:", params);
@@ -203,11 +201,11 @@ const obtenerLugares = async (req, res) => {
     try {
         const response = await axios.get(url, { params });
 
-        console.log("Respuesta completa de imagenes:", response.data);
+        console.log("Respuesta completa de imágenes:", response.data);
 
-        if (response.data && Array.isArray(response.data.images)) {
-            console.log("Images:", response.data.images.map(image => image.url).join(", "));
-            return res.json({ images: response.data.images.map(image => image.url) });
+        if (response.data && Array.isArray(response.data.photos) && response.data.photos.length > 0) {
+            console.log("Imágenes encontradas:", response.data.photos.map(photo => photo.image).join(", "));
+            return res.json({ images: response.data.photos.map(photo => photo.image) });
         } else {
             return res.status(404).json({ error: "No se encontraron imágenes para este lugar" });
         }

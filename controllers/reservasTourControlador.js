@@ -121,25 +121,37 @@ const cancelarReservaTur = async (req, res) => {
 };
 
 const obtenerReservasPorGuia = async (req, res) => {
-    const { guiaId } = req.params; 
+    const { guiaId } = req.params;
+
+    console.log('ID del guía recibido:', guiaId); 
 
     try {
-      
+        
+        console.log('Buscando tours del guía...');
         const toursDelGuia = await Tur.find({ guia: guiaId });
 
+        console.log('Tours encontrados:', toursDelGuia);
+
         if (toursDelGuia.length === 0) {
+            console.log('No se encontraron tours para este guía.');
             return res.status(404).json({ message: 'No se encontraron tours para este guía' });
         }
 
+        
+        console.log('Buscando reservas para los tours del guía...');
         const reservas = await ReservaTur.find({ tourId: { $in: toursDelGuia.map(tour => tour._id) } })
             .populate('userId', 'nombre email') 
-            .populate('tourId', 'titulo descripcion precio'); 
+            .populate('tourId', 'titulo descripcion precio');
+
+        console.log('Reservas encontradas:', reservas); 
 
         if (reservas.length === 0) {
+            console.log('No hay reservas para los tours de este guía.');
             return res.status(404).json({ message: 'No hay reservas para los tours de este guía' });
         }
 
         
+        console.log('Reservas obtenidas exitosamente.');
         res.status(200).json({ message: 'Reservas obtenidas', data: reservas });
     } catch (error) {
         console.error('Error al obtener las reservas:', error);

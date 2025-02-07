@@ -45,6 +45,9 @@ const obtenerProvincias = async (req, res) => {
                 console.log(`At this location: ${place.at_this_location.length} places`);
             }
 
+            const dataId = place.data_id || null;
+            console.log(`Data ID: ${dataId}`);
+
             return res.json(place);  
         } else {
             console.log("No se encontraron 'place_results' en la respuesta.");
@@ -189,11 +192,10 @@ const obtenerLugares = async (req, res) => {
     const url = "https://serpapi.com/search";
     const params = {
         engine: "google_maps_photos",
-        q: `${provincia}, Argentina`,
+        q: "dataId",
         api_key: apiKey,
         hl: "es",
         image_size: "large",
-        data_id: "0x89c259af336b3341:0xa4969e07ce3108de",
     };
 
     console.log("Realizando solicitud a SerpAPI con parámetros:", params);

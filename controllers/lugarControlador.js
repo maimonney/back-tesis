@@ -192,7 +192,7 @@ const obtenerLugares = async (req, res) => {
     const url = "https://serpapi.com/search";
     const params = {
         engine: "google_maps_photos", 
-        q: data_id, 
+        data_id: data_id, 
         api_key: apiKey,
         hl: "es",
         image_size: "large",

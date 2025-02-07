@@ -124,25 +124,28 @@ const obtenerReservasPorGuia = async (req, res) => {
     const { guiaId } = req.params; 
 
     try {
-        
-        const toursDelGuia = await Tur.find({ guiaId });
+      
+        const toursDelGuia = await Tur.find({ guia: guiaId });
 
         if (toursDelGuia.length === 0) {
             return res.status(404).json({ message: 'No se encontraron tours para este guía' });
         }
 
-       
         const reservas = await ReservaTur.find({ tourId: { $in: toursDelGuia.map(tour => tour._id) } })
             .populate('userId', 'nombre email') 
             .populate('tourId', 'titulo descripcion precio'); 
 
-        console.log('Reservas encontradas para el guía:', reservas);
+        if (reservas.length === 0) {
+            return res.status(404).json({ message: 'No hay reservas para los tours de este guía' });
+        }
+
+        
         res.status(200).json({ message: 'Reservas obtenidas', data: reservas });
     } catch (error) {
         console.error('Error al obtener las reservas:', error);
         res.status(500).json({ message: 'Error al obtener las reservas', error: error.message });
     }
-}; 
+};
 
 module.exports = {
     crearReservaTur,

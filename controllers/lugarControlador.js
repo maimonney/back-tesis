@@ -178,9 +178,9 @@ const obtenerLugares = async (req, res) => {
   };
 
   const obtenerImagenLugar = async (req, res) => {
-    const { provincia, data_id } = req.query; 
+    const { data_id } = req.query; 
 
-    if (!provincia || !data_id) {
+    if (!data_id) {
         return res.status(400).json({ error: "Se deben proporcionar tanto el nombre de la provincia como el data_id" });
     }
 

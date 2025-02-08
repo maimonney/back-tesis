@@ -205,6 +205,8 @@ const obtenerLugares = async (req, res) => {
         }
 
         const lugar = response.data.place_results;
+        console.log(lugar);
+
         const lugarInfo = {
             nombre: lugar.title,
             direccion: lugar.address || "No disponible",
@@ -216,6 +218,8 @@ const obtenerLugares = async (req, res) => {
         };
 
         res.json(lugarInfo);
+        console.log(lugarInfo);
+
     } catch (error) {
         console.error("Error al hacer la solicitud a SerpAPI:", error.message);
         return res.status(error.response ? error.response.status : 500).json({

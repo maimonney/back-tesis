@@ -177,7 +177,34 @@ const obtenerLugares = async (req, res) => {
     }
   };
 
-  const obtenerImagenLugar = async (req, res) => {
+  const obtenerInfoLugar = (req, res) => {
+    const { provincia } = req.query;
+
+    search.json({
+        engine: "google_maps",
+        q: provincia,
+        hl: "es",
+        type: "search"
+    }, (data) => {
+        if (!data.place_results) {
+            return res.status(404).json({ error: "Lugar no encontrado" });
+        }
+
+        const lugar = {
+            nombre: data.place_results.title,
+            direccion: data.place_results.address,
+            telefono: data.place_results.phone || "No disponible",
+            sitio_web: data.place_results.website || "No disponible",
+            imagen: data.place_results.thumbnail || "No disponible",
+            rating: data.place_results.rating || "No disponible",
+            opiniones: data.place_results.reviews || []
+        };
+
+        res.json(lugar);
+    });
+};
+
+const obtenerImagenLugar = async (req, res) => {
     const { data_id } = req.query;
 
     if (!data_id) {
@@ -224,4 +251,5 @@ module.exports = {
     obtenerProvinciasPopulares,
     obtenerLugares,
     obtenerImagenLugar,
+    obtenerInfoLugar,
 };

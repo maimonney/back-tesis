@@ -177,32 +177,55 @@ const obtenerLugares = async (req, res) => {
     }
   };
 
-  const obtenerInfoLugar = (req, res) => {
+  const obtenerInfoLugar = async (req, res) => {
     const { provincia } = req.query;
 
-    search.json({
+    if (!provincia) {
+        return res.status(400).json({ error: "Se debe proporcionar el nombre de la provincia" });
+    }
+
+    const apiKey = process.env.SERP_API_KEY;
+    if (!apiKey) {
+        return res.status(500).json({ error: "API key no configurada" });
+    }
+
+    const url = "https://serpapi.com/search";
+    const params = {
         engine: "google_maps",
         q: provincia,
+        api_key: apiKey,
         hl: "es",
-        type: "search"
-    }, (data) => {
-        if (!data.place_results) {
+    };
+
+    try {
+        const response = await axios.get(url, { params });
+
+        if (!response.data.place_results) {
             return res.status(404).json({ error: "Lugar no encontrado" });
         }
 
-        const lugar = {
-            nombre: data.place_results.title,
-            direccion: data.place_results.address,
-            telefono: data.place_results.phone || "No disponible",
-            sitio_web: data.place_results.website || "No disponible",
-            imagen: data.place_results.thumbnail || "No disponible",
-            rating: data.place_results.rating || "No disponible",
-            opiniones: data.place_results.reviews || []
+        const lugar = response.data.place_results;
+        const lugarInfo = {
+            nombre: lugar.title,
+            direccion: lugar.address || "No disponible",
+            telefono: lugar.phone || "No disponible",
+            sitio_web: lugar.website || "No disponible",
+            imagen: lugar.thumbnail || "No disponible",
+            rating: lugar.rating || "No disponible",
+            opiniones: lugar.reviews || [],
         };
 
-        res.json(lugar);
-    });
+        res.json(lugarInfo);
+    } catch (error) {
+        console.error("Error al hacer la solicitud a SerpAPI:", error.message);
+        return res.status(error.response ? error.response.status : 500).json({
+            error: "Hubo un problema al obtener la información del lugar",
+            message: error.message,
+            details: error.response ? error.response.data : "Sin detalles de respuesta",
+        });
+    }
 };
+
 
 const obtenerImagenLugar = async (req, res) => {
     const { data_id } = req.query;

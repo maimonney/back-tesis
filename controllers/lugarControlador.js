@@ -191,7 +191,7 @@ const obtenerLugares = async (req, res) => {
 
     const url = "https://serpapi.com/search";
     const params = {
-        engine: "google_search",
+        engine: "google_maps",
         q: `${provincia}, Argentina`,
         api_key: apiKey,
         hl: "es",
@@ -200,25 +200,10 @@ const obtenerLugares = async (req, res) => {
     try {
         const response = await axios.get(url, { params });
 
-        if (!response.data.place_results) {
-            return res.status(404).json({ error: "Lugar no encontrado" });
-        }
+        console.log("Respuesta completa de SerpAPI:", JSON.stringify(response.data, null, 2));
 
-        const lugar = response.data.place_results;
-        console.log(lugar);
-
-        const lugarInfo = {
-            nombre: lugar.title,
-            direccion: lugar.address || "No disponible",
-            telefono: lugar.phone || "No disponible",
-            sitio_web: lugar.website || "No disponible",
-            imagen: lugar.thumbnail || "No disponible",
-            rating: lugar.rating || "No disponible",
-            opiniones: lugar.reviews || [],
-        };
-
-        res.json(lugarInfo);
-        console.log(lugarInfo);
+        res.json(response.data);
+        console.log(response.data);
 
     } catch (error) {
         console.error("Error al hacer la solicitud a SerpAPI:", error.message);

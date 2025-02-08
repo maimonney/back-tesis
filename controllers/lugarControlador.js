@@ -191,7 +191,7 @@ const obtenerLugares = async (req, res) => {
 
     const url = "https://serpapi.com/search";
     const params = {
-        engine: "google_maps",
+        engine: "google_search",
         q: `${provincia}, Argentina`,
         api_key: apiKey,
         hl: "es",

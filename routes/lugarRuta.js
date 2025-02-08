@@ -14,6 +14,6 @@ router.get('/populares', obtenerProvinciasPopulares);
 
 router.get('/lugar',  obtenerLugares);
 router.get('/lugarImagen',  obtenerImagenLugar);
-router.get('/infoImagen',  obtenerInfoLugar);
+router.get('/infoLugar',  obtenerInfoLugar);
 
 module.exports = router;

@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const crearReserva = async (req, res) => {
     const { userId, vueloIda, vueloVuelta, hotel, checklist } = req.body;
+    console.log('Datos recibidos:', req.body);
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
         console.log(`ID de usuario no válido: ${userId}`);

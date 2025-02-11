@@ -5,14 +5,18 @@ const crearReserva = async (req, res) => {
     const { userId, vueloIda, vueloVuelta, hotel, checklist } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
+        console.log(`ID de usuario no válido: ${userId}`);
         return res.status(400).json({ msg: 'ID de usuario no válido' });
     }
 
     if (!vueloIda || !vueloVuelta) {
+        console.log(`Datos de vuelo incompletos - vueloIda: ${vueloIda}, vueloVuelta: ${vueloVuelta}`);
         return res.status(400).json({ msg: 'Los datos de vuelo son obligatorios' });
     }
 
     try {
+        console.log('Datos recibidos:', { userId, vueloIda, vueloVuelta, hotel, checklist });
+
         const nuevaReserva = new Reserva({
             userId,
             vueloIda,
@@ -21,12 +25,19 @@ const crearReserva = async (req, res) => {
             checklist: checklist || [] 
         });
 
-        await nuevaReserva.save();
-        res.status(201).json({ msg: 'Reserva creada exitosamente', data: nuevaReserva });
+        console.log('Nueva reserva:', nuevaReserva);
+
+        const reservaGuardada = await nuevaReserva.save();
+
+        console.log('Reserva guardada:', reservaGuardada); 
+
+        res.status(201).json({ msg: 'Reserva creada exitosamente', data: reservaGuardada });
     } catch (error) {
+        console.log('Error al crear la reserva:', error.message); 
         res.status(500).json({ msg: 'Error al crear la reserva', error: error.message });
     }
 };
+
 
 const actualizarReserva = async (req, res) => {
     const { id } = req.params;

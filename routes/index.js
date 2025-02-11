@@ -6,7 +6,6 @@ const lugarRuta = require('./lugarRuta.js');
 const turRuta = require('./turRuta.js');
 const excursionRuta = require('./excursionRuta.js');
 const cloudinaryRouter = require('./cloudinaryRutas.js'); 
-const reservaViaje = require('./reservaViajeRuta.js');
 const reservaTourRuta = require('./reservaTourRuta.js');
 
 function routerAPI( app){

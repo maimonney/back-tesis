@@ -5,29 +5,33 @@ const reservaTurSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User', 
         required: true 
-    }, // Usuario que hace la reserva
+    }, 
     tourId: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Tur', 
         required: true 
-    }, // Tour que se reserva
+    }, 
     fechaReserva: { 
         type: Date, 
         default: Date.now 
-    }, // Fecha en que se hizo la reserva
+    },
     fechaTour: { 
         type: Date, 
         required: true 
-    }, // Fecha seleccionada para el tour
+    }, 
+    destino: { 
+        type: String, 
+        required: true 
+    },
     cantidadPersonas: { 
         type: Number, 
         required: true 
-    }, // Cantidad de personas
+    }, 
     estado: { 
         type: String, 
         enum: ['pendiente', 'confirmada', 'cancelada'], 
         default: 'pendiente' 
-    }, // Estado de la reserva
+    }, 
 });
 
 const ReservaTur = mongoose.model('ReservaTur', reservaTurSchema);

@@ -3,9 +3,9 @@ const Tur = require('../models/turModelo');
 const mongoose = require('mongoose');
 
 const crearReservaTur = async (req, res) => {
-    const { userId, tourId, fechaTour, cantidadPersonas } = req.body;
+    const { userId, tourId, fechaTour, cantidadPersonas,destino } = req.body;
 
-    console.log('Datos recibidos en la solicitud:', { userId, tourId, fechaTour, cantidadPersonas });
+    console.log('Datos recibidos en la solicitud:', { userId, tourId, fechaTour, cantidadPersonas, destino });
 
    
     if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(tourId)) {

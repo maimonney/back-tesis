@@ -5,11 +5,6 @@ const crearReserva = async (req, res) => {
     const { userId, vueloIda, vueloVuelta, hotel, checklist } = req.body;
     console.log('Datos recibidos:', req.body);
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-        console.log(`ID de usuario no válido: ${userId}`);
-        return res.status(400).json({ msg: 'ID de usuario no válido' });
-    }
-
     if (!vueloIda || !vueloVuelta) {
         console.log(`Datos de vuelo incompletos - vueloIda: ${vueloIda}, vueloVuelta: ${vueloVuelta}`);
         return res.status(400).json({ msg: 'Los datos de vuelo son obligatorios' });

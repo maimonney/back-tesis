@@ -10,7 +10,7 @@ const {
 } = require('../controllers/itinerarioControlador');
 
 router.get('/:id', obtenerReservaId);
-router.post('/', crearReserva);
+router.post('/crear', crearReserva);
 router.delete('/:id', borrarReserva);
 router.put('/:id', actualizarReserva);
 router.put('/:id', actualizarChecklist);

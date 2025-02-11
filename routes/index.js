@@ -16,8 +16,7 @@ function routerAPI( app){
     app.use('/arcana/destino', lugarRuta);
     app.use('/arcana/tur', turRuta);
     app.use('/arcana/excursiones', excursionRuta);
-    app.use('/arcana/imagen', cloudinaryRouter);  
-    app.use('/arcana/reserva', reservaViaje);  
+    app.use('/arcana/imagen', cloudinaryRouter);   
     app.use('/arcana/reservastour', reservaTourRuta);
 
 }

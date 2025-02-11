@@ -1,8 +1,8 @@
-const Reserva = require('../models/reservasModelo');
+const Reserva = require('../models/itinerarioModelo');
 const mongoose = require('mongoose');
 
 const crearReserva = async (req, res) => {
-    const { userId, vueloIda, vueloVuelta, hotel } = req.body;
+    const { userId, vueloIda, vueloVuelta, hotel, checklist } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
         return res.status(400).json({ msg: 'ID de usuario no válido' });
@@ -13,7 +13,13 @@ const crearReserva = async (req, res) => {
     }
 
     try {
-        const nuevaReserva = new Reserva({ userId, vueloIda, vueloVuelta, hotel: hotel || null });
+        const nuevaReserva = new Reserva({
+            userId,
+            vueloIda,
+            vueloVuelta,
+            hotel: hotel || null,
+            checklist: checklist || [] 
+        });
 
         await nuevaReserva.save();
         res.status(201).json({ msg: 'Reserva creada exitosamente', data: nuevaReserva });
@@ -24,12 +30,12 @@ const crearReserva = async (req, res) => {
 
 const actualizarReserva = async (req, res) => {
     const { id } = req.params;
-    const { vueloIda, vueloVuelta, hotel } = req.body;
+    const { vueloIda, vueloVuelta, hotel, checklist } = req.body;
 
     try {
         const reserva = await Reserva.findByIdAndUpdate(
             id,
-            { vueloIda, vueloVuelta, hotel: hotel || null },
+            { vueloIda, vueloVuelta, hotel: hotel || null, checklist },
             { new: true, runValidators: true }
         );
 
@@ -40,6 +46,31 @@ const actualizarReserva = async (req, res) => {
         res.status(200).json({ msg: 'Reserva actualizada', data: reserva });
     } catch (error) {
         res.status(500).json({ msg: 'Error al actualizar la reserva', error: error.message });
+    }
+};
+
+const actualizarChecklist = async (req, res) => {
+    const { id } = req.params;
+    const { itemId, accion } = req.body;  
+    try {
+        const reserva = await Reserva.findById(id);
+
+        if (!reserva) {
+            return res.status(404).json({ msg: 'Reserva no encontrada' });
+        }
+
+        if (accion === 'agregar') {
+            reserva.checklist.push(itemId); 
+        } else if (accion === 'eliminar') {
+            reserva.checklist = reserva.checklist.filter(item => item._id.toString() !== itemId); // Eliminar item
+        } else {
+            return res.status(400).json({ msg: 'Acción no válida' });
+        }
+
+        await reserva.save();
+        res.status(200).json({ msg: 'Checklist actualizada', data: reserva });
+    } catch (error) {
+        res.status(500).json({ msg: 'Error al actualizar la checklist', error: error.message });
     }
 };
 
@@ -88,4 +119,5 @@ module.exports = {
     obtenerReservaId,
     borrarReserva,
     actualizarReserva,
+    actualizarChecklist,  
 };

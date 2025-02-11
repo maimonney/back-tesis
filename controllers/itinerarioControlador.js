@@ -75,21 +75,22 @@ const actualizarChecklist = async (req, res) => {
 };
 
 const obtenerReservaId = async (req, res) => {
-    const { userId } = req.params;
+    const { destino } = req.query;  
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return res.status(400).json({ msg: 'ID de usuario no válido' });
+    if (!destino) {
+        return res.status(400).json({ msg: 'Destino no proporcionado' });
     }
 
     try {
-        const reservas = await Reserva.find({ userId }).populate('userId');
+        const reservas = await Reserva.find({ destino });
 
         if (reservas.length === 0) {
-            return res.status(404).json({ msg: 'No se encontraron reservas para este usuario' });
+            return res.status(404).json({ msg: 'No se encontraron reservas para este destino' });
         }
 
         res.status(200).json({ msg: 'Reservas obtenidas', data: reservas });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ msg: 'Error al obtener las reservas', error: error.message });
     }
 };

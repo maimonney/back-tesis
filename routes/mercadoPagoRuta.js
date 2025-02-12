@@ -12,8 +12,7 @@ router.post('/mercado', async (req, res) => {
     const { items } = req.body;
 
     console.log('Cuerpo de la solicitud:', req.body);
-
-    console.log('Token de acceso:', process.env.MERCADOPAGO_ACCESS_TOKEN);
+    console.log('Cuerpo', items);
 
     const preference = new Preference(client);
     preference.items = items.map(item => {
@@ -32,7 +31,7 @@ router.post('/mercado', async (req, res) => {
     };
     
     preference.auto_return = 'approved';
-    
+
     console.log('Datos de la preferencia:', preference);
 
     try {

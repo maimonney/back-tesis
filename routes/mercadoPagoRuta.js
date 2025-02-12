@@ -1,27 +1,31 @@
 const express = require('express');
-const mercadopago = require('mercadopago');
+const { MercadoPagoConfig, Preference } = require('mercadopago');
 
 const router = express.Router();
+
+const client = new MercadoPagoConfig({
+  accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN,
+  public_key: process.env.MERCADOPAGO_PUBLIC_KEY,
+});
 
 router.post('/mercado', async (req, res) => {
     const { items } = req.body;
 
-    const preference = {
-        items: items.map(item => ({
-            title: item.title,
-            unit_price: item.price,
-            quantity: item.quantity,
-        })),
-        back_urls: {
-            success: 'https://back-tesis-lovat.vercel.app/success',
-            failure: 'https://back-tesis-lovat.vercel.app/failure',
-            pending: 'https://back-tesis-lovat.vercel.app/pending',
-        },
-        auto_return: 'approved',
+    const preference = new Preference(client);
+    preference.items = items.map(item => ({
+        title: item.title,
+        unit_price: item.price,
+        quantity: item.quantity,
+    }));
+    preference.back_urls = {
+        success: 'https://back-tesis-lovat.vercel.app/success',
+        failure: 'https://back-tesis-lovat.vercel.app/failure',
+        pending: 'https://back-tesis-lovat.vercel.app/pending',
     };
+    preference.auto_return = 'approved';
 
     try {
-        const response = await mercadopago.preferences.create(preference);
+        const response = await preference.create();
         res.json({
             init_point: response.body.init_point,
         });

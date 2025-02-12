@@ -25,9 +25,9 @@ api.use(express.json({ limit: '50mb' }));
 api.use(express.urlencoded({ limit: '50mb', extended: true })); 
 api.use(express.raw({ limit: '50mb' })); 
 
-mercadopago.configure({
-    access_token: process.env.MERCADOPAGO_ACCESS_TOKEN,
-  });
+// mercadopago.configure({
+//     access_token: process.env.MERCADOPAGO_ACCESS_TOKEN,
+//   });
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {

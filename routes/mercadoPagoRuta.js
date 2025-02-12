@@ -37,6 +37,9 @@ router.post('/mercado', async (req, res) => {
     try {
         console.log('Creando preferencia...');
         const response = await preference.create();
+
+        console.log('Body:', body);
+        console.log('Body:', response.body);
     
         console.log('Respuesta completa de Mercado Pago:', response);
     

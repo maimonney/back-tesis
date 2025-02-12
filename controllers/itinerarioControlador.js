@@ -2,7 +2,7 @@ const Reserva = require('../models/itinerarioModelo');
 const mongoose = require('mongoose');
 
 const crearReserva = async (req, res) => {
-    const { userId, vueloIda, vueloVuelta, hotel, checklist } = req.body;
+    const { userId, vueloIda, vueloVuelta, hotel, checklist, destino } = req.body;
     console.log('Datos recibidos:', req.body);
 
     if (!vueloIda || !vueloVuelta) {
@@ -11,13 +11,14 @@ const crearReserva = async (req, res) => {
     }
 
     try {
-        console.log('Datos recibidos:', { userId, vueloIda, vueloVuelta, hotel, checklist });
+        console.log('Datos recibidos:', { userId, vueloIda, vueloVuelta, hotel, destino, checklist });
 
         const nuevaReserva = new Reserva({
             userId,
             vueloIda,
             vueloVuelta,
             hotel: hotel || null,
+            destino,
             checklist: checklist || [] 
         });
 

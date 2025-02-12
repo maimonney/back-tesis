@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Reserva = require('../models/reservasModelo'); 
+const Reserva = require('../models/itinerarioModelo'); 
 const router = express.Router();
 
 router.post('/', async (req, res) => {

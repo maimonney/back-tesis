@@ -7,7 +7,6 @@ const crearReservaTur = async (req, res) => {
 
     console.log('Datos recibidos en la solicitud:', { userId, tourId, fechaTour, cantidadPersonas, destino });
 
-    
     if (!destino) {
         return res.status(400).json({ message: 'El destino es obligatorio.' });
     }
@@ -48,7 +47,6 @@ const crearReservaTur = async (req, res) => {
     console.log('Cantidad de personas válida:', cantidadPersonas);
 
     try {
-       
         const nuevaReserva = new ReservaTur({ 
             userId, 
             tourId, 
@@ -67,13 +65,12 @@ const crearReservaTur = async (req, res) => {
     }
 };
 
-
 const obtenerReservasTur = async (req, res) => {
     try {
         console.log('Obteniendo todas las reservas de tours...');
         const reservas = await ReservaTur.find()
-            .populate('userId', 'nombre email') 
-            .populate('tourId', 'titulo descripcion precio');
+            .populate('userId', 'nombre email fotoPerfil fotoPortada') 
+            .populate('tourId', 'titulo descripcion precio portada'); 
 
         console.log('Reservas encontradas:', reservas);
         res.status(200).json({ message: 'Reservas de tours obtenidas', data: reservas });
@@ -83,15 +80,14 @@ const obtenerReservasTur = async (req, res) => {
     }
 };
 
-
 const obtenerReservaTurPorId = async (req, res) => {
     const { id } = req.params;
     console.log('Buscando reserva con ID:', id);
 
     try {
         const reserva = await ReservaTur.findById(id)
-            .populate('userId', 'nombre email')
-            .populate('tourId', 'titulo descripcion precio');
+            .populate('userId', 'nombre email fotoPerfil fotoPortada') 
+            .populate('tourId', 'titulo descripcion precio portada'); 
 
         if (!reserva) {
             console.log('Reserva no encontrada con ID:', id);
@@ -105,7 +101,6 @@ const obtenerReservaTurPorId = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener la reserva', error: error.message });
     }
 };
-
 
 const cancelarReservaTur = async (req, res) => {
     const { id } = req.params;
@@ -137,7 +132,6 @@ const obtenerReservasPorGuia = async (req, res) => {
     console.log('ID del guía recibido:', guiaId); 
 
     try {
-        
         console.log('Buscando tours del guía...');
         const toursDelGuia = await Tur.find({ guia: guiaId });
 
@@ -148,11 +142,10 @@ const obtenerReservasPorGuia = async (req, res) => {
             return res.status(404).json({ message: 'No se encontraron tours para este guía' });
         }
 
-        
         console.log('Buscando reservas para los tours del guía...');
         const reservas = await ReservaTur.find({ tourId: { $in: toursDelGuia.map(tour => tour._id) } })
-            .populate('userId', 'nombre email') 
-            .populate('tourId', 'titulo descripcion precio');
+            .populate('userId', 'nombre email fotoPerfil fotoPortada') 
+            .populate('tourId', 'titulo descripcion precio portada'); 
 
         console.log('Reservas encontradas:', reservas); 
 
@@ -161,7 +154,6 @@ const obtenerReservasPorGuia = async (req, res) => {
             return res.status(404).json({ message: 'No hay reservas para los tours de este guía' });
         }
 
-        
         console.log('Reservas obtenidas exitosamente.');
         res.status(200).json({ message: 'Reservas obtenidas', data: reservas });
     } catch (error) {

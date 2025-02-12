@@ -32,6 +32,8 @@ router.post('/mercado', async (req, res) => {
     };
     
     preference.auto_return = 'approved';
+    
+    console.log('Datos de la preferencia:', preference);
 
     try {
         console.log('Creando preferencia...');

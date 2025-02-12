@@ -28,7 +28,7 @@ const crearReserva = async (req, res) => {
 
         console.log('Reserva guardada:', reservaGuardada); 
 
-        res.status(201).json({ msg: 'Reserva creada exitosamente', data: reservaGuardada });
+        res.status(200).json({ msg: 'Reserva creada exitosamente', data: reservaGuardada });
     } catch (error) {
         console.log('Error al crear la reserva:', error.message); 
         res.status(500).json({ msg: 'Error al crear la reserva', error: error.message });

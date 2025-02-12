@@ -36,12 +36,17 @@ router.post('/mercado', async (req, res) => {
     try {
         console.log('Creando preferencia...');
         const response = await preference.create();
-
-        console.log('Respuesta de Mercado Pago:', response.body);
-
-        res.json({
-            init_point: response.body.init_point,
-        });
+    
+        console.log('Respuesta completa de Mercado Pago:', response);
+    
+        if (response && response.body) {
+            res.json({
+                init_point: response.body.init_point,
+            });
+        } else {
+            console.error('La respuesta no tiene el cuerpo esperado:', response);
+            res.status(500).json({ error: 'No se obtuvo una respuesta válida de Mercado Pago' });
+        }
     } catch (error) {
         console.error('Error al crear la preferencia:', error);
         res.status(500).json({ error: 'Error al crear la preferencia' });

@@ -37,14 +37,12 @@ router.post("/mercado", async (req, res) => {
   try {
     console.log("Creando preferencia...");
 
-    console.log("Body:", body);
-
     const response = await preference.create();
 
-    console.log("Respuesta completa de Mercado Pago:", response);
+    console.log("Respuesta completa de Mercado Pago:", response); // Imprimir la respuesta completa de Mercado Pago
 
     if (response && response.body) {
-      console.log("Respuesta completa de Mercado Pago:", response);
+      console.log("Respuesta completa de Mercado Pago:", response.body);
       res.json({
         init_point: response.body.init_point,
       });

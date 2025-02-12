@@ -3,17 +3,20 @@ const Tur = require('../models/turModelo');
 const mongoose = require('mongoose');
 
 const crearReservaTur = async (req, res) => {
-    const { userId, tourId, fechaTour, cantidadPersonas,destino } = req.body;
+    const { userId, tourId, fechaTour, cantidadPersonas, destino } = req.body;
 
     console.log('Datos recibidos en la solicitud:', { userId, tourId, fechaTour, cantidadPersonas, destino });
 
-   
+    
+    if (!destino) {
+        return res.status(400).json({ message: 'El destino es obligatorio.' });
+    }
+
     if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(tourId)) {
         console.log('IDs no válidos:', { userId, tourId });
         return res.status(400).json({ message: 'IDs no válidos' });
     }
 
-  
     const tour = await Tur.findById(tourId);
     if (!tour) {
         console.log('Tour no encontrado con ID:', tourId);
@@ -22,10 +25,8 @@ const crearReservaTur = async (req, res) => {
 
     console.log('Tour encontrado:', tour);
 
- 
     const fechaTourObj = new Date(fechaTour);
     const fechaTourISO = fechaTourObj.toISOString().split('T')[0];
-
 
     const fechaDisponible = tour.fechasDisponibles.some(fecha => {
         const fechaDisponibleISO = new Date(fecha).toISOString().split('T')[0]; 
@@ -47,7 +48,16 @@ const crearReservaTur = async (req, res) => {
     console.log('Cantidad de personas válida:', cantidadPersonas);
 
     try {
-        const nuevaReserva = new ReservaTur({ userId, tourId, fechaTour, cantidadPersonas });
+       
+        const nuevaReserva = new ReservaTur({ 
+            userId, 
+            tourId, 
+            fechaTour, 
+            cantidadPersonas, 
+            destino, 
+            fechaReserva: new Date() 
+        });
+        
         await nuevaReserva.save();
         console.log('Reserva creada exitosamente:', nuevaReserva);
         res.status(201).json({ message: 'Reserva de tour creada', data: nuevaReserva });
@@ -56,6 +66,7 @@ const crearReservaTur = async (req, res) => {
         res.status(500).json({ message: 'Error al crear la reserva', error: error.message });
     }
 };
+
 
 const obtenerReservasTur = async (req, res) => {
     try {

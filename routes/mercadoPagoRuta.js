@@ -42,10 +42,10 @@ router.post("/mercado", async (req, res) => {
 
     console.log("Respuesta completa de Mercado Pago:", response); 
 
-    if (response && response.body) {
+    if (response && response.items) {
       console.log("Respuesta completa de Mercado Pago:", response.body);
       res.json({
-        init_point: response.body.init_point,
+        init_point: response.items.init_point,
       });
     } else {
       console.error("La respuesta no contiene un cuerpo válido:", response);

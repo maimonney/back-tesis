@@ -32,37 +32,33 @@ router.post("/mercado", async (req, res) => {
 
   preference.auto_return = "approved";
 
-  console.log("Datos de la preferencia:", preference);
-
   try {
     console.log("Creando preferencia...");
-    console.log("referencia...", preference);
-
+    console.log(preference);
+    console.log(preference.body);
+ 
     const response = await preference.create();
-
-    console.log("Respuesta completa de Mercado Pago:", response); 
-
-    if (response && response.items) {
-      console.log("Respuesta completa de Mercado Pago:", response.body);
-      res.json({
-        init_point: response.items.init_point,
-      });
+ 
+    console.log("Respuesta completa de Mercado Pago:", response);
+ 
+    if (response && response.body) {
+        res.json({
+            init_point: response.body.init_point,
+        });
     } else {
-      console.error("La respuesta no contiene un cuerpo válido:", response);
-      res
-        .status(500)
-        .json({ error: "No se obtuvo una respuesta válida de Mercado Pago" });
+        console.error("La respuesta no contiene un cuerpo válido:", response);
+        res.status(500).json({ error: "No se obtuvo una respuesta válida de Mercado Pago" });
     }
-  } catch (error) {
+ } catch (error) {
     console.error("Error al crear la preferencia:", error.message);
-    console.error(
-      "Detalles del error:",
-      error.response ? error.response.data : "No hay detalles"
-    );
-    res
-      .status(500)
-      .json({ error: "Error al crear la preferencia", details: error.message });
-  }
+    if (error.response) {
+        console.error("Detalles del error de la respuesta:", error.response.data);
+    } else {
+        console.error("Detalles del error:", error);
+    }
+    res.status(500).json({ error: "Error al crear la preferencia", details: error.message });
+ }
+ 
 });
 
 router.get("/success", (req, res) => {

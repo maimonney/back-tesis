@@ -109,7 +109,8 @@ const actualizarItem = async (req, res) => {
         return res.status(404).json({ message: "Reserva no encontrada" });
       }
   
-      const item = reserva.checklist.find(item => item.titulo === titulo);
+      const item = reserva.checklist.find(item => item._id.toString() === itemId);
+
       if (!item) {
         return res.status(404).json({ message: "Ítem no encontrado" });
       }
@@ -122,7 +123,6 @@ const actualizarItem = async (req, res) => {
       res.status(500).json({ message: "Error al actualizar el estado del ítem" });
     }
   };
- 
 
 const eliminarItem = async (req, res) => {
   try {

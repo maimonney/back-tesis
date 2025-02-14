@@ -3,6 +3,8 @@ const router = express.Router();
 
 const {
     crearReserva, 
+    obtenerTodosItinerarios,
+    obtenerReservaDestino,
     obtenerReservaId,
     borrarReserva,
     actualizarReserva,
@@ -10,6 +12,8 @@ const {
 } = require('../controllers/itinerarioControlador');
 
 router.get('/:id', obtenerReservaId);
+router.get('/destino', obtenerReservaDestino);
+router.get('/', obtenerTodosItinerarios);
 router.post('/crear', crearReserva);
 router.delete('/:id', borrarReserva);
 router.put('/:id', actualizarReserva);

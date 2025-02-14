@@ -35,7 +35,6 @@ const crearReserva = async (req, res) => {
     }
 };
 
-
 const actualizarReserva = async (req, res) => {
     const { id } = req.params;
     const { vueloIda, vueloVuelta, hotel, checklist } = req.body;
@@ -82,13 +81,50 @@ const actualizarChecklist = async (req, res) => {
     }
 };
 
+const obtenerTodosItinerarios = async (req, res) => {
+    try {
+        const reservas = await Reserva.find(); 
+
+        if (reservas.length === 0) {
+            return res.status(404).json({ msg: 'No hay reservas disponibles' });
+        }
+
+        res.status(200).json({ msg: 'Reservas obtenidas', data: reservas });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: 'Error al obtener las reservas', error: error.message });
+    }
+};
+
 const obtenerReservaId = async (req, res) => {
+    const { id } = req.params; 
+
+    if (!id) {
+        return res.status(400).json({ msg: 'ID no proporcionado' });
+    }
+
+    try {
+        const reserva = await Reserva.findById(id);
+
+        if (!reserva) {
+            return res.status(404).json({ msg: 'Reserva no encontrada' });
+        }
+
+        res.status(200).json({ msg: 'Reserva obtenida', data: reserva });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: 'Error al obtener la reserva', error: error.message });
+    }
+};
+
+
+const obtenerReservaDestino = async (req, res) => {
     const { destino } = req.query;  
 
     if (!destino) {
         return res.status(400).json({ msg: 'Destino no proporcionado' });
     }
-
+ 
     try {
         const reservas = await Reserva.find({ destino });
 
@@ -125,6 +161,8 @@ const borrarReserva = async (req, res) => {
 
 module.exports = {
     crearReserva, 
+    obtenerTodosItinerarios,
+    obtenerReservaDestino,
     obtenerReservaId,
     borrarReserva,
     actualizarReserva,

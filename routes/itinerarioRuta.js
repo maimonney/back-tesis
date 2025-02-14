@@ -11,7 +11,7 @@ const {
     actualizarChecklist, 
 } = require('../controllers/itinerarioControlador');
 
-router.get('/:userId', obtenerReservaUserId);
+router.get('/usuario/:userId', obtenerReservaUserId);
 router.get('/destino', obtenerReservaDestino);
 router.get('/:id', obtenerItinerarioId);
 router.post('/crear', crearReserva);

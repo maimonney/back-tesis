@@ -71,34 +71,49 @@ const actualizarReserva = async (req, res) => {
   }
 };
 
-const actualizarChecklist = async (req, res) => {
-  const { id } = req.params;
-  const { itemId, accion } = req.body;
-  try {
-    const reserva = await Reserva.findById(id);
+const agregarItem = async (req, res) => {
+    try {
+      const { reservaId, titulo } = req.body; 
 
-    if (!reserva) {
-      return res.status(404).json({ msg: "Reserva no encontrada" });
+      const reserva = await Reserva.findById(reservaId);
+      if (!reserva) {
+        return res.status(404).json({ message: 'Reserva no encontrada' });
+      }
+  
+      const nuevoItem = { titulo, estado: false };
+  
+      reserva.checklist.push(nuevoItem);
+  
+      await reserva.save();
+      
+      res.status(200).json(reserva.checklist);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Error al agregar el ítem' });
     }
+  };
 
-    if (accion === "agregar") {
-      reserva.checklist.push(itemId);
-    } else if (accion === "eliminar") {
-      reserva.checklist = reserva.checklist.filter(
-        (item) => item._id.toString() !== itemId
-      ); // Eliminar item
-    } else {
-      return res.status(400).json({ msg: "Acción no válida" });
+const eliminarItem = async (req, res) => {
+    try {
+      const { reservaId, itemIndex } = req.body; 
+
+      const reserva = await Reserva.findById(reservaId);
+      if (!reserva) {
+        return res.status(404).json({ message: 'Reserva no encontrada' });
+      }
+
+      reserva.checklist.splice(itemIndex, 1);
+  
+      await reserva.save();
+      
+      res.status(200).json(reserva.checklist);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Error al eliminar el ítem' });
     }
-
-    await reserva.save();
-    res.status(200).json({ msg: "Checklist actualizada", data: reserva });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ msg: "Error al actualizar la checklist", error: error.message });
-  }
-};
+  };
+  
+  
 
 const obtenerReservaUserId = async (req, res) => {
   const { userId } = req.params;
@@ -207,5 +222,6 @@ module.exports = {
   obtenerItinerarioId,
   borrarReserva,
   actualizarReserva,
-  actualizarChecklist,
+  agregarItem,
+  eliminarItem,
 };

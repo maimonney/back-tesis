@@ -2,21 +2,28 @@ const express = require('express');
 const router = express.Router();
 
 const {
-    crearReserva, 
+    crearReserva,
     obtenerReservaDestino,
     obtenerReservaUserId,
     obtenerItinerarioId,
     borrarReserva,
     actualizarReserva,
-    actualizarChecklist, 
+    agregarItem,
+    eliminarItem,
 } = require('../controllers/itinerarioControlador');
 
+// Rutas para obtener información
 router.get('/usuario/:userId', obtenerReservaUserId);
 router.get('/destino', obtenerReservaDestino);
 router.get('/:id', obtenerItinerarioId);
+
+// Rutas para crear, actualizar y borrar
 router.post('/crear', crearReserva);
 router.delete('/:id', borrarReserva);
 router.put('/:id', actualizarReserva);
-router.put('/:id', actualizarChecklist);
+
+// Rutas para manejar los ítems del checklist
+router.put('/:id/checklist/agregar', agregarItem); 
+router.put('/:id/checklist/eliminar', eliminarItem); 
 
 module.exports = router;

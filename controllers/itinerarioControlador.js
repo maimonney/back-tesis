@@ -103,24 +103,30 @@ const agregarItem = async (req, res) => {
 
 const actualizarItem = async (req, res) => {
     try {
-        const { id, itemId } = req.body;
-        
+        const { id, itemId, estado } = req.body; 
+
         console.log("ID de la reserva:", id);
-        console.log("ID del ítem a eliminar:", itemId);
-    
+        console.log("ID del ítem a actualizar:", itemId);
+        console.log("Nuevo estado:", estado);
+
         const reserva = await Reserva.findById(id);
         if (!reserva) return res.status(404).json({ error: "Reserva no encontrada" });
-    
-        reserva.checklist = reserva.checklist.filter(item => item._id.toString() !== itemId);
-    
-        await reserva.save(); 
-    
-        res.status(200).json({ message: "Ítem eliminado correctamente", checklist: reserva.checklist });
-      } catch (error) {
-        console.error("Error eliminando ítem:", error);
-        res.status(500).json({ error: "Error al eliminar el ítem" });
-      }
-  };
+
+        const item = reserva.checklist.find(item => item._id.toString() === itemId);
+        if (item) {
+            item.estado = estado; 
+            console.log("Ítem actualizado:", item);
+        } else {
+            return res.status(404).json({ error: "Ítem no encontrado" });
+        }
+
+        await reserva.save();
+        res.status(200).json({ message: "Ítem actualizado correctamente", checklist: reserva.checklist });
+    } catch (error) {
+        console.error("Error actualizando ítem:", error);
+        res.status(500).json({ error: "Error al actualizar el ítem" });
+    }
+};
  
   const eliminarItem = async (req, res) => {
     try {

@@ -72,48 +72,61 @@ const actualizarReserva = async (req, res) => {
 };
 
 const agregarItem = async (req, res) => {
-    try {
-      const { reservaId, titulo } = req.body; 
+  try {
+    const { reservaId, titulo } = req.body;
 
-      const reserva = await Reserva.findById(reservaId);
-      if (!reserva) {
-        return res.status(404).json({ message: 'Reserva no encontrada' });
-      }
-  
-      const nuevoItem = { titulo, estado: false };
-  
-      reserva.checklist.push(nuevoItem);
-  
-      await reserva.save();
-      
-      res.status(200).json(reserva.checklist);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Error al agregar el ítem' });
+    console.log("Datos recibidos:", { reservaId, titulo });
+
+    const reserva = await Reserva.findById(reservaId);
+    if (!reserva) {
+      console.log("Reserva no encontrada");
+      return res.status(404).json({ message: "Reserva no encontrada" });
     }
-  };
+
+    console.log("Reserva encontrada:", reserva);
+
+    const nuevoItem = { titulo, estado: false };
+    console.log("Nuevo ítem a agregar:", nuevoItem);
+
+    reserva.checklist.push(nuevoItem);
+    console.log("Checklist actualizado:", reserva.checklist);
+
+    await reserva.save();
+    console.log("Reserva guardada con éxito");
+
+    res.status(200).json(reserva.checklist);
+  } catch (err) {
+    console.error("Error en agregarItem:", err);
+    res.status(500).json({ message: "Error al agregar el ítem" });
+  }
+};
 
 const eliminarItem = async (req, res) => {
-    try {
-      const { reservaId, itemIndex } = req.body; 
+  try {
+    const { reservaId, itemIndex } = req.body;
 
-      const reserva = await Reserva.findById(reservaId);
-      if (!reserva) {
-        return res.status(404).json({ message: 'Reserva no encontrada' });
-      }
+    console.log("Datos recibidos para eliminar:", { reservaId, itemIndex });
 
-      reserva.checklist.splice(itemIndex, 1);
-  
-      await reserva.save();
-      
-      res.status(200).json(reserva.checklist);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Error al eliminar el ítem' });
+    const reserva = await Reserva.findById(reservaId);
+    if (!reserva) {
+      console.log("Reserva no encontrada");
+      return res.status(404).json({ message: "Reserva no encontrada" });
     }
-  };
-  
-  
+
+    console.log("Reserva encontrada:", reserva);
+
+    reserva.checklist.splice(itemIndex, 1);
+    console.log("Checklist después de eliminar:", reserva.checklist);
+
+    await reserva.save();
+    console.log("Reserva guardada con éxito después de eliminar el ítem");
+
+    res.status(200).json(reserva.checklist);
+  } catch (err) {
+    console.error("Error en eliminarItem:", err);
+    res.status(500).json({ message: "Error al eliminar el ítem" });
+  }
+};
 
 const obtenerReservaUserId = async (req, res) => {
   const { userId } = req.params;
@@ -130,7 +143,7 @@ const obtenerReservaUserId = async (req, res) => {
 
   try {
     console.log("🔍 Buscando reservas en la base de datos...");
-    const reservas = await Reserva.find({ userId }); 
+    const reservas = await Reserva.find({ userId });
 
     if (!reservas.length) {
       console.log(`⚠️ No se encontraron reservas para el usuario ${userId}`);
@@ -150,21 +163,23 @@ const obtenerReservaUserId = async (req, res) => {
 };
 
 const obtenerItinerarioId = async (req, res) => {
-    try {
-      const { id } = req.params; 
+  try {
+    const { id } = req.params;
 
-      const itinerario = await Reserva.findById(id);
-  
-      if (!itinerario) {
-        return res.status(404).json({ message: 'Itinerario no encontrado' });
-      }
-  
-      return res.status(200).json(itinerario);
-    } catch (error) {
-      console.error('Error al obtener el itinerario:', error);
-      return res.status(500).json({ message: 'Hubo un problema al obtener el itinerario' });
+    const itinerario = await Reserva.findById(id);
+
+    if (!itinerario) {
+      return res.status(404).json({ message: "Itinerario no encontrado" });
     }
-  };
+
+    return res.status(200).json(itinerario);
+  } catch (error) {
+    console.error("Error al obtener el itinerario:", error);
+    return res
+      .status(500)
+      .json({ message: "Hubo un problema al obtener el itinerario" });
+  }
+};
 
 const obtenerReservaDestino = async (req, res) => {
   const { destino } = req.query;

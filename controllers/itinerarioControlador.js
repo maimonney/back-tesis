@@ -121,34 +121,41 @@ const actualizarItem = async (req, res) => {
         res.status(500).json({ error: "Error al eliminar el ítem" });
       }
   };
-  
  
-const eliminarItem = async (req, res) => {
-  try {
-    const { id, itemIndex } = req.body;
-
-    console.log("Datos recibidos para eliminar:", { id, itemIndex });
-
-    const reserva = await Reserva.findById(id);
-    if (!reserva) {
-      console.log("Reserva no encontrada");
-      return res.status(404).json({ message: "Reserva no encontrada" });
+  const eliminarItem = async (req, res) => {
+    try {
+      const { id, itemId } = req.body;
+  
+      console.log("Datos recibidos para eliminar:", { id, itemId });
+  
+      const reserva = await Reserva.findById(id);
+      if (!reserva) {
+        console.log("Reserva no encontrada");
+        return res.status(404).json({ message: "Reserva no encontrada" });
+      }
+  
+      console.log("Reserva encontrada:", reserva);
+  
+      const index = reserva.checklist.findIndex(item => item._id.toString() === itemId);
+  
+      if (index === -1) {
+        console.log("Item no encontrado en el checklist");
+        return res.status(404).json({ message: "Item no encontrado" });
+      }
+  
+      reserva.checklist.splice(index, 1);
+      console.log("Checklist después de eliminar:", reserva.checklist);
+  
+      await reserva.save();
+      console.log("Reserva guardada con éxito después de eliminar el ítem");
+  
+      res.status(200).json(reserva.checklist);
+    } catch (err) {
+      console.error("Error en eliminarItem:", err);
+      res.status(500).json({ message: "Error al eliminar el ítem" });
     }
-
-    console.log("Reserva encontrada:", reserva);
-
-    reserva.checklist.splice(itemIndex, 1);
-    console.log("Checklist después de eliminar:", reserva.checklist);
-
-    await reserva.save();
-    console.log("Reserva guardada con éxito después de eliminar el ítem");
-
-    res.status(200).json(reserva.checklist);
-  } catch (err) {
-    console.error("Error en eliminarItem:", err);
-    res.status(500).json({ message: "Error al eliminar el ítem" });
-  }
-};
+  };
+  
 
 const obtenerReservaUserId = async (req, res) => {
   const { userId } = req.params;

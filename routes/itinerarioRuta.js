@@ -23,7 +23,7 @@ router.delete('/:id', borrarReserva);
 router.put('/:id', actualizarReserva);
 
 // Rutas para manejar los ítems del checklist
-router.put('/:id/checklist/agregar', agregarItem); 
-router.put('/:id/checklist/eliminar', eliminarItem); 
+router.post('/:id/checklist/agregar', agregarItem); 
+router.delete('/:id/checklist/eliminar', eliminarItem); 
 
 module.exports = router;

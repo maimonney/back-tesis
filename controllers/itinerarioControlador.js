@@ -99,24 +99,29 @@ const obtenerTodosItinerarios = async (req, res) => {
 const obtenerReservaId = async (req, res) => {
     const { id } = req.params; 
 
+    console.log('Solicitud recibida para obtener reserva con ID:', id);
+
     if (!id) {
+        console.log('❌ Error: ID no proporcionado');
         return res.status(400).json({ msg: 'ID no proporcionado' });
     }
 
     try {
+        console.log('🔍 Buscando reserva en la base de datos...');
         const reserva = await Reserva.findById(id);
 
         if (!reserva) {
+            console.log(`⚠️ Reserva con ID ${id} no encontrada`);
             return res.status(404).json({ msg: 'Reserva no encontrada' });
         }
 
+        console.log('✅ Reserva encontrada:', reserva);
         res.status(200).json({ msg: 'Reserva obtenida', data: reserva });
     } catch (error) {
-        console.error(error);
+        console.error('❌ Error al obtener la reserva:', error);
         res.status(500).json({ msg: 'Error al obtener la reserva', error: error.message });
     }
 };
-
 
 const obtenerReservaDestino = async (req, res) => {
     const { destino } = req.query;  

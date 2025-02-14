@@ -9,6 +9,7 @@ const {
     borrarReserva,
     actualizarReserva,
     agregarItem,
+    actualizarItem,
     eliminarItem,
 } = require('../controllers/itinerarioControlador');
 
@@ -24,6 +25,7 @@ router.put('/:id', actualizarReserva);
 
 // Rutas para manejar los ítems del checklist
 router.post('/:id/checklist/agregar', agregarItem); 
+router.put('/:id/checklist/actualizar', actualizarItem); 
 router.delete('/:id/checklist/eliminar', eliminarItem); 
 
 module.exports = router;

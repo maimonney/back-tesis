@@ -73,11 +73,11 @@ const actualizarReserva = async (req, res) => {
 
 const agregarItem = async (req, res) => {
   try {
-    const { reservaId, titulo } = req.body;
+    const { id, titulo } = req.body;
 
-    console.log("Datos recibidos:", { reservaId, titulo });
+    console.log("Datos recibidos:", { id, titulo });
 
-    const reserva = await Reserva.findById(reservaId);
+    const reserva = await Reserva.findById(id);
     if (!reserva) {
       console.log("Reserva no encontrada");
       return res.status(404).json({ message: "Reserva no encontrada" });
@@ -103,11 +103,11 @@ const agregarItem = async (req, res) => {
 
 const eliminarItem = async (req, res) => {
   try {
-    const { reservaId, itemIndex } = req.body;
+    const { id, itemIndex } = req.body;
 
-    console.log("Datos recibidos para eliminar:", { reservaId, itemIndex });
+    console.log("Datos recibidos para eliminar:", { id, itemIndex });
 
-    const reserva = await Reserva.findById(reservaId);
+    const reserva = await Reserva.findById(id);
     if (!reserva) {
       console.log("Reserva no encontrada");
       return res.status(404).json({ message: "Reserva no encontrada" });

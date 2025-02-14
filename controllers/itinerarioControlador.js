@@ -85,7 +85,7 @@ const agregarItem = async (req, res) => {
 
     console.log("Reserva encontrada:", reserva);
 
-    const nuevoItem = { titulo, estado: false };
+    const nuevoItem = { titulo, estado: 'pendiente' };
     console.log("Nuevo ítem a agregar:", nuevoItem);
 
     reserva.checklist.push(nuevoItem);

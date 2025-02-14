@@ -115,7 +115,7 @@ const obtenerReservaUserId = async (req, res) => {
 
   try {
     console.log("🔍 Buscando reservas en la base de datos...");
-    const reservas = await Reserva.find({ userId }); // Buscamos por el campo userId
+    const reservas = await Reserva.find({ userId }); 
 
     if (!reservas.length) {
       console.log(`⚠️ No se encontraron reservas para el usuario ${userId}`);
@@ -138,7 +138,7 @@ const obtenerItinerarioId = async (req, res) => {
     try {
       const { id } = req.params; 
 
-      const itinerario = await Itinerario.findById(id);
+      const itinerario = await Reserva.findById(id);
   
       if (!itinerario) {
         return res.status(404).json({ message: 'Itinerario no encontrado' });

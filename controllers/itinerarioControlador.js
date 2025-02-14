@@ -97,31 +97,32 @@ const obtenerTodosItinerarios = async (req, res) => {
 };
 
 const obtenerReservaId = async (req, res) => {
-    const { userId } = req.params; 
-
-    console.log('Solicitud recibida para obtener reserva con ID:', userId);
-
-    if (!userId) {
-        console.log('❌ Error: ID no proporcionado');
-        return res.status(400).json({ msg: 'ID no proporcionado' });
-    }
-
-    try {
-        console.log('🔍 Buscando reserva en la base de datos...');
-        const reserva = await Reserva.findById(userId);
-
-        if (!reserva) {
-            console.log(`⚠️ Reserva con ID ${userId} no encontrada`);
-            return res.status(404).json({ msg: 'Reserva no encontrada' });
+        const { userId } = req.params;  
+    
+        console.log('📌 Solicitud recibida para obtener reservas del usuario con ID:', userId);
+    
+        if (!userId) {
+            console.log('❌ Error: ID de usuario no proporcionado');
+            return res.status(400).json({ msg: 'ID de usuario no proporcionado' });
         }
-
-        console.log('✅ Reserva encontrada:', reserva);
-        res.status(200).json({ msg: 'Reserva obtenida', data: reserva });
-    } catch (error) {
-        console.error('❌ Error al obtener la reserva:', error);
-        res.status(500).json({ msg: 'Error al obtener la reserva', error: error.message });
-    }
-};
+    
+        try {
+            console.log('🔍 Buscando reservas en la base de datos...');
+            const reservas = await Reserva.find({ userId });  // Buscamos por el campo userId
+    
+            if (!reservas.length) {
+                console.log(`⚠️ No se encontraron reservas para el usuario ${userId}`);
+                return res.status(404).json({ msg: 'No se encontraron reservas para este usuario' });
+            }
+    
+            console.log('✅ Reservas encontradas:', reservas);
+            res.status(200).json({ msg: 'Reservas obtenidas', data: reservas });
+        } catch (error) {
+            console.error('❌ Error al obtener las reservas:', error);
+            res.status(500).json({ msg: 'Error al obtener las reservas', error: error.message });
+        }
+    };
+    
 
 const obtenerReservaDestino = async (req, res) => {
     const { destino } = req.query;  

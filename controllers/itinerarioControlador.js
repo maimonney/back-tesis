@@ -122,7 +122,7 @@ const actualizarItem = async (req, res) => {
       res.status(500).json({ message: "Error al actualizar el estado del ítem" });
     }
   };
-  
+ 
 
 const eliminarItem = async (req, res) => {
   try {

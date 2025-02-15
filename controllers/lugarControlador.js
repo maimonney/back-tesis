@@ -87,12 +87,14 @@ const obtenerProvinciasPopulares = async (req, res) => {
           .then(response => {
               if (response.data && response.data.place_results) {
                   const place = response.data.place_results;
+                  const data_id = place.place_id || null;
                   return {
                       provincia: provincia,
                       title: place.title,
                       description: place.description?.snippet || "No description available",
                       images: place.images?.map(image => image.url) || [],
-                      photosLink: place.photos_link || null
+                      photosLink: place.photos_link || null,
+                      data_id: data_id,
                   };
               }
           })

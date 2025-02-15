@@ -13,7 +13,9 @@ const obtenerProvincias = async (req, res) => {
     }
 
     const url = "https://serpapi.com/search";
-    const params = {
+    
+    // Parámetros para obtener información del lugar (google_maps)
+    const paramsLugar = {
         engine: "google_maps",
         q: `${provincia}, Argentina`,
         api_key: apiKey,
@@ -21,15 +23,24 @@ const obtenerProvincias = async (req, res) => {
         image_size: "large",
     };
 
-    console.log("Realizando solicitud a SerpAPI con parámetros:", params);
+    // Parámetros para obtener imágenes del lugar (google_images)
+    const paramsImagenes = {
+        engine: "google",
+        q: `${provincia}, Argentina`,
+        tbm: "isch", // Para imágenes
+        api_key: apiKey,
+        hl: "es",
+    };
+
+    console.log("Realizando solicitud a SerpAPI con parámetros:", paramsLugar);
 
     try {
-        const response = await axios.get(url, { params });
+        // Primero, obtenemos la información del lugar
+        const responseLugar = await axios.get(url, { params: paramsLugar });
+        console.log("Respuesta completa de SerpAPI para lugar:", responseLugar.data);
 
-        console.log("Respuesta completa de SerpAPI:", response.data);
-
-        if (response.data && response.data.place_results && typeof response.data.place_results === 'object') {
-            const place = response.data.place_results;
+        if (responseLugar.data && responseLugar.data.place_results && typeof responseLugar.data.place_results === 'object') {
+            const place = responseLugar.data.place_results;
 
             console.log(`Title: ${place.title}`);
             console.log(`Photos Link: ${place.photos_link}`);
@@ -48,7 +59,23 @@ const obtenerProvincias = async (req, res) => {
             const dataId = place.data_id || null;
             console.log(`Data ID: ${dataId}`);
 
-            return res.json(place);  
+            // Ahora, obtenemos las imágenes del lugar
+            const responseImagenes = await axios.get(url, { params: paramsImagenes });
+            console.log("Respuesta completa de SerpAPI para imágenes:", responseImagenes.data);
+
+            const images = responseImagenes.data.images_results || [];
+
+            if (images.length > 0) {
+                console.log("Imágenes encontradas:", images.map(img => img.thumbnail).join(", "));
+            } else {
+                console.log("No se encontraron imágenes para este lugar.");
+            }
+
+            // Enviar respuesta con la información del lugar y las imágenes
+            return res.json({
+                lugar: place,
+                imagenes: images
+            });  
         } else {
             console.log("No se encontraron 'place_results' en la respuesta.");
             return res.status(404).json({ error: "No se encontraron lugares para esta provincia" });
@@ -63,6 +90,7 @@ const obtenerProvincias = async (req, res) => {
         });
     }
 };
+
 
 const obtenerProvinciasPopulares = async (req, res) => {
   const provinciasPopulares = ['Buenos Aires', 'Misiones', 'Salta', 'Córdoba', 'Mendoza', 'Tucumán'];

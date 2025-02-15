@@ -87,7 +87,7 @@ const obtenerProvinciasPopulares = async (req, res) => {
           .then(response => {
               if (response.data && response.data.place_results) {
                   const place = response.data.place_results;
-                  const data_id = place.place_id || null;
+                  const data_id = place.data_id || null;
                   return {
                       provincia: provincia,
                       title: place.title,

@@ -65,54 +65,83 @@ const obtenerProvincias = async (req, res) => {
 };
 
 const obtenerProvinciasPopulares = async (req, res) => {
-  const provinciasPopulares = ['Buenos Aires', 'Misiones', 'Salta', 'Córdoba', 'Mendoza', 'Tucumán'];
-  const apiKey = process.env.SERP_API_KEY;
-
-  if (!apiKey) {
-      return res.status(500).json({ error: "API key no configurada" });
-  }
-
-  const url = "https://serpapi.com/search";
+    const provinciasPopulares = ['Buenos Aires', 'Misiones', 'Salta', 'Córdoba', 'Mendoza', 'Tucumán'];
+    const apiKey = process.env.SERP_API_KEY;
   
-  const promises = provinciasPopulares.map((provincia) => {
+    if (!apiKey) {
+      return res.status(500).json({ error: "API key no configurada" });
+    }
+  
+    const url = "https://serpapi.com/search";
+    
+    const promises = provinciasPopulares.map((provincia) => {
       const params = {
-          engine: "google_maps",
-          q: `${provincia}, Argentina`,
-          api_key: apiKey,
-          hl: "es",
-          image_size: "large",
+        engine: "google_maps",
+        q: `${provincia}, Argentina`,
+        api_key: apiKey,
+        hl: "es",
+        image_size: "large",
       };
-
+  
       return axios.get(url, { params })
-          .then(response => {
-              if (response.data && response.data.place_results) {
-                  const place = response.data.place_results;
+        .then(response => {
+          if (response.data && response.data.place_results && response.data.place_results.length > 0) {
+            const place = response.data.place_results[0];  // Usamos el primer lugar
+            
+            const dataId = place.data_id;  // Aquí estamos obteniendo el data_id
+  
+            if (!dataId) {
+              console.error(`No se encontró el data_id para la provincia ${provincia}`);
+              return null;
+            }
+  
+            // Una vez que tenemos el data_id, podemos hacer una solicitud adicional para obtener las imágenes
+            const photoParams = {
+              engine: "google_maps_photos",
+              data_id: dataId,
+              api_key: apiKey,
+            };
+  
+            return axios.get("https://serpapi.com/search", { params: photoParams })
+              .then(photoResponse => {
+                if (photoResponse.data && photoResponse.data.photos) {
+                  const images = photoResponse.data.photos.map(photo => photo.image);
                   return {
-                      provincia: provincia,
-                      title: place.title,
-                      description: place.description?.snippet || "No description available",
-                      images: place.images?.map(image => image.url) || [],
-                      photosLink: place.photos_link || null
+                    provincia: provincia,
+                    title: place.title || "Sin título",
+                    description: place.description?.snippet || "No description available",
+                    images: images,  // Imágenes obtenidas usando el data_id
                   };
-              }
-          })
-          .catch(error => {
-              console.error(`Error al obtener provincia ${provincia}:`, error.message);
-              return null; 
-          });
-  });
-
-  try {
-      const results = await Promise.all(promises); 
-
+                } else {
+                  console.error(`No se encontraron fotos para el lugar ${provincia}`);
+                  return null;
+                }
+              })
+              .catch(error => {
+                console.error(`Error al obtener imágenes para ${provincia}:`, error.message);
+                return null;
+              });
+          } else {
+            console.error(`No se encontraron resultados para la provincia ${provincia}`);
+            return null;
+          }
+        })
+        .catch(error => {
+          console.error(`Error al obtener provincia ${provincia}:`, error.message);
+          return null;
+        });
+    });
+  
+    try {
+      const results = await Promise.all(promises);
       const filteredResults = results.filter(result => result !== null);
       return res.json(filteredResults);
-  } catch (error) {
+    } catch (error) {
       console.error("Error en la obtención de provincias:", error.message);
       return res.status(500).json({ error: "Hubo un problema al obtener las provincias populares" });
-  }
-};
-
+    }
+  };
+  
 const obtenerLugares = async (req, res) => {
     const { provincia } = req.query;
     
@@ -214,7 +243,6 @@ const obtenerLugares = async (req, res) => {
         });
     }
 };
-
 
 const obtenerImagenLugar = async (req, res) => {
     const { data_id } = req.query;

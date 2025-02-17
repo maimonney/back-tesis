@@ -40,13 +40,15 @@ router.post("/mercado", async (req, res) => {
       },
     });
 
-    console.log("Respuesta de Mercado Pago:", response);
-
-    if (response.body && response.body.init_point) {
-      res.json({ init_point: response.body.init_point });
+    console.log("Respuesta de Mercado Pago:", JSON.stringify(response, null, 2)); 
+    
+    const initPoint = response?.body?.init_point;
+    
+    if (initPoint) {
+      res.json({ init_point: initPoint });
     } else {
       console.error("Error: No se recibió un init_point en la respuesta.");
-      res.status(500).json({ error: "No se obtuvo un init_point de Mercado Pago" });
+      res.status(500).json({ error: "No se obtuvo un init_point de Mercado Pago", response: response.body });
     }
   } catch (error) {
     console.error("Error al crear la preferencia:", error);
@@ -56,6 +58,7 @@ router.post("/mercado", async (req, res) => {
     res.status(500).json({ error: "Error al crear la preferencia", details: error.message });
   }
 });
+
 
 router.get("/success", (req, res) => {
   console.log("Pago realizado con éxito");

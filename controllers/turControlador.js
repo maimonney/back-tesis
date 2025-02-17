@@ -63,13 +63,18 @@ const TurId = async (req, res) => {
 
 const crearTur = async (req, res) => {
     try {
+        console.log('Cuerpo de la solicitud (req.body):', req.body); 
         const tour = new Tur(req.body); 
+        console.log('Nuevo tour creado:', tour); 
         await tour.save();
+        console.log('Tour guardado exitosamente:', tour); 
         res.status(201).json({ message: 'Tour creado exitosamente', tour });
     } catch (error) {
+        console.error('Error al crear el tour:', error);
         res.status(500).json({ message: 'Error al crear el tour', error });
     }
 };
+
 
 const actualizarTur = async (req, res) => {
     try {

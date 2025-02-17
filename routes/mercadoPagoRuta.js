@@ -3,58 +3,55 @@ const { MercadoPagoConfig, Preference } = require("mercadopago");
 
 const router = express.Router();
 
-// Configuración de Mercado Pago
 const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
-const publicKey = process.env.MERCADOPAGO_PUBLIC_KEY;
 
 if (!accessToken) {
   console.error("ERROR: MERCADOPAGO_ACCESS_TOKEN no está definido.");
 }
 
-const client = new MercadoPagoConfig({
-  accessToken: accessToken,
-  public_key: publicKey,
-});
+const client = new MercadoPagoConfig({ accessToken });
 
 router.post("/mercado", async (req, res) => {
   const { items } = req.body;
 
   console.log("Cuerpo de la solicitud:", req.body);
 
-  const preference = new Preference(client);
-
-  const preferenceData = {
-    items: items.map((item) => ({
-      title: item.title,
-      unit_price: item.price,
-      quantity: item.quantity,
-      currency_id: "ARS",
-    })),
-    back_urls: {
-      success: "https://back-tesis-lovat.vercel.app/success",
-      failure: "https://back-tesis-lovat.vercel.app/failure",
-      pending: "https://back-tesis-lovat.vercel.app/pending",
-    },
-    auto_return: "approved",
-  };
-
-  console.log("Creando preferencia con datos:", preferenceData);
+  if (!items || !Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ error: "Formato de datos incorrecto, se esperaba un array de items." });
+  }
 
   try {
-    const response = await preference.create(preferenceData);
+    const preference = new Preference(client);
 
-    if (response && response.body) {
-      res.json({
-        init_point: response.body.init_point,
-      });
+    const response = await preference.create({
+      body: {
+        items: items.map((item) => ({
+          title: item.title,
+          unit_price: item.price,
+          quantity: item.quantity,
+          currency_id: "ARS",
+        })),
+        back_urls: {
+          success: "https://back-tesis-lovat.vercel.app/success",
+          failure: "https://back-tesis-lovat.vercel.app/failure",
+          pending: "https://back-tesis-lovat.vercel.app/pending",
+        },
+        auto_return: "approved",
+      },
+    });
+
+    console.log("Respuesta de Mercado Pago:", response);
+
+    if (response.body && response.body.init_point) {
+      res.json({ init_point: response.body.init_point });
     } else {
-      console.error("La respuesta de Mercado Pago es inválida:", response);
-      res.status(500).json({ error: "Error en la respuesta de Mercado Pago" });
+      console.error("Error: No se recibió un init_point en la respuesta.");
+      res.status(500).json({ error: "No se obtuvo un init_point de Mercado Pago" });
     }
   } catch (error) {
-    console.error("Error al crear la preferencia:", error.message);
+    console.error("Error al crear la preferencia:", error);
     if (error.response) {
-      console.error("Detalles del error:", error.response.data);
+      console.error("Detalles del error de Mercado Pago:", error.response.data);
     }
     res.status(500).json({ error: "Error al crear la preferencia", details: error.message });
   }

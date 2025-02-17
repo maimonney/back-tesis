@@ -3,14 +3,17 @@ const { MercadoPagoConfig, Preference } = require("mercadopago");
 
 const router = express.Router();
 
-if (!process.env.MERCADOPAGO_ACCESS_TOKEN) {
-  console.error("Error: MERCADOPAGO_ACCESS_TOKEN no está definido");
-  process.exit(1);
+// Configuración de Mercado Pago
+const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
+const publicKey = process.env.MERCADOPAGO_PUBLIC_KEY;
+
+if (!accessToken) {
+  console.error("ERROR: MERCADOPAGO_ACCESS_TOKEN no está definido.");
 }
 
 const client = new MercadoPagoConfig({
-  accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN,
-  public_key: process.env.MERCADOPAGO_PUBLIC_KEY,
+  accessToken: accessToken,
+  public_key: publicKey,
 });
 
 router.post("/mercado", async (req, res) => {
@@ -35,27 +38,24 @@ router.post("/mercado", async (req, res) => {
     auto_return: "approved",
   };
 
-  preference.body = preferenceData;
+  console.log("Creando preferencia con datos:", preferenceData);
 
   try {
-    console.log("Creando preferencia con datos:", preference.body);
-    
-    const response = await preference.create();
-    
-    console.log("Respuesta completa de Mercado Pago:", response);
-    
-    res.json({
-      init_point: response.body.init_point,
-    });
+    const response = await preference.create(preferenceData);
+
+    if (response && response.body) {
+      res.json({
+        init_point: response.body.init_point,
+      });
+    } else {
+      console.error("La respuesta de Mercado Pago es inválida:", response);
+      res.status(500).json({ error: "Error en la respuesta de Mercado Pago" });
+    }
   } catch (error) {
     console.error("Error al crear la preferencia:", error.message);
-    
     if (error.response) {
       console.error("Detalles del error:", error.response.data);
-    } else {
-      console.error("Detalles del error sin response:", error);
     }
-    
     res.status(500).json({ error: "Error al crear la preferencia", details: error.message });
   }
 });

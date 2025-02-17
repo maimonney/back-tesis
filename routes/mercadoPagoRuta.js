@@ -41,7 +41,8 @@ router.post("/mercado", async (req, res) => {
     });
 
     console.log("Respuesta de Mercado Pago:", JSON.stringify(response, null, 2)); 
-    
+    console.log("init_point:", response.init_point); 
+
     const initPoint = response?.body?.init_point;
     
     if (initPoint) {

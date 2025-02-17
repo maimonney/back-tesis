@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const crearReserva = async (req, res) => {
   const { userId, vueloIda, vueloVuelta, hotel, checklist, destino } = req.body;
-  console.log("Datos recibidos:", req.body);
+  // console.log("Datos recibidos:", req.body);
 
   if (!vueloIda || !vueloVuelta) {
     console.log(
@@ -31,11 +31,11 @@ const crearReserva = async (req, res) => {
       checklist: checklist || [],
     });
 
-    console.log("Nueva reserva:", nuevaReserva);
+    // console.log("Nueva reserva:", nuevaReserva);
 
     const reservaGuardada = await nuevaReserva.save();
 
-    console.log("Reserva guardada:", reservaGuardada);
+    // console.log("Reserva guardada:", reservaGuardada);
 
     res
       .status(200)
@@ -75,7 +75,7 @@ const agregarItem = async (req, res) => {
   try {
     const { id, titulo } = req.body;
 
-    console.log("Datos recibidos:", { id, titulo });
+    // console.log("Datos recibidos:", { id, titulo });
 
     const reserva = await Reserva.findById(id);
     if (!reserva) {
@@ -83,13 +83,13 @@ const agregarItem = async (req, res) => {
       return res.status(404).json({ message: "Reserva no encontrada" });
     }
 
-    console.log("Reserva encontrada:", reserva);
+    // console.log("Reserva encontrada:", reserva);
 
     const nuevoItem = { titulo, estado: 'pendiente' };
-    console.log("Nuevo ítem a agregar:", nuevoItem);
+    // console.log("Nuevo ítem a agregar:", nuevoItem);
 
     reserva.checklist.push(nuevoItem);
-    console.log("Checklist actualizado:", reserva.checklist);
+    // console.log("Checklist actualizado:", reserva.checklist);
 
     await reserva.save();
     console.log("Reserva guardada con éxito");

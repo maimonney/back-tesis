@@ -27,22 +27,18 @@ router.post("/reserva", async (req, res) => {
     console.log('Datos recibidos:', req.body);
 
     const { usuarioEmail, guiaEmail, reserva } = req.body;
-    const { userId, tourId, cantidadPersonas, fechaTour, destino } = reserva;
+    const { userId, tourId, cantidadPersonas, fechaTour, destino, precio } = reserva;
 
-    // Validación simple de los datos
-    if (!usuarioEmail || !guiaEmail || !userId || !tourId || !cantidadPersonas || !fechaTour || !destino) {
+    if (!usuarioEmail || !guiaEmail || !userId || !tourId || !cantidadPersonas || !fechaTour || !destino || !precio) {
       return res.status(400).json({ message: "Faltan datos requeridos para enviar el correo." });
     }
 
-    // Obtener el nombre del usuario desde el modelo de usuarios
     const usuario = await usuarios.findById(userId);
-    const nombreUsuario = usuario ? usuario.nombre : 'Usuario desconocido'; // Asegúrate de que el modelo tenga el campo 'nombre'
-
-    // Obtener el título del tour desde el modelo de itinerarios
-    const tour = await itinerario.findById(tourId);
-    const tituloTour = tour ? tour.titulo : 'Tour desconocido'; // Asegúrate de que el modelo tenga el campo 'titulo'
-
-    // Crear los correos para el usuario y el guía
+    const nombreUsuario = usuario ? usuario.nombre : 'Usuario desconocido'; 
+    
+    const tour = await reserva.findById(tourId);
+    const tourTitulo = tour ? tour.titulo : 'Tour desconocido'; 
+    
     const mailOptionsUsuario = {
       from: 'mailen.monney@davinci.edu.ar',
       to: usuarioEmail,
@@ -57,11 +53,11 @@ router.post("/reserva", async (req, res) => {
             <div style="margin-top: 20px;">
               <p style="text-align: center; font-size: 20px;">Hola <strong>${nombreUsuario}</strong></p>
               <h2 style="color: #A86A36;">Tu reserva ha sido registrada:</h2>
-              <p><strong>Tour:</strong> ${tituloTour}</p>
+              <p><strong>Tour:</strong> ${tourTitulo}</p>
               <p><strong>Fecha:</strong> ${fechaTour}</p>
               <p><strong>Destino:</strong> ${destino}</p>
               <p><strong>Cantidad de personas:</strong> ${cantidadPersonas}</p>
-              <p><strong>Precio:</strong> $1000</p>
+              <p><strong>Precio:</strong> $${precio}</p>
             </div>
             <div style="text-align: center; margin-top: 100px; font-size: 12px; color: #777;">
               <hr style="margin-left: 50px; margin-right: 50px;">
@@ -88,10 +84,11 @@ router.post("/reserva", async (req, res) => {
               <h2 style="color: #A86A36;">Datos de la reserva</h2>
               <ul style="list-style-type: none; padding: 0;">
                 <li style="margin-bottom: 10px;"><strong>Usuario:</strong> ${nombreUsuario}</li>
-                <li style="margin-bottom: 10px;"><strong>Tour:</strong> ${tituloTour}</li>
+                <li style="margin-bottom: 10px;"><strong>Tour:</strong> ${tourTitulo}</li>
                 <li style="margin-bottom: 10px;"><strong>Cantidad de personas:</strong> ${cantidadPersonas}</li>
                 <li style="margin-bottom: 10px;"><strong>Fecha:</strong> ${fechaTour}</li>
                 <li style="margin-bottom: 10px;"><strong>Destino:</strong> ${destino}</li>
+                <li style="margin-bottom: 10px;"><strong>Precio:</strong> $${precio}</li>
               </ul>
             </div>
             <div style="text-align: center; margin-top: 100px; font-size: 12px; color: #777; width: 80%; max-width: 300px; margin-left: auto; margin-right: auto;">
@@ -104,11 +101,9 @@ router.post("/reserva", async (req, res) => {
       `,
     };
 
-    // Enviar los correos
     await transporter.sendMail(mailOptionsUsuario);
     await transporter.sendMail(mailOptionsGuia);
 
-    // Responder al cliente
     res.status(200).json({ message: "Correo enviado con éxito." });
 
   } catch (error) {

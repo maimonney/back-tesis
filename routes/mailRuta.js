@@ -1,16 +1,20 @@
-const nodemailer = require('nodemailer');
-require('dotenv').config();
+const express = require("express");
+const nodemailer = require("nodemailer");
+require("dotenv").config();
+
+const reserva = require('../models/reservaTourModelo'); // Reserva de tour
+const usuarios = require('../models/usuarioModelo'); // Información de los usuarios y guías
+const itinerario = require('../models/itinerarioModelo'); // Itinerario del viaje
+
+const router = express.Router();
 const passMail = process.env.CLAVE_MAIL;
 
-app.use(express.static('public'));
-app.use(express.urlencoded({ extended: true }));
-
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
+  host: "smtp.gmail.com",
   port: 587,
   secure: false,
   auth: {
-    user: 'mailen.monney@davinci.edu.ar',
+    user: "mailen.monney@davinci.edu.ar",
     pass: passMail,
   },
   tls: {
@@ -18,87 +22,100 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/');
-});
+router.post("/reserva", async (req, res) => {
+  try {
+    const { usuarioId, tourId, cantidad, fecha } = req.body;
 
-app.post('/contact', (req, res) => {
-  console.log(req.body);
-  const { name, email, message } = req.body;
+    const usuario = await usuarios.findById(usuarioId);
+    const tour = await itinerario.findById(tourId);
+    const guia = await usuarios.findById(tour.guiaId); 
 
-  if (!name || !email || !message) {
-    console.log('Faltan campos requeridos');
-    return res.status(400).send('Por favor, completa todos los campos.');
-  }
-
-  const mailToYou = {
-    from: email,
-    to: 'mailen.monney@davinci.edu.ar',
-    subject: `Nuevo mensaje de ${name}`,
-    text: `Mensaje de ${name} (${email}):\n\n${message}`,
-    html: `
-    <body style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
-        <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
-            <div style="background-color: #222725; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0;">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..." alt="Logo Arcana" style="width: 150px; height: auto;">
-                <h1>Nuevo mensaje de ${name}</h1>
-            </div>
-            <div style="margin-top: 20px;">
-                <ul style="list-style-type: none; padding: 0;">
-                    <li style="margin-bottom: 10px;"><strong>Nombre:</strong> ${name}</li>
-                    <li style="margin-bottom: 10px;"><strong>Correo:</strong> ${email}</li>
-                    <li style="margin-bottom: 10px;"><strong>Mensaje:</strong> ${message}</li>
-                </ul>
-            </div>
-        </div>
-    </body>`
-  };
-
-  const mailToUser = {
-    from: 'mailen.monney@davinci.edu.ar',
-    to: email,
-    subject: 'Confirmación de envío de mensaje',
-    text: `Hola ${name},\n\nTu mensaje ha sido recibido correctamente. A continuación, te mostramos la información que enviaste:\n\nNombre: ${name}\nCorreo: ${email}\nMensaje: ${message}`,
-    html: `
-    <body style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
-        <div style="background-color: #f9fafb; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
-            <div style="background-color: #222725; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0;">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..." alt="Logo Arcana" style="width: 150px; height: auto;">
-                <h1>Confirmación de mensaje</h1>
-            </div>
-            <div style="margin-top: 20px;">
-                <p>Hola <strong>${name}</strong>,</p>
-                <p>Tu mensaje ha sido recibido correctamente. A continuación, te mostramos la información que enviaste:</p>
-                <ul style="list-style-type: none; padding: 0;">
-                    <li style="margin-bottom: 10px;"><strong>Nombre:</strong> ${name}</li>
-                    <li style="margin-bottom: 10px;"><strong>Correo:</strong> ${email}</li>
-                    <li style="margin-bottom: 10px;"><strong>Mensaje:</strong> ${message}</li>
-                </ul>
-                <div style="text-align: center; margin-top: 30px;">
-                    <a href="http://tusitio.com" style="background-color: #222725; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; text-align: center; display: inline-block; font-weight: bold; margin-top: 20px;">Visita nuestro sitio</a>
-                </div>
-            </div>
-            <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #777;">
-                <p>Gracias por contactarnos. Si no has realizado esta solicitud, por favor ignora este correo.</p>
-            </div>
-        </div>
-    </body>`
-  };
-
-  transporter.sendMail(mailToYou, (error, info) => {
-    if (error) {
-      console.log('Error al enviar el correo a ti:', error);
-      return res.status(500).send('Error al enviar el correo. Por favor, inténtalo nuevamente.');
+    if (!usuario || !tour || !guia) {
+      return res.status(400).json({ message: "Datos no válidos" });
     }
-    console.log('Correo enviado a ti: ' + info.response);
 
-    transporter.sendMail(mailToUser, (error, info) => {
-      if (error) {
-        console.log('Error al enviar el correo al usuario:', error);
-        return res.status(500).send('Error al enviar el correo de confirmación. Por favor, inténtalo nuevamente.');
-      }
-      console.log('Correo enviado al usuario: ' + info.response);
-      res.redirect('/?success=true');  
+    const nuevaReserva = new reserva({
+      usuarioId: usuario._id,
+      tourId: tour._id,
+      cantidad,
+      fecha,
     });
-  });
+    await nuevaReserva.save();
+
+    const mailOptionsUsuario = {
+      from: 'mailen.monney@davinci.edu.ar',
+      to: usuario.email,
+      subject: 'Confirmación de Reserva',
+      html: `
+        <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
+          <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+            <div style="background-color: #788a68; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: space-around;">
+              <img src="img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
+              <h1 style="margin: 0; font-size: 24px;">Confirmación de reserva</h1>
+            </div>
+            <div style="margin-top: 20px;">
+              <p style="text-align: center; font-size: 20px;">Hola <strong>${usuario.nombre}</strong></p>
+              <h2 style="color: #A86A36;">Tu reserva ha sido registrada:</h2>
+              <p><strong>Tour:</strong> ${tour.titulo}</p>
+              <h2 style="color: #A86A36;">Información del guía</h2>
+              <ul style="list-style-type: none; padding: 0;">
+                <li style="margin-bottom: 10px;"><strong>Nombre del guía:</strong> ${guia.nombre}</li>
+                <li style="margin-bottom: 10px;"><strong>Email:</strong> ${guia.email}</li>
+                <li style="margin-bottom: 10px;"><strong>Teléfono:</strong> ${guia.telefono}</li>
+              </ul>
+              <p><strong>Precio:</strong> $ ${tour.precio}</p>
+              <p style="color: red; font-size: 12px;">*Cuestiones de pago y cancelaciones, hablar directamente con el guía.</p>
+            </div>
+            <div style="text-align: center; margin-top: 100px; font-size: 12px; color: #777;">
+              <hr style="margin-left: 50px; margin-right: 50px;">
+              <img src="img/logo_arcana.png" style="width: 150px; height: auto;">
+              <p>Gracias por reservar con nosotros.</p>
+            </div>
+          </div>
+        </div>
+      `,
+    };
+
+    const mailOptionsGuia = {
+      from: 'mailen.monney@davinci.edu.ar',
+      to: guia.email,
+      subject: 'Nueva Reserva',
+      html: `
+        <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
+          <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+            <div style="background-color: #788a68; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: space-around;">
+              <img src="img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
+              <h1 style="margin: 0; font-size: 24px;">Nueva reserva</h1>
+            </div>
+            <div style="margin-top: 20px;">
+              <h2 style="color: #A86A36;">Datos de la reserva</h2>
+              <ul style="list-style-type: none; padding: 0;">
+                <li style="margin-bottom: 10px;"><strong>Nombre del usuario:</strong> ${usuario.nombre}</li>
+                <li style="margin-bottom: 10px;"><strong>Título del tour:</strong> ${tour.titulo}</li>
+                <li style="margin-bottom: 10px;"><strong>Cantidad de personas:</strong> ${cantidad}</li>
+                <li style="margin-bottom: 10px;"><strong>Fecha:</strong> ${fecha}</li>
+                <li style="margin-bottom: 10px;"><strong>Precio:</strong> $${tour.precio}</li>
+              </ul>
+            </div>
+            <div style="text-align: center; margin-top: 100px; font-size: 12px; color: #777; width: 80%; max-width: 300px; margin-left: auto; margin-right: auto;">
+              <hr style="margin-left: 50px; margin-right: 50px;">
+              <img src="img/logo_arcana.png" style="width: 150px; height: auto;">
+              <p>El pago y cualquier otra consulta deberán coordinarse directamente con el usuario que realizó la reserva.</p>
+            </div>
+          </div>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(mailOptionsUsuario);
+    await transporter.sendMail(mailOptionsGuia);
+
+    res.status(200).json({ message: "Reserva realizada y correos enviados." });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Hubo un error al realizar la reserva." });
+  }
 });
+
+module.exports = router;

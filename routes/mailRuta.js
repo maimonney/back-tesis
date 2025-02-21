@@ -27,14 +27,16 @@ router.post("/reserva", async (req, res) => {
     // Log para ver los datos recibidos
     console.log('Datos recibidos:', req.body);
 
-    const { usuarioId, tourId, cantidad, fecha } = req.body;
+    // Acceder a los datos dentro de 'reserva'
+    const { userId, tourId, cantidadPersonas, fechaTour, destino } = req.body.reserva;
 
-    if (!usuarioId || !tourId || !cantidad || !fecha) {
+    // Verificar si faltan datos
+    if (!userId || !tourId || !cantidadPersonas || !fechaTour || !destino) {
       return res.status(400).json({ message: "Faltan datos requeridos" });
     }
 
-    // Buscando usuario, tour y guía
-    const usuario = await usuarios.findById(usuarioId);
+    // Buscar usuario, tour y guía
+    const usuario = await usuarios.findById(userId);
     const tour = await itinerario.findById(tourId);
     const guia = await usuarios.findById(tour.guiaId); 
 
@@ -48,8 +50,9 @@ router.post("/reserva", async (req, res) => {
     const nuevaReserva = new reserva({
       usuarioId: usuario._id,
       tourId: tour._id,
-      cantidad,
-      fecha,
+      cantidad: cantidadPersonas,
+      fecha: fechaTour,
+      destino: destino,
     });
     await nuevaReserva.save();
 
@@ -59,7 +62,7 @@ router.post("/reserva", async (req, res) => {
     // Preparar los correos
     const mailOptionsUsuario = {
       from: 'mailen.monney@davinci.edu.ar',
-      to: usuario.email,
+      to: usuarioEmail,
       subject: 'Confirmación de Reserva',
       html: `
         <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
@@ -93,7 +96,7 @@ router.post("/reserva", async (req, res) => {
 
     const mailOptionsGuia = {
       from: 'mailen.monney@davinci.edu.ar',
-      to: guia.email,
+      to: guiaEmail,
       subject: 'Nueva Reserva',
       html: `
         <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
@@ -107,8 +110,8 @@ router.post("/reserva", async (req, res) => {
               <ul style="list-style-type: none; padding: 0;">
                 <li style="margin-bottom: 10px;"><strong>Nombre del usuario:</strong> ${usuario.nombre}</li>
                 <li style="margin-bottom: 10px;"><strong>Título del tour:</strong> ${tour.titulo}</li>
-                <li style="margin-bottom: 10px;"><strong>Cantidad de personas:</strong> ${cantidad}</li>
-                <li style="margin-bottom: 10px;"><strong>Fecha:</strong> ${fecha}</li>
+                <li style="margin-bottom: 10px;"><strong>Cantidad de personas:</strong> ${cantidadPersonas}</li>
+                <li style="margin-bottom: 10px;"><strong>Fecha:</strong> ${fechaTour}</li>
                 <li style="margin-bottom: 10px;"><strong>Precio:</strong> $${tour.precio}</li>
               </ul>
             </div>
@@ -138,5 +141,6 @@ router.post("/reserva", async (req, res) => {
     res.status(500).json({ message: "Hubo un error al realizar la reserva.", error: error.message });
   }
 });
+
 
 module.exports = router;

@@ -8,6 +8,7 @@ const excursionRuta = require('./excursionRuta.js');
 const cloudinaryRouter = require('./cloudinaryRutas.js'); 
 const reservaTourRuta = require('./reservaTourRuta.js');
 const mercadoPago = require('./mercadoPagoRuta.js');
+const mailRuta = require('./mailRuta.js');
 
 function routerAPI( app){
     app.use('/arcana/usuarios', usuarioRuta);
@@ -20,6 +21,7 @@ function routerAPI( app){
     app.use('/arcana/imagen', cloudinaryRouter);   
     app.use('/arcana/reservastour', reservaTourRuta);
     app.use('/arcana/pago', mercadoPago);
+    app.use('/arcana/mail', mailRuta);
 
 }
 

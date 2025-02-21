@@ -24,16 +24,27 @@ const transporter = nodemailer.createTransport({
 
 router.post("/reserva", async (req, res) => {
   try {
+    // Log para ver los datos recibidos
+    console.log('Datos recibidos:', req.body);
+
     const { usuarioId, tourId, cantidad, fecha } = req.body;
 
+    if (!usuarioId || !tourId || !cantidad || !fecha) {
+      return res.status(400).json({ message: "Faltan datos requeridos" });
+    }
+
+    // Buscando usuario, tour y guía
     const usuario = await usuarios.findById(usuarioId);
     const tour = await itinerario.findById(tourId);
     const guia = await usuarios.findById(tour.guiaId); 
 
+    // Verificación de existencia de usuario, tour y guía
     if (!usuario || !tour || !guia) {
+      console.error('Datos no encontrados:', { usuario, tour, guia });
       return res.status(400).json({ message: "Datos no válidos" });
     }
 
+    // Crear nueva reserva
     const nuevaReserva = new reserva({
       usuarioId: usuario._id,
       tourId: tour._id,
@@ -42,6 +53,10 @@ router.post("/reserva", async (req, res) => {
     });
     await nuevaReserva.save();
 
+    // Log para confirmar que la reserva se ha guardado
+    console.log('Reserva guardada:', nuevaReserva);
+
+    // Preparar los correos
     const mailOptionsUsuario = {
       from: 'mailen.monney@davinci.edu.ar',
       to: usuario.email,
@@ -107,14 +122,20 @@ router.post("/reserva", async (req, res) => {
       `,
     };
 
+    // Log para confirmar los correos antes de enviarlos
+    console.log('Enviando correo al usuario:', mailOptionsUsuario);
+    console.log('Enviando correo al guía:', mailOptionsGuia);
+
+    // Enviar los correos
     await transporter.sendMail(mailOptionsUsuario);
     await transporter.sendMail(mailOptionsGuia);
 
+    // Responder al cliente
     res.status(200).json({ message: "Reserva realizada y correos enviados." });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Hubo un error al realizar la reserva." });
+    console.error('Error al procesar la reserva:', error);
+    res.status(500).json({ message: "Hubo un error al realizar la reserva.", error: error.message });
   }
 });
 

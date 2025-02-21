@@ -34,6 +34,14 @@ router.post("/reserva", async (req, res) => {
       return res.status(400).json({ message: "Faltan datos requeridos para enviar el correo." });
     }
 
+    // Obtener el nombre del usuario desde el modelo de usuarios
+    const usuario = await usuarios.findById(userId);
+    const nombreUsuario = usuario ? usuario.nombre : 'Usuario desconocido'; // Asegúrate de que el modelo tenga el campo 'nombre'
+
+    // Obtener el título del tour desde el modelo de itinerarios
+    const tour = await itinerario.findById(tourId);
+    const tituloTour = tour ? tour.titulo : 'Tour desconocido'; // Asegúrate de que el modelo tenga el campo 'titulo'
+
     // Crear los correos para el usuario y el guía
     const mailOptionsUsuario = {
       from: 'mailen.monney@davinci.edu.ar',
@@ -47,9 +55,9 @@ router.post("/reserva", async (req, res) => {
               <h1 style="margin: 0; font-size: 24px;">Confirmación de reserva</h1>
             </div>
             <div style="margin-top: 20px;">
-              <p style="text-align: center; font-size: 20px;">Hola <strong>${userId}</strong></p>
+              <p style="text-align: center; font-size: 20px;">Hola <strong>${nombreUsuario}</strong></p>
               <h2 style="color: #A86A36;">Tu reserva ha sido registrada:</h2>
-              <p><strong>Tour:</strong> ${tourId}</p>
+              <p><strong>Tour:</strong> ${tituloTour}</p>
               <p><strong>Fecha:</strong> ${fechaTour}</p>
               <p><strong>Destino:</strong> ${destino}</p>
               <p><strong>Cantidad de personas:</strong> ${cantidadPersonas}</p>
@@ -79,8 +87,8 @@ router.post("/reserva", async (req, res) => {
             <div style="margin-top: 20px;">
               <h2 style="color: #A86A36;">Datos de la reserva</h2>
               <ul style="list-style-type: none; padding: 0;">
-                <li style="margin-bottom: 10px;"><strong>Usuario:</strong> ${userId}</li>
-                <li style="margin-bottom: 10px;"><strong>Tour ID:</strong> ${tourId}</li>
+                <li style="margin-bottom: 10px;"><strong>Usuario:</strong> ${nombreUsuario}</li>
+                <li style="margin-bottom: 10px;"><strong>Tour:</strong> ${tituloTour}</li>
                 <li style="margin-bottom: 10px;"><strong>Cantidad de personas:</strong> ${cantidadPersonas}</li>
                 <li style="margin-bottom: 10px;"><strong>Fecha:</strong> ${fechaTour}</li>
                 <li style="margin-bottom: 10px;"><strong>Destino:</strong> ${destino}</li>
@@ -108,6 +116,7 @@ router.post("/reserva", async (req, res) => {
     res.status(500).json({ message: "Hubo un error al enviar el correo.", error: error.message });
   }
 });
+
 
 
 

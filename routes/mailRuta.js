@@ -2,9 +2,9 @@ const express = require("express");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-const reserva = require('../models/reservaTourModelo'); // Reserva de tour
-const usuarios = require('../models/usuarioModelo'); // Información de los usuarios y guías
-const itinerario = require('../models/itinerarioModelo'); // Itinerario del viaje
+const reservas = require('../models/reservaTourModelo.js'); // Reserva de tour
+const usuarios = require('../models/usuarioModelo.js'); // Información de los usuarios y guías
+
 
 const router = express.Router();
 const passMail = process.env.CLAVE_MAIL;
@@ -36,7 +36,7 @@ router.post("/reserva", async (req, res) => {
     const usuario = await usuarios.findById(userId);
     const nombreUsuario = usuario ? usuario.nombre : 'Usuario desconocido'; 
     
-    const tour = await reserva.findById(tourId);
+    const tour = await reservas.findById(tourId);
     const tourTitulo = tour ? tour.titulo : 'Tour desconocido'; 
     
     const mailOptionsUsuario = {

@@ -5,7 +5,6 @@ require("dotenv").config();
 const reservas = require('../models/reservaTourModelo.js'); // Reserva de tour
 const usuarios = require('../models/usuarioModelo.js'); // Información de los usuarios y guías
 
-
 const router = express.Router();
 const passMail = process.env.CLAVE_MAIL;
 
@@ -22,6 +21,16 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Función para enviar correos
+const sendMail = async (mailOptions) => {
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error('Error al enviar el correo:', error);
+    throw new Error('Hubo un error al enviar el correo.');
+  }
+};
+
 router.post("/reserva", async (req, res) => {
   try {
     console.log('Datos recibidos:', req.body);
@@ -33,15 +42,20 @@ router.post("/reserva", async (req, res) => {
       return res.status(400).json({ message: "Faltan datos requeridos para enviar el correo." });
     }
 
+    // Verificar usuario
     const usuario = await usuarios.findById(userId);
-    const nombreUsuario = usuario ? usuario.nombre : 'Usuario desconocido'; 
-    
+    if (!usuario) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+    const nombreUsuario = usuario.nombre || 'Usuario desconocido'; 
+
+    // Verificar tour
     const tour = await reservas.findById(tourId);
+    if (!tour) {
+      return res.status(404).json({ message: "Tour no encontrado." });
+    }
+    const tourTitulo = tour.titulo || 'Tour desconocido'; 
 
-    console.log(tour);
-
-    const tourTitulo = tour ? tour.titulo : 'Tour desconocido'; 
-    
     const fechaFormateada = new Date(fechaTour).toLocaleDateString('es-AR', {
       year: 'numeric',
       month: 'long',
@@ -56,7 +70,7 @@ router.post("/reserva", async (req, res) => {
         <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
           <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
             <div style="background-color: #788a68; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: space-around;">
-              <img src="img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
+              <img src="https://your-server.com/img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
               <h1 style="margin: 0; font-size: 24px;">Confirmación de reserva</h1>
             </div>
             <div style="margin-top: 20px;">
@@ -70,7 +84,7 @@ router.post("/reserva", async (req, res) => {
             </div>
             <div style="text-align: center; margin-top: 100px; font-size: 12px; color: #777;">
               <hr style="margin-left: 50px; margin-right: 50px;">
-              <img src="img/logo_arcana.png" style="width: 150px; height: auto;">
+              <img src="https://your-server.com/img/logo_arcana.png" style="width: 150px; height: auto;">
               <p>Gracias por reservar con nosotros.</p>
             </div>
           </div>
@@ -86,7 +100,7 @@ router.post("/reserva", async (req, res) => {
         <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
           <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
             <div style="background-color: #788a68; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: space-around;">
-              <img src="img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
+              <img src="https://your-server.com/img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
               <h1 style="margin: 0; font-size: 24px;">Nueva reserva</h1>
             </div>
             <div style="margin-top: 20px;">
@@ -102,7 +116,7 @@ router.post("/reserva", async (req, res) => {
             </div>
             <div style="text-align: center; margin-top: 100px; font-size: 12px; color: #777; width: 80%; max-width: 300px; margin-left: auto; margin-right: auto;">
               <hr style="margin-left: 50px; margin-right: 50px;">
-              <img src="img/logo_arcana.png" style="width: 150px; height: auto;">
+              <img src="https://your-server.com/img/logo_arcana.png" style="width: 150px; height: auto;">
               <p>El pago y cualquier otra consulta deberán coordinarse directamente con el usuario que realizó la reserva.</p>
             </div>
           </div>
@@ -110,14 +124,13 @@ router.post("/reserva", async (req, res) => {
       `,
     };
 
-    await transporter.sendMail(mailOptionsUsuario);
-    await transporter.sendMail(mailOptionsGuia);
+    await sendMail(mailOptionsUsuario);
+    await sendMail(mailOptionsGuia);
 
-    res.status(200).json({ message: "Correo enviado con éxito." });
-
+    res.status(200).json({ message: "Correo enviado correctamente." });
   } catch (error) {
-    console.error('Error al enviar el correo:', error);
-    res.status(500).json({ message: "Hubo un error al enviar el correo.", error: error.message });
+    console.error("Error al procesar la reserva:", error);
+    res.status(500).json({ message: "Hubo un problema al procesar la reserva." });
   }
 });
 

@@ -37,8 +37,17 @@ router.post("/reserva", async (req, res) => {
     const nombreUsuario = usuario ? usuario.nombre : 'Usuario desconocido'; 
     
     const tour = await reservas.findById(tourId);
+
+    console.log(tour);
+
     const tourTitulo = tour ? tour.titulo : 'Tour desconocido'; 
     
+    const fechaFormateada = new Date(fechaTour).toLocaleDateString('es-AR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
     const mailOptionsUsuario = {
       from: 'mailen.monney@davinci.edu.ar',
       to: usuarioEmail,
@@ -54,7 +63,7 @@ router.post("/reserva", async (req, res) => {
               <p style="text-align: center; font-size: 20px;">Hola <strong>${nombreUsuario}</strong></p>
               <h2 style="color: #A86A36;">Tu reserva ha sido registrada:</h2>
               <p><strong>Tour:</strong> ${tourTitulo}</p>
-              <p><strong>Fecha:</strong> ${fechaTour}</p>
+              <p><strong>Fecha:</strong> ${fechaFormateada}</p>
               <p><strong>Destino:</strong> ${destino}</p>
               <p><strong>Cantidad de personas:</strong> ${cantidadPersonas}</p>
               <p><strong>Precio:</strong> $${precio}</p>
@@ -86,7 +95,7 @@ router.post("/reserva", async (req, res) => {
                 <li style="margin-bottom: 10px;"><strong>Usuario:</strong> ${nombreUsuario}</li>
                 <li style="margin-bottom: 10px;"><strong>Tour:</strong> ${tourTitulo}</li>
                 <li style="margin-bottom: 10px;"><strong>Cantidad de personas:</strong> ${cantidadPersonas}</li>
-                <li style="margin-bottom: 10px;"><strong>Fecha:</strong> ${fechaTour}</li>
+                <li style="margin-bottom: 10px;"><strong>Fecha:</strong> ${fechaFormateada}</li>
                 <li style="margin-bottom: 10px;"><strong>Destino:</strong> ${destino}</li>
                 <li style="margin-bottom: 10px;"><strong>Precio:</strong> $${precio}</li>
               </ul>
@@ -111,8 +120,5 @@ router.post("/reserva", async (req, res) => {
     res.status(500).json({ message: "Hubo un error al enviar el correo.", error: error.message });
   }
 });
-
-
-
 
 module.exports = router;

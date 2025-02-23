@@ -127,26 +127,55 @@ router.post("/reserva", async (req, res) => {
     res.status(200).json({ message: "Correo enviado con éxito." });
   } catch (error) {
     console.error("Error al enviar el correo:", error);
-    res
-      .status(500)
-      .json({
-        message: "Hubo un error al enviar el correo.",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Hubo un error al enviar el correo.",
+      error: error.message,
+    });
   }
 });
 
 router.post("/reservaViaje", async (req, res) => {
   try {
     const {
-      email, name, destino, salida, aerolinea, fechaIda, fechaVuelta, precioIda, precioVuelta, hotel, fechaHotel, precioHotel, total,
+      email,
+      name,
+      destino,
+      salida,
+      aerolinea,
+      fechaIda,
+      fechaVuelta,
+      precioIda,
+      precioVuelta,
+      hotel,
+      fechaHotel,
+      precioHotel,
+      total,
     } = req.body;
 
     if (
-      !email || !name || !destino || !salida || !aerolinea || !fechaIda || !fechaVuelta || !precioIda || !precioVuelta || !hotel || !fechaHotel || !precioHotel || !total
+      !email ||
+      !name ||
+      !destino ||
+      !salida ||
+      !aerolinea ||
+      !fechaIda ||
+      !fechaVuelta ||
+      !precioIda ||
+      !precioVuelta ||
+      !hotel ||
+      !fechaHotel ||
+      !precioHotel ||
+      !total
     ) {
       return res.status(400).json({ error: "Faltan datos en la solicitud" });
     }
+
+    destino = destino || "Destino desconocido";
+    salida = salida || "Origen desconocido";
+    fechaIda = fechaIda || "Fecha no disponible";
+    fechaVuelta = fechaVuelta || "Fecha no disponible";
+    hotel = hotel || "Nombre no disponible";
+    fechaHotel = fechaHotel || "No disponible";
 
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
@@ -199,10 +228,10 @@ router.post("/reservaViaje", async (req, res) => {
     `;
 
     const mailOptions = {
-      from: 'Arcana',
+      from: "Arcana",
       to: email,
       subject: "Confirmación de reserva de viaje",
-      html: htmlContent, 
+      html: htmlContent,
     };
 
     const info = await transporter.sendMail(mailOptions);
@@ -211,9 +240,10 @@ router.post("/reservaViaje", async (req, res) => {
     res.status(200).json({ message: "Correo enviado correctamente" });
   } catch (error) {
     console.error("Error al enviar el correo:", error);
-    res.status(500).json({ error: "Error al enviar el correo", detalle: error.message });
+    res
+      .status(500)
+      .json({ error: "Error al enviar el correo", detalle: error.message });
   }
 });
-
 
 module.exports = router;

@@ -140,20 +140,7 @@ router.post("/reserva", async (req, res) => {
 router.post("/reservaViaje", async (req, res) => {
   try {
     const {
-      email,
-      name,
-      destino,
-      salida,
-      aerolinea,
-      fechaIda,
-      fechaVuelta,
-      precioIda,
-      precioVuelta,
-      hotel,
-      fechaHotel,
-      precioHotel,
-      total,
-      itinerarioId,
+      email, name, destino, salida, aerolinea, fechaIda, fechaVuelta, precioIda, precioVuelta, hotel, fechaHotel, precioHotel, total, itinerarioId,
     } = req.body;
 
     if (
@@ -169,6 +156,13 @@ router.post("/reservaViaje", async (req, res) => {
     if (!itinerario) {
       return res.status(404).json({ error: "Itinerario no encontrado" });
     }
+
+    const mailOptions = {
+      from: 'Arcana',
+      to: email,
+      subject: "Confirmación de reserva de viaje",
+      html: htmlContent, 
+    };
 
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
@@ -220,7 +214,7 @@ router.post("/reservaViaje", async (req, res) => {
       </div>
     `;
 
-    await transporter.sendMail(htmlContent);
+    await transporter.sendMail(mailOptions);
     console.log("Email enviado:", info.response);
 
     res.status(200).json({ message: "Correo enviado correctamente" });

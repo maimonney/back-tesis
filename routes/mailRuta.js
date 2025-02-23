@@ -4,7 +4,6 @@ require("dotenv").config();
 
 const reservas = require("../models/reservaTourModelo.js");
 const usuarios = require("../models/usuarioModelo.js");
-const itinerario = require("../models/itinerarioModelo.js");
 
 const router = express.Router();
 const passMail = process.env.CLAVE_MAIL;
@@ -140,7 +139,7 @@ router.post("/reserva", async (req, res) => {
 router.post("/reservaViaje", async (req, res) => {
   try {
     const {
-      email, name, destino, salida, aerolinea, fechaIda, fechaVuelta, precioIda, precioVuelta, hotel, fechaHotel, precioHotel, total, itinerarioId,
+      email, name, destino, salida, aerolinea, fechaIda, fechaVuelta, precioIda, precioVuelta, hotel, fechaHotel, precioHotel, total,
     } = req.body;
 
     if (
@@ -149,15 +148,6 @@ router.post("/reservaViaje", async (req, res) => {
       return res.status(400).json({ error: "Faltan datos en la solicitud" });
     }
 
-    const itinerarioData = await itinerario.findById(itinerarioId);
-
-    console.log("itinerario:", itinerarioData);
-
-    if (!itinerarioData) {
-      return res.status(404).json({ error: "Itinerario no encontrado" });
-    }
-
-    // Definir htmlContent antes de usarlo
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
         <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
@@ -224,5 +214,6 @@ router.post("/reservaViaje", async (req, res) => {
     res.status(500).json({ error: "Error al enviar el correo", detalle: error.message });
   }
 });
+
 
 module.exports = router;

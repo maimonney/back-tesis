@@ -137,21 +137,14 @@ router.post("/reserva", async (req, res) => {
 router.post("/reservaViaje", async (req, res) => {
   try {
     let {
-      email, name, destino, salida, aerolinea, fechaIda, fechaVuelta, precioIda, precioVuelta, hotel, fechaHotel, precioHotel, total,
+      email, name, destino, salida, aerolineaIda, aerolineaVuelta, fechaIda, fechaVuelta, precioIda, precioVuelta, hotel, precioHotel, total,
     } = req.body;
 
     if (
-      !email || !name || !destino || !salida || !aerolinea || !fechaIda || !fechaVuelta || !precioIda || !precioVuelta || !hotel || !fechaHotel || !precioHotel || !total
+      !email || !name || !destino || !salida || !aerolineaVuelta || !fechaIda || !fechaVuelta || !precioIda || !precioVuelta || !hotel || !aerolineaIda || !precioHotel || !total
     ) {
       return res.status(400).json({ error: "Faltan datos en la solicitud" });
     }
-
-    destino = destino || "Destino desconocido";
-    salida = salida || "Origen desconocido";
-    fechaIda = fechaIda || "Fecha no disponible";
-    fechaVuelta = fechaVuelta || "Fecha no disponible";
-    hotel = hotel || "Nombre no disponible";
-    fechaHotel = fechaHotel || "No disponible";
 
     const htmlContent = `
   <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
@@ -169,7 +162,7 @@ router.post("/reservaViaje", async (req, res) => {
         <h3 style="color: #788a68;">Información de ida</h3>
         <ul>
           <li><strong>Salida:</strong> ${salida}</li>
-          <li><strong>Aerolínea:</strong> ${aerolinea}</li>
+          <li><strong>Aerolínea:</strong> ${aerolineaIda}</li>
           <li><strong>Fecha:</strong> ${fechaIda}</li>
           <li><strong>Precio:</strong> $${precioIda}</li>
         </ul>
@@ -177,7 +170,7 @@ router.post("/reservaViaje", async (req, res) => {
         <h3 style="color: #788a68;">Información de vuelta</h3>
         <ul>
           <li><strong>Regreso desde:</strong> ${destino}</li>
-          <li><strong>Aerolínea:</strong> ${aerolinea}</li>
+          <li><strong>Aerolínea:</strong> ${aerolineaVuelta}</li>
           <li><strong>Fecha:</strong> ${fechaVuelta}</li>
           <li><strong>Precio:</strong> $${precioVuelta}</li>
         </ul>
@@ -185,7 +178,6 @@ router.post("/reservaViaje", async (req, res) => {
         <h3 style="color: #788a68;">Información del hotel</h3>
         <ul>
           <li><strong>Nombre:</strong> ${hotel}</li>
-          <li><strong>Fecha:</strong> ${fechaHotel}</li>
           <li><strong>Precio:</strong> $${precioHotel}</li>
         </ul>
 

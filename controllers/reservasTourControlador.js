@@ -166,7 +166,6 @@ const obtenerReservasPorProvincia = async (req, res) => {
     try {
         console.log('Buscando reservas para la provincia:', provincia);
         
-        // Buscamos las reservas que coincidan con la provincia en el destino
         const reservas = await ReservaTur.find({ destino: provincia })
             .populate('userId', 'nombre email fotoPerfil fotoPortada') 
             .populate('tourId', 'titulo descripcion precio portada fotoPortada');

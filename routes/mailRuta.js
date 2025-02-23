@@ -136,36 +136,12 @@ router.post("/reserva", async (req, res) => {
 
 router.post("/reservaViaje", async (req, res) => {
   try {
-    const {
-      email,
-      name,
-      destino,
-      salida,
-      aerolinea,
-      fechaIda,
-      fechaVuelta,
-      precioIda,
-      precioVuelta,
-      hotel,
-      fechaHotel,
-      precioHotel,
-      total,
+    let {
+      email, name, destino, salida, aerolinea, fechaIda, fechaVuelta, precioIda, precioVuelta, hotel, fechaHotel, precioHotel, total,
     } = req.body;
 
     if (
-      !email ||
-      !name ||
-      !destino ||
-      !salida ||
-      !aerolinea ||
-      !fechaIda ||
-      !fechaVuelta ||
-      !precioIda ||
-      !precioVuelta ||
-      !hotel ||
-      !fechaHotel ||
-      !precioHotel ||
-      !total
+      !email || !name || !destino || !salida || !aerolinea || !fechaIda || !fechaVuelta || !precioIda || !precioVuelta || !hotel || !fechaHotel || !precioHotel || !total
     ) {
       return res.status(400).json({ error: "Faltan datos en la solicitud" });
     }
@@ -227,8 +203,6 @@ router.post("/reservaViaje", async (req, res) => {
   </div>
 `;
 
-
-
     const mailOptions = {
       from: "Arcana",
       to: email,
@@ -247,5 +221,6 @@ router.post("/reservaViaje", async (req, res) => {
       .json({ error: "Error al enviar el correo", detalle: error.message });
   }
 });
+
 
 module.exports = router;

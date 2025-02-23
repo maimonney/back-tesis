@@ -18,6 +18,6 @@ router.put('/tours/:id/cancelar', cancelarReservaTur);
 
 // Obtiene reservas de tours por guía, provincia
 router.get('/tours/guia/:guiaId', obtenerReservasPorGuia);
-router.get('/tours/provincia', obtenerReservasPorProvincia);
+router.get('/tours/provincia/:provincia', obtenerReservasPorProvincia);
 
 module.exports = router;

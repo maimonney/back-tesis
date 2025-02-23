@@ -153,17 +153,11 @@ router.post("/reservaViaje", async (req, res) => {
 
     console.log("itinerario:", itinerarioData);
 
-    if (!itinerario) {
+    if (!itinerarioData) {
       return res.status(404).json({ error: "Itinerario no encontrado" });
     }
 
-    const mailOptions = {
-      from: 'Arcana',
-      to: email,
-      subject: "Confirmación de reserva de viaje",
-      html: htmlContent, 
-    };
-
+    // Definir htmlContent antes de usarlo
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
         <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
@@ -214,15 +208,20 @@ router.post("/reservaViaje", async (req, res) => {
       </div>
     `;
 
-    await transporter.sendMail(mailOptions);
+    const mailOptions = {
+      from: 'Arcana',
+      to: email,
+      subject: "Confirmación de reserva de viaje",
+      html: htmlContent, 
+    };
+
+    const info = await transporter.sendMail(mailOptions);
     console.log("Email enviado:", info.response);
 
     res.status(200).json({ message: "Correo enviado correctamente" });
   } catch (error) {
     console.error("Error al enviar el correo:", error);
-    res
-      .status(500)
-      .json({ error: "Error al enviar el correo", detalle: error.message });
+    res.status(500).json({ error: "Error al enviar el correo", detalle: error.message });
   }
 });
 

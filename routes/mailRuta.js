@@ -181,8 +181,7 @@ router.post("/reservaViaje", async (req, res) => {
           <li><strong>Precio:</strong> $${precioHotel}</li>
         </ul>
 
-        <h3 style="color: #788a68;">Total pagado</h3>
-        <p><strong>Total:</strong> $${total}</p>
+        <h3 style="color: #222725;"><strong>Total pagado:</strong> $${total}</h3>
 
         <p style="color: red; font-size: 12px;">*Para pagos y cancelaciones, contacta a la aerolínea o al hotel reservado.</p>
       </div>

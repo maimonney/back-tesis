@@ -178,54 +178,56 @@ router.post("/reservaViaje", async (req, res) => {
     fechaHotel = fechaHotel || "No disponible";
 
     const htmlContent = `
-      <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
-        <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
-          <div style="background-color: #788a68; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0;">
-            <h1 style="margin: 0; font-size: 24px;">Confirmación de reserva de viaje</h1>
-          </div>
-          <div style="margin-top: 20px;">
-            <p style="text-align: center; font-size: 20px;">Hola <strong>${name}</strong></p>
-            <h2 style="color: #A86A36;">Tu reserva ha sido registrada:</h2>
-            <p><strong>Destino:</strong> ${destino}</p>
-            
-            <h2 style="color: #A86A36;">Detalles de la reserva</h2>
-
-            <h3 style="color: #788a68;">Información de ida</h3>
-            <ul>
-              <li><strong>Salida:</strong> ${salida}</li>
-              <li><strong>Aerolínea:</strong> ${aerolinea}</li>
-              <li><strong>Fecha:</strong> ${fechaIda}</li>
-              <li><strong>Precio:</strong> $${precioIda}</li>
-            </ul>
-
-            <h3 style="color: #788a68;">Información de vuelta</h3>
-            <ul>
-              <li><strong>Regreso desde:</strong> ${destino}</li>
-              <li><strong>Aerolínea:</strong> ${aerolinea}</li>
-              <li><strong>Fecha:</strong> ${fechaVuelta}</li>
-              <li><strong>Precio:</strong> $${precioVuelta}</li>
-            </ul>
-
-            <h3 style="color: #788a68;">Información del hotel</h3>
-            <ul>
-              <li><strong>Nombre:</strong> ${hotel}</li>
-              <li><strong>Fecha:</strong> ${fechaHotel}</li>
-              <li><strong>Precio:</strong> $${precioHotel}</li>
-            </ul>
-
-            <h3 style="color: #788a68;">Total pagado</h3>
-            <p><strong>Total:</strong> $${total}</p>
-
-            <p style="color: red; font-size: 12px;">*Para pagos y cancelaciones, contacta a la aerolínea o al hotel reservado.</p>
-          </div>
-
-          <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #777;">
-            <hr>
-            <p>Gracias por reservar con nosotros.</p>
-          </div>
-        </div>
+  <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
+    <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+      <div style="background-color: #788a68; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="margin: 0; font-size: 24px;">Confirmación de reserva de viaje</h1>
       </div>
-    `;
+      <div style="margin-top: 20px;">
+        <p style="text-align: center; font-size: 20px;">Hola <strong>${name}</strong></p>
+        <h2 style="color: #A86A36;">Tu reserva ha sido registrada:</h2>
+        <p><strong>Destino:</strong> ${destino}</p>
+        
+        <h2 style="color: #A86A36;">Detalles de la reserva</h2>
+
+        <h3 style="color: #788a68;">Información de ida</h3>
+        <ul>
+          <li><strong>Salida:</strong> ${salida}</li>
+          <li><strong>Aerolínea:</strong> ${aerolinea}</li>
+          <li><strong>Fecha:</strong> ${fechaIda}</li>
+          <li><strong>Precio:</strong> $${precioIda}</li>
+        </ul>
+
+        <h3 style="color: #788a68;">Información de vuelta</h3>
+        <ul>
+          <li><strong>Regreso desde:</strong> ${destino}</li>
+          <li><strong>Aerolínea:</strong> ${aerolinea}</li>
+          <li><strong>Fecha:</strong> ${fechaVuelta}</li>
+          <li><strong>Precio:</strong> $${precioVuelta}</li>
+        </ul>
+
+        <h3 style="color: #788a68;">Información del hotel</h3>
+        <ul>
+          <li><strong>Nombre:</strong> ${hotel}</li>
+          <li><strong>Fecha:</strong> ${fechaHotel}</li>
+          <li><strong>Precio:</strong> $${precioHotel}</li>
+        </ul>
+
+        <h3 style="color: #788a68;">Total pagado</h3>
+        <p><strong>Total:</strong> $${total}</p>
+
+        <p style="color: red; font-size: 12px;">*Para pagos y cancelaciones, contacta a la aerolínea o al hotel reservado.</p>
+      </div>
+
+      <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #777;">
+        <hr>
+        <p>Gracias por reservar con nosotros.</p>
+      </div>
+    </div>
+  </div>
+`;
+
+
 
     const mailOptions = {
       from: "Arcana",

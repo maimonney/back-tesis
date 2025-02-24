@@ -160,7 +160,28 @@ const obtenerReservasPorGuia = async (req, res) => {
     }
 };
 
+const obtenerReservasPorProvincia = async (req, res) => {
+    const { provincia } = req.params; 
 
+    try {
+        console.log('Buscando reservas para la provincia:', provincia);
+        
+        const reservas = await ReservaTur.find({ destino: provincia })
+            .populate('userId', 'nombre email fotoPerfil fotoPortada') 
+            .populate('tourId', 'titulo descripcion precio portada fotoPortada');
+        
+        if (reservas.length === 0) {
+            console.log('No hay reservas para esta provincia.');
+            return res.status(404).json({ message: 'No hay reservas para esta provincia' });
+        }
+
+        console.log('Reservas encontradas para la provincia:', reservas);
+        res.status(200).json({ message: 'Reservas encontradas', data: reservas });
+    } catch (error) {
+        console.error('Error al obtener reservas por provincia:', error);
+        res.status(500).json({ message: 'Error al obtener reservas por provincia', error: error.message });
+    }
+};
 
 const obtenerReservasProvId = async (req, res) => {
     const { provincia, userId } = req.params; 

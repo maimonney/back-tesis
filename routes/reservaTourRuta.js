@@ -8,7 +8,7 @@ const {
     obtenerReservaTurPorId,
     cancelarReservaTur,
     obtenerReservasPorGuia,
-    obtenerReservasPorProvincia,
+    obtenerReservasProvId,
 } = require('../controllers/reservasTourControlador');
 
 router.post('/tours', crearReservaTur);
@@ -18,6 +18,6 @@ router.put('/tours/:id/cancelar', cancelarReservaTur);
 
 // Obtiene reservas de tours por guía, provincia
 router.get('/tours/guia/:guiaId', obtenerReservasPorGuia);
-router.get('/tours/provincia/:provincia', obtenerReservasPorProvincia);
+router.get('/tours/provincia/:provincia/usuario/:userId', obtenerReservasProvId);
 
 module.exports = router;

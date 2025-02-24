@@ -160,28 +160,33 @@ const obtenerReservasPorGuia = async (req, res) => {
     }
 };
 
-const obtenerReservasPorProvincia = async (req, res) => {
-    const { provincia } = req.params; 
+const obtenerReservasProvId = async (req, res) => {
+    const { provincia, userId } = req.params; 
 
     try {
-        console.log('Buscando reservas para la provincia:', provincia);
-        
-        const reservas = await ReservaTur.find({ destino: provincia })
-            .populate('userId', 'nombre email fotoPerfil fotoPortada') 
+        console.log('Buscando reservas para:', { provincia, userId });
+
+        let filtro = {};
+        if (provincia) filtro.destino = provincia;
+        if (userId) filtro.userId = userId;
+
+        const reservas = await ReservaTur.find(filtro)
+            .populate('userId', 'nombre email fotoPerfil fotoPortada')
             .populate('tourId', 'titulo descripcion precio portada fotoPortada');
-        
+
         if (reservas.length === 0) {
-            console.log('No hay reservas para esta provincia.');
-            return res.status(404).json({ message: 'No hay reservas para esta provincia' });
+            console.log('No hay reservas con esos criterios.');
+            return res.status(404).json({ message: 'No hay reservas disponibles' });
         }
 
-        console.log('Reservas encontradas para la provincia:', reservas);
+        console.log('Reservas encontradas:', reservas);
         res.status(200).json({ message: 'Reservas encontradas', data: reservas });
     } catch (error) {
-        console.error('Error al obtener reservas por provincia:', error);
-        res.status(500).json({ message: 'Error al obtener reservas por provincia', error: error.message });
+        console.error('Error al obtener reservas:', error);
+        res.status(500).json({ message: 'Error al obtener reservas', error: error.message });
     }
 };
+
 
 module.exports = {
     crearReservaTur,
@@ -189,5 +194,5 @@ module.exports = {
     obtenerReservaTurPorId,
     cancelarReservaTur,
     obtenerReservasPorGuia,
-    obtenerReservasPorProvincia,
+    obtenerReservasProvId,
 };

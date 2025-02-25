@@ -241,7 +241,7 @@ router.post("/cancelacion", async (req, res) => {
   try {
     console.log("Datos recibidos:", req.body);
 
-    const { usuarioEmail, guiaEmail, reserva } = req.body;
+    const { usuarioEmail, guiaEmailValue, reserva } = req.body;
     const { userId, tourId, cantidadPersonas, fechaTour, destino, precio } =
       reserva;
 

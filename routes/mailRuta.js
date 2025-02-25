@@ -246,7 +246,7 @@ router.post("/cancelacion", async (req, res) => {
       reserva;
 
     if (
-      !usuarioEmail || !guiaEmail || !userId || !tourId || !cantidadPersonas || !fechaTour ||
+      !usuarioEmail || !guiaEmailValue || !userId || !tourId || !cantidadPersonas || !fechaTour ||
       !destino || !precio
     ) {
       return res
@@ -301,7 +301,7 @@ router.post("/cancelacion", async (req, res) => {
 
     const mailOptionsGuia = {
       from: "mailen.monney@davinci.edu.ar",
-      to: guiaEmail,
+      to: guiaEmailValue,
       subject: "Cancelación de Reserva",
       html: `
         <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">

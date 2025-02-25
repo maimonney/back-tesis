@@ -137,11 +137,35 @@ router.post("/reserva", async (req, res) => {
 router.post("/reservaViaje", async (req, res) => {
   try {
     let {
-      email, name, destino, salida, aerolineaIda, aerolineaVuelta, fechaIda, fechaVuelta, precioIda, precioVuelta, hotel, precioHotel, total,
+      email,
+      name,
+      destino,
+      salida,
+      aerolineaIda,
+      aerolineaVuelta,
+      fechaIda,
+      fechaVuelta,
+      precioIda,
+      precioVuelta,
+      hotel,
+      precioHotel,
+      total,
     } = req.body;
 
     if (
-      !email || !name || !destino || !salida || !aerolineaVuelta || !fechaIda || !fechaVuelta || !precioIda || !precioVuelta || !hotel || !aerolineaIda || !precioHotel || !total
+      !email ||
+      !name ||
+      !destino ||
+      !salida ||
+      !aerolineaVuelta ||
+      !fechaIda ||
+      !fechaVuelta ||
+      !precioIda ||
+      !precioVuelta ||
+      !hotel ||
+      !aerolineaIda ||
+      !precioHotel ||
+      !total
     ) {
       return res.status(400).json({ error: "Faltan datos en la solicitud" });
     }
@@ -213,5 +237,113 @@ router.post("/reservaViaje", async (req, res) => {
   }
 });
 
+router.post("/cancelacion", async (req, res) => {
+  try {
+    console.log("Datos recibidos:", req.body);
+
+    const { usuarioEmail, guiaEmail, reserva } = req.body;
+    const { userId, tourId, cantidadPersonas, fechaTour, destino, precio } =
+      reserva;
+
+    if (
+      !usuarioEmail || !guiaEmail || !userId || !tourId || !cantidadPersonas || !fechaTour ||
+      !destino || !precio
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Faltan datos requeridos para enviar el correo." });
+    }
+
+    const usuario = await usuarios.findById(userId);
+    const nombreUsuario = usuario ? usuario.nombre : "Usuario desconocido";
+
+    const tour = await reservas.findById(tourId);
+
+    console.log(tour);
+
+    const tourTitulo = tour ? tour.titulo : "Tour desconocido";
+
+    const fechaFormateada = new Date(fechaTour).toLocaleDateString("es-AR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    const mailOptionsUsuario = {
+      from: "mailen.monney@davinci.edu.ar",
+      to: usuarioEmail,
+      subject: "Cancelación de Reserva",
+      html: `
+        <div style="font-family: Arial, sans-serif; color: #222725; background-color: #f9fafb; padding: 20px;">
+    <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+        <div style="background-color: #7E2323; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: space-around;">
+            <img src="img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
+            <h1 style="margin: 0; font-size: 24px;">Cancelación de reserva</h1>
+        </div>
+        <div style="margin-top: 20px;">
+            <p style="text-align: center; font-size: 20px;">Hola <strong>${nombreUsuario}</strong></p>
+            <h2 style="color: #A86A36;">Has cancelado tu reserva:</h2>
+            <p><strong>Tour:</strong> ${reserva.tourTitulo}</p>
+            <p><strong>Fecha:</strong> ${fechaFormateada}</p>
+            <p><strong>Destino:</strong> ${destino}</p>
+            <p><strong>Cantidad de personas:</strong> ${cantidadPersonas}</p>
+            <p><strong>Precio:</strong> $${precio}</p>
+        </div>
+        <div style="text-align: center; margin-top: 40px; font-size: 12px; color: #777;">
+            <hr style="margin-left: 50px; margin-right: 50px;">
+            <img src="img/logo_arcana.png" style="width: 150px; height: auto;">
+            <p style="color: #7E2323;">Para cancelaciones, comuníquese con el guía.</p>
+        </div>
+    </div>
+</div>
+      `,
+    };
+
+    const mailOptionsGuia = {
+      from: "mailen.monney@davinci.edu.ar",
+      to: guiaEmail,
+      subject: "Cancelación de Reserva",
+      html: `
+        <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
+    <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+        <div style="background-color: #7E2323; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: space-around;">
+            <img src="img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
+            <h1 style="margin: 0; font-size: 24px;">Cancelación de reserva</h1>
+        </div>
+        <div style="margin-top: 20px;">
+            <h2 style="color: #A86A36;">Datos de la reserva</h2>
+            <ul style="list-style-type: none; padding: 0;">
+                <li style="margin-bottom: 10px;"><strong>Usuario:</strong> ${nombreUsuario}</li>
+                <li style="margin-bottom: 10px;"><strong>Tour:</strong> ${reserva.tourTitulo}</li>
+                <li style="margin-bottom: 10px;"><strong>Cantidad de personas:</strong> ${cantidadPersonas}</li>
+                <li style="margin-bottom: 10px;"><strong>Fecha:</strong> ${fechaFormateada}</li>
+                <li style="margin-bottom: 10px;"><strong>Destino:</strong> ${destino}</li>
+                <li style="margin-bottom: 10px;"><strong>Precio:</strong> $${precio}</li>
+            </ul>
+        </div>
+        <div style="text-align: center; margin-top: 40px; font-size: 12px; color: #777; width: 80%; max-width: 300px; margin-left: auto; margin-right: auto;">
+            <hr style="margin-left: 50px; margin-right: 50px;">
+            <img src="img/logo_arcana.png" style="width: 150px; height: auto;">
+            <p style="color: #7E2323;">Para cancelaciones, comuníquese directamente con el usuario que realizó la reserva.</p>
+        </div>
+    </div>
+</div>
+      `,
+    };
+
+    await transporter.sendMail(mailOptionsUsuario);
+    await transporter.sendMail(mailOptionsGuia);
+
+    res
+      .status(200)
+      .json({ message: "Correo de cancelación enviado con éxito." });
+  } catch (error) {
+    console.error("Error al enviar el correo de cancelación:", error);
+    res.status(500).json({
+      message: "Hubo un error al enviar el correo de cancelación.",
+      error: error.message,
+    });
+  }
+});
 
 module.exports = router;

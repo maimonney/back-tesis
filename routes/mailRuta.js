@@ -4,7 +4,7 @@ require("dotenv").config();
 
 const reservas = require("../models/reservaTourModelo.js");
 const usuarios = require("../models/usuarioModelo.js");
-const turModelo = requiere("../models/turModelo.js");
+const tur = require("../models/turModelo.js");
 
 const router = express.Router();
 const passMail = process.env.CLAVE_MAIL;
@@ -258,7 +258,7 @@ router.post("/cancelacion", async (req, res) => {
     const usuario = await usuarios.findById(userId);
     const nombreUsuario = usuario ? usuario.nombre : "Usuario desconocido";
 
-    const tour = await turModelo.findById(tourId);
+    const tour = await tur.findById(tourId);
 
     console.log('Reserva', tourId);
     console.log('Titulo', tour.titulo);

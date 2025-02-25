@@ -4,6 +4,7 @@ require("dotenv").config();
 
 const reservas = require("../models/reservaTourModelo.js");
 const usuarios = require("../models/usuarioModelo.js");
+const turModelo = requiere("../models/turModelo.js");
 
 const router = express.Router();
 const passMail = process.env.CLAVE_MAIL;
@@ -257,12 +258,12 @@ router.post("/cancelacion", async (req, res) => {
     const usuario = await usuarios.findById(userId);
     const nombreUsuario = usuario ? usuario.nombre : "Usuario desconocido";
 
-    const tour = await reservas.findById(tourId);
+    const tour = await turModelo.findById(tourId);
 
     console.log('Reserva', tourId);
-    console.log('Titulo', tourId.titulo);
+    console.log('Titulo', tour.titulo);
 
-    const tourTitulo = tour ? tour.titulo : "Tour desconocido";
+    const tourTitulo = tour.titulo;
 
     const fechaFormateada = new Date(fechaTour).toLocaleDateString("es-AR", {
       year: "numeric",
@@ -284,7 +285,7 @@ router.post("/cancelacion", async (req, res) => {
         <div style="margin-top: 20px;">
             <p style="text-align: center; font-size: 20px;">Hola <strong>${nombreUsuario}</strong></p>
             <h2 style="color: #A86A36;">Has cancelado tu reserva:</h2>
-            <p><strong>Tour:</strong> ${reserva.tourTitulo}</p>
+            <p><strong>Tour:</strong> ${tourTitulo}</p>
             <p><strong>Fecha:</strong> ${fechaFormateada}</p>
             <p><strong>Destino:</strong> ${destino}</p>
             <p><strong>Cantidad de personas:</strong> ${cantidadPersonas}</p>
@@ -315,7 +316,7 @@ router.post("/cancelacion", async (req, res) => {
             <h2 style="color: #A86A36;">Datos de la reserva</h2>
             <ul style="list-style-type: none; padding: 0;">
                 <li style="margin-bottom: 10px;"><strong>Usuario:</strong> ${nombreUsuario}</li>
-                <li style="margin-bottom: 10px;"><strong>Tour:</strong> ${reserva.tourTitulo}</li>
+                <li style="margin-bottom: 10px;"><strong>Tour:</strong> ${tourTitulo}</li>
                 <li style="margin-bottom: 10px;"><strong>Cantidad de personas:</strong> ${cantidadPersonas}</li>
                 <li style="margin-bottom: 10px;"><strong>Fecha:</strong> ${fechaFormateada}</li>
                 <li style="margin-bottom: 10px;"><strong>Destino:</strong> ${destino}</li>

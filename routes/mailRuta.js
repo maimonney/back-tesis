@@ -259,7 +259,8 @@ router.post("/cancelacion", async (req, res) => {
 
     const tour = await reservas.findById(tourId);
 
-    console.log(tour);
+    console.log('Reserva', tourId);
+    console.log('Titulo', tourId.titulo);
 
     const tourTitulo = tour ? tour.titulo : "Tour desconocido";
 

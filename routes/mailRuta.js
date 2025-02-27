@@ -444,7 +444,7 @@ router.post("/contact", (req, res) => {
           );
       }
       console.log("Correo enviado al usuario: " + info.response);
-      res.redirect(`/?success=true`);
+      res.status(200).json({ success: true, message: "Correo enviado exitosamente" });
     });
   });
 });

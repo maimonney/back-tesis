@@ -13,7 +13,6 @@ const corsOptions = {
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD'], 
     allowedHeaders: ['Content-Type', 'Authorization'], 
-    credentials: true, 
 };
 
 api.use(cors(corsOptions));

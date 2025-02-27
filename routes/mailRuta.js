@@ -367,7 +367,7 @@ router.post("/contact", (req, res) => {
     <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
         
         <div style="background-color: #788a68; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: space-around;">
-            <img src="/img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
+            <img src="https://arcanatur.ar/img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
             <h1 style="margin: 0; font-size: 24px;">Nuevo mensaje de ${name}</h1>
         </div>
 
@@ -382,7 +382,7 @@ router.post("/contact", (req, res) => {
 
         <div style="text-align: center; margin-top: 100px; font-size: 12px; color: #777;">
             <hr style="margin-left: 50px; margin-right: 50px;">
-            <img src="/img/logo_arcana.png" style="width: 150px; height: auto;">
+            <img src="https://arcanatur.ar/img/logo_arcana.png" style="width: 150px; height: auto;">
             <p>Mensaje enviado desde la landing page.</p>
         </div>
     </div>
@@ -398,7 +398,7 @@ router.post("/contact", (req, res) => {
     <body style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
     <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
         <div style="background-color: #788a68; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: space-around;">
-            <img src="/img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
+            <img src="https://arcanatur.ar/img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
             <h1 style="margin: 0; font-size: 24px;">Confirmación de mensaje</h1>
         </div>
 
@@ -417,7 +417,7 @@ router.post("/contact", (req, res) => {
 
         <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #777;">
             <hr style="margin-left: 50px; margin-right: 50px;">
-            <img src="/img/logo_arcana.png" style="width: 150px; height: auto;">
+            <img src="https://arcanatur.ar/img/logo_arcana.png" style="width: 150px; height: auto;">
             <p>Gracias por contactarnos.</p>
             <p>Si no has realizado esta solicitud, por favor ignora este correo.</p>
         </div>

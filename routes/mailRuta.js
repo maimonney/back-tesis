@@ -68,7 +68,7 @@ router.post("/reserva", async (req, res) => {
         <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
           <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
             <div style="background-color: #788a68; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: space-around;">
-              <img src="img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
+              <img src="https://arcanatur.ar/img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
               <h1 style="margin: 0; font-size: 24px;">Confirmación de reserva</h1>
             </div>
             <div style="margin-top: 20px;">
@@ -82,7 +82,7 @@ router.post("/reserva", async (req, res) => {
             </div>
             <div style="text-align: center; margin-top: 100px; font-size: 12px; color: #777;">
               <hr style="margin-left: 50px; margin-right: 50px;">
-              <img src="img/logo_arcana.png" style="width: 150px; height: auto;">
+              <img src="https://arcanatur.ar/img/logo_arcana.png" style="width: 150px; height: auto;">
               <p>Gracias por reservar con nosotros.</p>
             </div>
           </div>
@@ -98,7 +98,7 @@ router.post("/reserva", async (req, res) => {
         <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
           <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
             <div style="background-color: #788a68; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: space-around;">
-              <img src="img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
+              <img src="https://arcanatur.ar/img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
               <h1 style="margin: 0; font-size: 24px;">Nueva reserva</h1>
             </div>
             <div style="margin-top: 20px;">
@@ -114,7 +114,7 @@ router.post("/reserva", async (req, res) => {
             </div>
             <div style="text-align: center; margin-top: 100px; font-size: 12px; color: #777; width: 80%; max-width: 300px; margin-left: auto; margin-right: auto;">
               <hr style="margin-left: 50px; margin-right: 50px;">
-              <img src="img/logo_arcana.png" style="width: 150px; height: auto;">
+              <img src="https://arcanatur.ar/img/logo_arcana.png" style="width: 150px; height: auto;">
               <p>El pago y cualquier otra consulta deberán coordinarse directamente con el usuario que realizó la reserva.</p>
             </div>
           </div>
@@ -213,6 +213,7 @@ router.post("/reservaViaje", async (req, res) => {
 
       <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #777;">
         <hr>
+        <img src="https://arcanatur.ar/img/logo_arcana.png" style="width: 150px; height: auto;">
         <p>Gracias por reservar con nosotros.</p>
       </div>
     </div>
@@ -247,8 +248,14 @@ router.post("/cancelacion", async (req, res) => {
       reserva;
 
     if (
-      !usuarioEmail || !guiaEmailValue || !userId || !tourId || !cantidadPersonas || !fechaTour ||
-      !destino || !precio
+      !usuarioEmail ||
+      !guiaEmailValue ||
+      !userId ||
+      !tourId ||
+      !cantidadPersonas ||
+      !fechaTour ||
+      !destino ||
+      !precio
     ) {
       return res
         .status(400)
@@ -260,8 +267,8 @@ router.post("/cancelacion", async (req, res) => {
 
     const tour = await tur.findById(tourId);
 
-    console.log('Reserva', tourId);
-    console.log('Titulo', tour.titulo);
+    console.log("Reserva", tourId);
+    console.log("Titulo", tour.titulo);
 
     const tourTitulo = tour.titulo;
 
@@ -279,7 +286,7 @@ router.post("/cancelacion", async (req, res) => {
         <div style="font-family: Arial, sans-serif; color: #222725; background-color: #f9fafb; padding: 20px;">
     <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
         <div style="background-color: #7E2323; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: space-around;">
-            <img src="img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
+            <img src="https://arcanatur.ar/img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
             <h1 style="margin: 0; font-size: 24px;">Cancelación de reserva</h1>
         </div>
         <div style="margin-top: 20px;">
@@ -293,7 +300,7 @@ router.post("/cancelacion", async (req, res) => {
         </div>
         <div style="text-align: center; margin-top: 40px; font-size: 12px; color: #777;">
             <hr style="margin-left: 50px; margin-right: 50px;">
-            <img src="img/logo_arcana.png" style="width: 150px; height: auto;">
+            <img src="https://arcanatur.ar/img/logo_arcana.png" style="width: 150px; height: auto;">
             <p style="color: #7E2323;">Para cancelaciones, comuníquese con el guía.</p>
         </div>
     </div>
@@ -309,7 +316,7 @@ router.post("/cancelacion", async (req, res) => {
         <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9fafb; padding: 20px;">
     <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
         <div style="background-color: #7E2323; color: white; padding: 10px; text-align: center; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: space-around;">
-            <img src="img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
+            <img src="https://arcanatur.ar/img/iso_arcana.png" style="width: 50px; height: auto; margin-right: 10px;">
             <h1 style="margin: 0; font-size: 24px;">Cancelación de reserva</h1>
         </div>
         <div style="margin-top: 20px;">
@@ -325,7 +332,7 @@ router.post("/cancelacion", async (req, res) => {
         </div>
         <div style="text-align: center; margin-top: 40px; font-size: 12px; color: #777; width: 80%; max-width: 300px; margin-left: auto; margin-right: auto;">
             <hr style="margin-left: 50px; margin-right: 50px;">
-            <img src="img/logo_arcana.png" style="width: 150px; height: auto;">
+            <img src="https://arcanatur.ar/img/logo_arcana.png" style="width: 150px; height: auto;">
             <p style="color: #7E2323;">Para cancelaciones, comuníquese directamente con el usuario que realizó la reserva.</p>
         </div>
     </div>
@@ -444,7 +451,9 @@ router.post("/contact", (req, res) => {
           );
       }
       console.log("Correo enviado al usuario: " + info.response);
-      res.status(200).json({ success: true, message: "Correo enviado exitosamente" });
+      res
+        .status(200)
+        .json({ success: true, message: "Correo enviado exitosamente" });
     });
   });
 });

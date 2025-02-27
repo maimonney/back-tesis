@@ -149,7 +149,7 @@ const obtenerReservasPorGuia = async (req, res) => {
 
         if (reservas.length === 0) {
             console.log('No hay reservas para los tours de este guía.');
-            return res.status(404).json({ message: 'No hay reservas para los tours de este guía' });
+            return res.status(200).json({ message: 'No hay reservas para los tours de este guía' });
         }
 
         console.log('Reservas obtenidas exitosamente.');
